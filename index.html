@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TalentCI — Plateforme Étudiante</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="app-wrapper">
+
+  <!-- ════════════════════════════════
+       BANDEAU CONFIG DB (affiché si pas configuré)
+  ════════════════════════════════ -->
+  <div class="config-banner" id="config-banner" style="display:none;">
+    <div class="config-banner-text">⚠️ <strong>Base de données non configurée</strong> — Clique pour connecter Supabase et activer toutes les fonctionnalités.</div>
+    <button class="config-banner-btn" onclick="ouvrirConfigDB()">⚙️ Configurer maintenant</button>
+    <button class="config-banner-close" onclick="this.parentElement.style.display='none'" title="Fermer">×</button>
+  </div>
+
+  <!-- ════════════════════════════════
+       MODAL CONFIG BASE DE DONNÉES
+  ════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-config-db">
+    <div class="config-modal">
+      <div class="config-modal-header">
+        <div>
+          <div class="config-modal-title">🗄️ Configuration Supabase</div>
+          <div class="config-modal-subtitle">Connecte ta base de données en 3 étapes simples</div>
+        </div>
+      </div>
+      <div class="config-modal-body">
+
+        <!-- Étapes -->
+        <div class="config-step">
+          <div class="config-step-num">1</div>
+          <div class="config-step-content">
+            <div class="config-step-title">Crée un projet Supabase gratuit</div>
+            <div class="config-step-desc">Va sur supabase.com → "New Project" → choisis un nom et une région proche (ex: Frankfurt ou Singapore).</div>
+            <a class="config-step-link" href="https://supabase.com/dashboard" target="_blank">→ Ouvrir supabase.com</a>
+          </div>
+        </div>
+
+        <div class="config-step">
+          <div class="config-step-num">2</div>
+          <div class="config-step-content">
+            <div class="config-step-title">Exécute le script SQL fourni</div>
+            <div class="config-step-desc">Dans ton projet : <strong>SQL Editor</strong>. Colle le contenu de <code>sql/schema.sql</code> et exécute-le pour créer les tables et les règles de sécurité.</div>
+          </div>
+        </div>
+
+        <div class="config-step">
+          <div class="config-step-num">3</div>
+          <div class="config-step-content">
+            <div class="config-step-title">Récupère tes clés et colle-les ci-dessous</div>
+            <div class="config-step-desc">Dans ton projet : <strong>Settings → API</strong>. Copie la "Project URL" et la clé "<strong>anon / public</strong>". Les clés sont stockées dans ce navigateur (localStorage). Ne partage jamais ta clé <code>service_role</code>.</div>
+          </div>
+        </div>
+
+        <!-- Statut -->
+        <div class="config-status" id="config-status"></div>
+
+        <!-- Champs de saisie -->
+        <div class="config-champs">
+          <div class="config-champ">
+            <label class="config-label">
+              URL du projet Supabase
+              <span class="config-badge-url">Project URL</span>
+            </label>
+            <div class="config-input-wrap">
+              <input class="config-input" id="input-supabase-url" type="text"
+                placeholder="https://xxxxxxxxxxxxxxxxxxxx.supabase.co"
+                oninput="validerChampURL(this)"/>
+              <span class="config-input-icon" id="icon-url"></span>
+            </div>
+            <div class="config-hint">Commence toujours par <code>https://</code> et finit par <code>.supabase.co</code></div>
+          </div>
+
+          <div class="config-champ">
+            <label class="config-label">
+              Clé anonyme (anon / public)
+              <span class="config-badge-key">anon key</span>
+            </label>
+            <div class="config-input-wrap">
+              <input class="config-input" id="input-supabase-key" type="password"
+                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                oninput="validerChampKey(this)"/>
+              <span class="config-input-icon" id="icon-key"></span>
+            </div>
+            <div class="config-hint">Commence par <code>eyJ</code> — c'est sûr de l'exposer côté client</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="config-actions">
+          <button class="config-btn-test" onclick="testerConnexion()">🔌 Tester la connexion</button>
+          <button class="config-btn-save" onclick="sauvegarderConfig()">💾 Sauvegarder et connecter</button>
+        </div>
+
+        <div style="text-align:center;margin-top:16px;">
+          <button onclick="fermerConfigDB()" style="background:none;border:none;font-size:13px;color:var(--texte-3);cursor:pointer;">✕ Fermer sans sauvegarder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       NAVBAR
+  ════════════════════════════════ -->
+  <nav class="navbar">
+    <div class="navbar-logo" onclick="allerVers('accueil')">Talent<span>CI</span></div>
+    <div class="navbar-liens">
+      <button class="nav-lien actif" onclick="allerVers('accueil')">Accueil</button>
+      <button class="nav-lien" onclick="allerVers('missions')">Missions</button>
+      <button class="nav-lien" onclick="allerVers('profil')">Mon profil</button>
+      <button class="nav-lien" onclick="allerVers('entreprise')">Entreprises</button>
+      <button class="nav-lien" id="btn-notif-nav" onclick="allerVers('notifications')">Notifications</button>
+      <!-- Visible uniquement si profilConnecte.type === 'admin' (voir mettreAJourNavbar). Protection réelle = RLS Supabase. -->
+      <button class="nav-lien nav-lien-admin" id="nav-lien-admin" onclick="ouvrirAdmin()" style="display:none;">⚙️ Admin</button>
+    </div>
+    <div class="navbar-actions">
+      <button class="btn btn-blanc" id="btn-cx" onclick="ouvrirAuth('connexion')">Connexion</button>
+      <button class="btn btn-vert" id="btn-ins" onclick="ouvrirAuth('inscription')">S'inscrire</button>
+      <div class="avatar-nav" id="avatar-nav" onclick="allerVers('profil')" style="display:none;">?</div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════
+       CONTENU PRINCIPAL
+  ════════════════════════════════ -->
+  <main class="main-content">
+
+    <!-- PAGE ACCUEIL -->
+    <div id="page-accueil" class="page active">
+      <div id="alerte-db-accueil"></div>
+      <div class="hero anime">
+        <div class="hero-texte">
+          <div class="hero-label">Plateforme étudiante #1 en Côte d'Ivoire</div>
+          <h1>Trouve des missions,<br>construis ton <em>avenir</em></h1>
+          <p>Connecte-toi aux PME et startups locales qui ont besoin de tes compétences — à ton rythme, selon ton emploi du temps.</p>
+          <div class="hero-boutons">
+            <button class="btn btn-vert" onclick="allerVers('missions')">Voir les missions →</button>
+            <button class="btn btn-outline" onclick="allerVers('entreprise')">Je suis une entreprise</button>
+          </div>
+        </div>
+        <div class="hero-illustration">
+          <div class="hero-icon">🎓</div>
+          <div class="hero-illus-texte">Étudiant + Entreprise<br>= Succès</div>
+        </div>
+      </div>
+      <div class="stats-grille anime anime-2">
+        <div class="stat-carte"><div class="stat-icone">👩‍🎓</div><div class="stat-nombre" id="stat-etudiants">—</div><div class="stat-label">Étudiants actifs</div></div>
+        <div class="stat-carte"><div class="stat-icone">🏢</div><div class="stat-nombre" id="stat-entreprises">—</div><div class="stat-label">Entreprises partenaires</div></div>
+        <div class="stat-carte"><div class="stat-icone">✅</div><div class="stat-nombre" id="stat-missions">—</div><div class="stat-label">Missions disponibles</div></div>
+      </div>
+      <div class="section-titre anime anime-3">Explore par catégorie</div>
+      <div class="categories-grille anime anime-3">
+        <div class="categorie-carte" onclick="allerVersCategorie('Développement')"><div class="cat-icone">💻</div><div class="cat-nom">Développement web</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Design')"><div class="cat-icone">🎨</div><div class="cat-nom">Design graphique</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Comptabilité')"><div class="cat-icone">📊</div><div class="cat-nom">Comptabilité</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Marketing')"><div class="cat-icone">📱</div><div class="cat-nom">Marketing digital</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Rédaction')"><div class="cat-icone">✍️</div><div class="cat-nom">Rédaction & Contenu</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Data')"><div class="cat-icone">📈</div><div class="cat-nom">Data & Analyse</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Vidéo')"><div class="cat-icone">🎥</div><div class="cat-nom">Vidéo & Photo</div></div>
+        <div class="categorie-carte" onclick="allerVers('missions')"><div class="cat-icone">🌐</div><div class="cat-nom">Traduction</div></div>
+      </div>
+      <div class="section-titre anime anime-4">Ils ont fait confiance à TalentCI</div>
+      <div class="temoignages-grille anime anime-4">
+        <div class="temoignage-carte">
+          <div class="temo-etoiles">★★★★★</div>
+          <div class="temo-texte">"Grâce à TalentCI, j'ai décroché 3 missions en 2 mois. J'ai pu payer ma scolarité et gagner une vraie expérience professionnelle avant même la fin de mes études."</div>
+          <div class="temo-auteur">
+            <div class="temo-avatar" style="background:var(--vert-clair);color:var(--vert-fonce);">KD</div>
+            <div><div class="temo-info-nom">Konan Didier</div><div class="temo-info-role">Étudiant en informatique — INPHB</div></div>
+          </div>
+        </div>
+        <div class="temoignage-carte">
+          <div class="temo-etoiles">★★★★★</div>
+          <div class="temo-texte">"Nous sommes une petite boutique et ne pouvions pas embaucher un designer à plein temps. TalentCI nous a mis en contact avec une étudiante talentueuse à un tarif raisonnable."</div>
+          <div class="temo-auteur">
+            <div class="temo-avatar" style="background:var(--bleu-clair);color:var(--bleu);">AT</div>
+            <div><div class="temo-info-nom">Adjoua Traoré</div><div class="temo-info-role">Gérante — Mode & Style CI</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="cta-banniere anime anime-4">
+        <div><h2>Prêt à démarrer ?</h2><p>Rejoins des centaines d'étudiants qui construisent leur carrière dès aujourd'hui.</p></div>
+        <button class="btn-cta-blanc" onclick="ouvrirAuth('inscription')">Créer mon profil gratuitement</button>
+      </div>
+    </div>
+
+    <!-- PAGE MISSIONS -->
+    <div id="page-missions" class="page">
+      <div class="missions-header">
+        <div class="missions-top">
+          <div class="recherche-wrap">
+            <span class="recherche-icone">🔍</span>
+            <input class="recherche-input" id="recherche-input" type="text" placeholder="Rechercher une mission..." oninput="filtrerMissions()"/>
+          </div>
+          <select class="tri-select" id="tri-select" onchange="filtrerMissions()">
+            <option value="recent">Plus récentes</option>
+            <option value="salaire-desc">Budget décroissant</option>
+            <option value="salaire-asc">Budget croissant</option>
+          </select>
+          <div class="missions-compteur"><strong id="nb-resultats">0</strong> missions trouvées</div>
+        </div>
+        <div class="filtres-ligne" id="filtres-ligne">
+          <button class="filtre-btn actif" data-cat="Tous" onclick="changerFiltre(this)">Toutes</button>
+          <button class="filtre-btn" data-cat="Développement" onclick="changerFiltre(this)">💻 Développement</button>
+          <button class="filtre-btn" data-cat="Design" onclick="changerFiltre(this)">🎨 Design</button>
+          <button class="filtre-btn" data-cat="Marketing" onclick="changerFiltre(this)">📱 Marketing</button>
+          <button class="filtre-btn" data-cat="Comptabilité" onclick="changerFiltre(this)">📊 Comptabilité</button>
+          <button class="filtre-btn" data-cat="Rédaction" onclick="changerFiltre(this)">✍️ Rédaction</button>
+          <button class="filtre-btn" data-cat="Data" onclick="changerFiltre(this)">📈 Data</button>
+          <button class="filtre-btn" data-cat="Vidéo" onclick="changerFiltre(this)">🎥 Vidéo</button>
+        </div>
+      </div>
+      <div class="missions-grille" id="missions-grille">
+        <div class="aucun-resultat"><div style="font-size:48px">⏳</div><p>Chargement des missions...</p></div>
+      </div>
+    </div>
+
+    <!-- PAGE PROFIL -->
+    <div id="page-profil" class="page">
+      <div id="profil-non-connecte" style="text-align:center;padding:80px 24px;">
+        <div style="font-size:64px;margin-bottom:16px;">🔐</div>
+        <h2 style="margin-bottom:12px;">Connecte-toi pour voir ton profil</h2>
+        <p style="margin-bottom:24px;">Crée un compte ou connecte-toi pour accéder à ton tableau de bord.</p>
+        <div style="display:flex;gap:12px;justify-content:center;">
+          <button class="btn btn-vert" onclick="ouvrirAuth('connexion')">Se connecter</button>
+          <button class="btn btn-outline" onclick="ouvrirAuth('inscription')">Créer un compte</button>
+        </div>
+      </div>
+      <div id="profil-connecte" style="display:none;">
+        <div class="profil-layout">
+          <aside class="profil-sidebar">
+            <div class="carte-identite">
+              <div class="profil-avatar-grand" id="profil-avatar">?</div>
+              <div class="profil-nom" id="profil-nom-affiche">—</div>
+              <div class="profil-titre" id="profil-type-affiche">—</div>
+              <div class="profil-univ" id="profil-univ-affiche"></div>
+              <div class="dispo-badge">Disponible</div>
+              <hr class="profil-divider"/>
+              <button class="btn-editer" onclick="ouvrirEditProfil()">✏️ Modifier mon profil</button>
+              <button class="btn-editer" style="margin-top:8px;color:#A32D2D;" onclick="seDeconnecter()">🚪 Se déconnecter</button>
+            </div>
+            <div class="carte-bloc">
+              <div class="bloc-titre">Compétences</div>
+              <div class="competences-liste" id="profil-competences">
+                <span class="comp-pill">Non renseigné</span>
+              </div>
+            </div>
+          </aside>
+          <div class="profil-main">
+            <div class="kpi-grille">
+              <div class="kpi-carte"><div class="kpi-icone">✅</div><div class="kpi-valeur" id="kpi-terminees">0</div><div class="kpi-label">Missions terminées</div></div>
+              <div class="kpi-carte"><div class="kpi-icone">⏳</div><div class="kpi-valeur" id="kpi-encours">0</div><div class="kpi-label">En attente</div></div>
+              <div class="kpi-carte"><div class="kpi-icone">📨</div><div class="kpi-valeur" id="kpi-total">0</div><div class="kpi-label">Total candidatures</div></div>
+              <div class="kpi-carte"><div class="kpi-icone">⭐</div><div class="kpi-valeur">—</div><div class="kpi-label">Note moyenne</div></div>
+            </div>
+            <div class="carte-bloc" style="padding-top:20px;">
+              <div class="onglets-profil">
+                <button class="onglet-profil actif" onclick="changerOnglet('candidatures',this)">Mes candidatures</button>
+                <button class="onglet-profil" onclick="changerOnglet('historique',this)">Historique</button>
+              </div>
+              <div class="panneau-profil actif" id="panneau-candidatures">
+                <div id="liste-candidatures"><div style="text-align:center;padding:32px;color:var(--texte-3);">Chargement...</div></div>
+              </div>
+              <div class="panneau-profil" id="panneau-historique">
+                <div style="text-align:center;padding:32px;color:var(--texte-3);">Ton historique apparaîtra ici.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE ENTREPRISE -->
+    <div id="page-entreprise" class="page">
+      <div class="entreprise-layout">
+        <aside class="entreprise-sidebar">
+          <div class="carte-entreprise">
+            <div class="entreprise-logo-grand" id="ent-logo">?</div>
+            <div class="entreprise-nom-grand" id="ent-nom">Mon Entreprise</div>
+            <div class="entreprise-secteur">Votre secteur — Abidjan</div>
+            <div class="entreprise-stats-mini">
+              <div class="ent-mini-stat"><div class="ent-mini-val" id="ent-publiees">0</div><div class="ent-mini-lbl">Missions publiées</div></div>
+              <div class="ent-mini-stat"><div class="ent-mini-val" id="ent-candidatures">0</div><div class="ent-mini-lbl">Candidatures reçues</div></div>
+            </div>
+          </div>
+        </aside>
+        <div class="entreprise-main">
+          <div class="form-carte">
+            <div class="form-titre">📋 Publier une nouvelle mission</div>
+            <div class="form-sous-titre">Remplis ce formulaire pour trouver l'étudiant idéal.</div>
+            <div class="form-groupe">
+              <label class="form-label">Titre de la mission <span>*</span></label>
+              <input class="form-input" id="champ-titre" type="text" placeholder="ex: Création de logo pour ma boutique"/>
+            </div>
+            <div class="form-rangee">
+              <div class="form-groupe">
+                <label class="form-label">Catégorie <span>*</span></label>
+                <select class="form-select" id="champ-categorie">
+                  <option value="">-- Choisir --</option>
+                  <option>Design</option><option>Développement</option>
+                  <option>Marketing</option><option>Comptabilité</option>
+                  <option>Rédaction</option><option>Data</option>
+                  <option>Vidéo</option><option>Traduction</option><option>Autre</option>
+                </select>
+              </div>
+              <div class="form-groupe">
+                <label class="form-label">Niveau requis</label>
+                <select class="form-select" id="champ-niveau">
+                  <option>Débutant accepté</option><option>Intermédiaire</option><option>Avancé</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-groupe">
+              <label class="form-label">Description <span>*</span></label>
+              <textarea class="form-textarea" id="champ-description" placeholder="Décris clairement ce que tu attends : objectifs, livrables, contexte..."></textarea>
+            </div>
+            <div class="form-rangee">
+              <div class="form-groupe">
+                <label class="form-label">Budget (FCFA) <span>*</span></label>
+                <input class="form-input" id="champ-budget" type="number" placeholder="ex: 35000" min="5000" step="1000"/>
+                <div class="form-hint">Minimum recommandé : 10 000 FCFA</div>
+              </div>
+              <div class="form-groupe">
+                <label class="form-label">Durée estimée <span>*</span></label>
+                <select class="form-select" id="champ-duree">
+                  <option>Moins d'une semaine</option><option>1 à 2 semaines</option>
+                  <option>2 à 4 semaines</option><option>1 à 2 mois</option><option>Plus de 2 mois</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-groupe">
+              <label class="form-label">Compétences souhaitées</label>
+              <input class="form-input" id="champ-competence-input" type="text"
+                placeholder="Tape une compétence et appuie sur Entrée (ex: Figma)"
+                onkeydown="ajouterCompetence(event)"/>
+              <div class="competences-chips" id="chips-competences"></div>
+            </div>
+            <div class="succes-message" id="succes-publication">
+              <div class="succes-icone">🎉</div>
+              <div class="succes-titre">Mission publiée avec succès !</div>
+              <div class="succes-texte">Ta mission est maintenant visible par tous les étudiants.</div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-blanc" onclick="reinitialiserFormulaire()">Annuler</button>
+              <button class="btn btn-vert" id="btn-publier" onclick="publierMission()">Publier la mission →</button>
+            </div>
+          </div>
+          <div class="carte-bloc">
+            <div class="bloc-titre" style="margin-bottom:16px;">Missions publiées</div>
+            <div id="liste-missions-publiees"><div style="text-align:center;padding:24px;color:var(--texte-3);">Chargement...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE NOTIFICATIONS -->
+    <div id="page-notifications" class="page">
+      <div class="notif-layout">
+        <div>
+          <div class="notif-entete">
+            <div class="notif-titre-page">Notifications <span id="nb-non-lues" style="font-size:14px;font-weight:400;color:var(--texte-3);margin-left:8px;"></span></div>
+            <button class="btn btn-blanc" onclick="toutMarquerLu()" style="font-size:13px;padding:7px 16px;">✓ Tout marquer comme lu</button>
+          </div>
+          <div class="notif-filtres">
+            <button class="filtre-btn actif" data-filtre="tous" onclick="filtrerNotifs(this)">Toutes</button>
+            <button class="filtre-btn" data-filtre="candidature" onclick="filtrerNotifs(this)">Candidatures</button>
+            <button class="filtre-btn" data-filtre="paiement" onclick="filtrerNotifs(this)">Paiements</button>
+            <button class="filtre-btn" data-filtre="mission" onclick="filtrerNotifs(this)">Missions</button>
+            <button class="filtre-btn" data-filtre="systeme" onclick="filtrerNotifs(this)">Système</button>
+          </div>
+          <div class="notif-liste" id="notif-liste"></div>
+        </div>
+        <aside class="notif-resume">
+          <div class="resume-carte" style="background:var(--vert-clair);border-color:rgba(29,158,117,.3);">
+            <div class="resume-titre" style="color:var(--vert-fonce);">💡 Conseil du jour</div>
+            <p style="font-size:13px;color:var(--vert-fonce);line-height:1.6;">Complète ton profil à 100% pour recevoir 3x plus de missions. Ajoute une photo et une bio courte !</p>
+            <button class="btn btn-vert" style="margin-top:14px;width:100%;justify-content:center;font-size:13px;" onclick="allerVers('profil')">Compléter mon profil →</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- PAGE ADMIN -->
+    <div id="page-admin" class="page">
+      <div class="admin-layout">
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-header">
+            <div class="admin-badge">🔐 ADMIN</div>
+            <div class="admin-nom" id="admin-nom-affiche">Administrateur</div>
+            <div class="admin-role">Administrateur TalentCI</div>
+          </div>
+          <button class="admin-menu-item actif" onclick="changerPanneau('dashboard',this)"><span class="admin-menu-icone">📊</span> Tableau de bord</button>
+          <button class="admin-menu-item" onclick="changerPanneau('utilisateurs',this)"><span class="admin-menu-icone">👥</span> Utilisateurs</button>
+          <button class="admin-menu-item" onclick="changerPanneau('missions-admin',this)"><span class="admin-menu-icone">🎯</span> Missions</button>
+          <button class="admin-menu-item" onclick="ouvrirConfigDB()" style="color:rgba(255,200,0,.8);"><span class="admin-menu-icone">🗄️</span> Config Base de données</button>
+          <div class="admin-deconnexion">
+            <button class="admin-menu-item" onclick="deconnecterAdmin()" style="color:rgba(226,75,74,.8);"><span class="admin-menu-icone">🚪</span> Quitter le panneau</button>
+          </div>
+        </aside>
+        <div class="admin-contenu">
+          <div class="admin-panneau actif" id="admin-dashboard">
+            <div class="admin-kpi-grille">
+              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:var(--vert-clair)">👩‍🎓</div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-etudiants">—</div><div class="admin-kpi-label">Étudiants inscrits</div></div>
+              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:var(--bleu-clair)">🏢</div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-entreprises">—</div><div class="admin-kpi-label">Entreprises actives</div></div>
+              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:var(--amber-clair)">🎯</div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-missions">—</div><div class="admin-kpi-label">Missions publiées</div></div>
+              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:#FCEBEB">📨</div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-candidatures">—</div><div class="admin-kpi-label">Candidatures</div></div>
+            </div>
+            <div class="admin-table-wrap">
+              <div style="padding:16px 20px;border-bottom:1px solid var(--bordure);"><span style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;">Utilisateurs récents</span></div>
+              <table class="admin-table">
+                <thead><tr><th>Utilisateur</th><th>Type</th><th>Inscription</th><th>Statut</th></tr></thead>
+                <tbody id="admin-users-recents"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="admin-panneau" id="admin-utilisateurs">
+            <div class="admin-section-titre"><span>Tous les utilisateurs</span><span id="admin-nb-users" style="font-size:13px;font-weight:400;color:var(--texte-3);"></span></div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead><tr><th>Utilisateur</th><th>Type</th><th>Université</th><th>Inscription</th><th>Actions</th></tr></thead>
+                <tbody id="table-users"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="admin-panneau" id="admin-missions-admin">
+            <div class="admin-section-titre"><span>Toutes les missions</span><span id="admin-nb-missions" style="font-size:13px;font-weight:400;color:var(--texte-3);"></span></div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead><tr><th>Mission</th><th>Entreprise</th><th>Budget</th><th>Catégorie</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody id="table-missions-admin"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div>© 2025 <strong>TalentCI</strong> — Tous droits réservés</div>
+    <div>Fait avec passion à Abidjan 🇨🇮</div>
+    <div>Contact : contact@talentci.ci</div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════
+     MODAL AUTH
+════════════════════════════════ -->
+<div class="admin-overlay" id="modal-auth" style="z-index:600;">
+  <div class="login-modal" style="max-width:440px;">
+    <div style="display:flex;border-bottom:1px solid var(--bordure);margin-bottom:24px;">
+      <button id="tab-connexion" onclick="basculerAuth('connexion')" style="flex:1;padding:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;border:none;background:transparent;cursor:pointer;color:var(--vert);border-bottom:2px solid var(--vert);">Connexion</button>
+      <button id="tab-inscription" onclick="basculerAuth('inscription')" style="flex:1;padding:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;border:none;background:transparent;cursor:pointer;color:var(--texte-3);border-bottom:2px solid transparent;">Inscription</button>
+    </div>
+    <div class="login-erreur" id="auth-message" style="display:none;background:var(--vert-clair);color:var(--vert-fonce);border:1px solid var(--vert);"></div>
+    <div id="form-connexion">
+      <div class="login-logo-admin" style="margin-bottom:16px;">
+        <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);">🎓</div>
+        <div class="login-titre">Bon retour !</div>
+        <div class="login-sous-titre">Connecte-toi à TalentCI</div>
+      </div>
+      <div class="login-champ"><label class="login-label">Email</label><input class="login-input" id="cx-email" type="email" placeholder="exemple@univ.ci"/></div>
+      <div class="login-champ"><label class="login-label">Mot de passe</label><input class="login-input" id="cx-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')seConnecter()"/></div>
+      <button class="btn-login-admin" id="btn-seconnecter" style="background:var(--vert);" onclick="seConnecter()">Se connecter →</button>
+      <button class="login-annuler" onclick="fermerAuth()">Annuler</button>
+    </div>
+    <div id="form-inscription" style="display:none;">
+      <div class="login-logo-admin" style="margin-bottom:16px;">
+        <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);">✨</div>
+        <div class="login-titre">Rejoindre TalentCI</div>
+        <div class="login-sous-titre">Crée ton compte gratuitement</div>
+      </div>
+      <div class="login-champ"><label class="login-label">Nom complet</label><input class="login-input" id="ins-nom" type="text" placeholder="Konan Didier"/></div>
+      <div class="login-champ"><label class="login-label">Email</label><input class="login-input" id="ins-email" type="email" placeholder="ton@email.ci"/></div>
+      <div class="login-champ"><label class="login-label">Mot de passe</label><input class="login-input" id="ins-pass" type="password" placeholder="Minimum 6 caractères"/></div>
+      <div class="login-champ">
+        <label class="login-label">Je suis...</label>
+        <select class="login-input" id="ins-type" onchange="document.getElementById('champ-univ-wrap').style.display=this.value==='etudiant'?'block':'none'">
+          <option value="etudiant">Étudiant(e) — je cherche des missions</option>
+          <option value="entreprise">Entreprise — je publie des missions</option>
+        </select>
+      </div>
+      <div class="login-champ" id="champ-univ-wrap">
+        <label class="login-label">Université / École</label>
+        <input class="login-input" id="ins-univ" type="text" placeholder="INPHB, UFHB, PIGIER..."/>
+      </div>
+      <button class="btn-login-admin" id="btn-sinscrire" style="background:var(--vert);" onclick="sInscrire()">Créer mon compte →</button>
+      <button class="login-annuler" onclick="fermerAuth()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     MODAL ÉDITION PROFIL
+════════════════════════════════ -->
+<div class="admin-overlay" id="modal-edit-profil" style="z-index:600;">
+  <div class="login-modal" style="max-width:440px;">
+    <div class="login-logo-admin" style="margin-bottom:16px;">
+      <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);">✏️</div>
+      <div class="login-titre">Modifier mon profil</div>
+      <div class="login-sous-titre">Ces informations sont visibles par les autres utilisateurs</div>
+    </div>
+    <div class="login-champ"><label class="login-label">Nom complet</label><input class="login-input" id="edit-nom" type="text"/></div>
+    <div class="login-champ" id="edit-univ-wrap"><label class="login-label">Université / École</label><input class="login-input" id="edit-univ" type="text" placeholder="INPHB, UFHB, PIGIER..."/></div>
+    <div class="login-champ">
+      <label class="login-label">Compétences</label>
+      <input class="login-input" id="edit-competence-input" type="text" placeholder="Tape une compétence et appuie sur Entrée" onkeydown="ajouterCompetenceProfil(event)"/>
+      <div class="edit-profil-liste-comp" id="edit-chips-competences"></div>
+    </div>
+    <button class="btn-login-admin" id="btn-enregistrer-profil" style="background:var(--vert);" onclick="enregistrerProfil()">Enregistrer →</button>
+    <button class="login-annuler" onclick="fermerEditProfil()">Annuler</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toast-icone">✅</span><span id="toast-texte">Action réalisée !</span></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
