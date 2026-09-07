@@ -400,6 +400,25 @@ async function seConnecter() {
 }
 
 /* ══════════════════════════════════════════
+   CONNEXION GOOGLE (OAuth)
+   ─────────────────────────────────────────
+   Redirige vers Google puis revient sur le site avec une session
+   active ; onAuthStateChange (voir demarrerApp) prend le relais.
+   Le profil (table profils) est créé automatiquement par le trigger
+   on_auth_user_created, qui récupère aussi la photo Google si dispo.
+   Nécessite d'avoir activé le provider Google dans Supabase
+   (Authentication → Providers → Google) — voir le README.
+══════════════════════════════════════════ */
+async function connecterAvecGoogle() {
+  if (!verifierDB()) return;
+  const { error } = await db.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + window.location.pathname }
+  });
+  if (error) afficherToast('error', 'Erreur Google : ' + error.message, 'rouge');
+}
+
+/* ══════════════════════════════════════════
    DÉCONNEXION
 ══════════════════════════════════════════ */
 async function seDeconnecter() {

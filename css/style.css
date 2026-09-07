@@ -329,6 +329,10 @@ footer strong{color:var(--vert);font-weight:600;}
 .btn-login-admin:hover{opacity:.88;}
 .login-annuler{width:100%;padding:10px;background:transparent;border:none;font-size:13px;color:var(--texte-3);cursor:pointer;margin-top:10px;transition:color .15s;}
 .login-annuler:hover{color:var(--texte);}
+.btn-google{width:100%;padding:11px;background:#fff;border:1.5px solid var(--bordure-2);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--texte);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .15s,border-color .15s;}
+.btn-google:hover{background:var(--bg-2);border-color:var(--texte-3);}
+.auth-separateur{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--texte-3);font-size:12px;}
+.auth-separateur::before,.auth-separateur::after{content:'';flex:1;height:1px;background:var(--bordure);}
 .admin-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:flex-start;}
 .admin-sidebar{background:var(--texte);border-radius:var(--radius-lg);padding:20px 0;overflow:hidden;position:sticky;top:80px;}
 .admin-sidebar-header{padding:0 20px 20px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:12px;}

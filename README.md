@@ -42,6 +42,24 @@ Tant que Supabase n'est pas configuré, le site s'affiche en **mode dégradé** 
      ```
      Pratique pour un déploiement où tu ne veux pas que chaque visiteur configure sa propre base — c'est bien la clé `anon` (publique par nature), donc pas un problème de sécurité de la committer.
 
+## 🔑 Activer la connexion Google
+
+Le bouton "Continuer avec Google" est déjà dans l'interface, mais il ne fonctionnera qu'une fois le provider Google configuré côté Supabase (sinon Google renvoie une erreur "provider is not enabled").
+
+1. **Crée des identifiants OAuth Google** :
+   - Va sur [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+   - Crée un projet (ou utilise un projet existant), puis `Créer des identifiants → ID client OAuth`
+   - Type d'application : **Application Web**
+   - Dans **Origines JavaScript autorisées**, ajoute l'URL de ton site (ex : `https://amadoutraore-debug.github.io`)
+   - Dans **URI de redirection autorisés**, ajoute exactement : `https://<ton-projet>.supabase.co/auth/v1/callback` (remplace `<ton-projet>` par la référence de ton projet Supabase — visible dans l'URL du dashboard ou dans `Settings → API`)
+   - Récupère le **Client ID** et le **Client Secret** générés
+2. **Configure le provider dans Supabase** :
+   - Dashboard Supabase → `Authentication → Providers` → trouve **Google** dans la liste
+   - Active-le, colle le Client ID et le Client Secret, sauvegarde
+3. C'est tout — pas de changement de code nécessaire. Le profil (nom + photo) est créé automatiquement via le trigger `on_auth_user_created` de `sql/schema.sql`, à partir des informations fournies par Google.
+
+⚠️ Google ne dit pas si un utilisateur est "étudiant" ou "entreprise" : un compte créé via Google est toujours classé `étudiant` par défaut (modifiable ensuite manuellement via `update profils set type = 'entreprise' where user_id = '...';` si besoin).
+
 ## 👑 Devenir administrateur
 
 Il n'y a **aucun** moyen de devenir admin depuis le site (le formulaire d'inscription ne propose que "Étudiant" / "Entreprise" — c'est volontaire). Pour promouvoir un compte existant :

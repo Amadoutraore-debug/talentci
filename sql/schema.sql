@@ -76,6 +76,13 @@ create policy "profils_suppression_admin" on profils
 -- serveur (SECURITY DEFINER, propriétaire = postgres) dans la même
 -- transaction que la création du compte, donc il ne dépend jamais de
 -- l'état de session du client.
+--
+-- Fonctionne aussi pour les comptes créés via Google OAuth : Google
+-- fournit 'full_name'/'name' et 'avatar_url'/'picture' dans les
+-- métadonnées, donc le nom et la photo de profil sont récupérés
+-- automatiquement. Il n'y a en revanche aucun moyen de connaître le
+-- "type" (étudiant/entreprise) via Google -> défaut à 'etudiant'
+-- (modifiable ensuite manuellement en base si besoin).
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -83,13 +90,14 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profils (user_id, nom, type, universite)
+  insert into public.profils (user_id, nom, type, universite, avatar_url)
   values (
     new.id,
-    coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)),
+    coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
     case when new.raw_user_meta_data->>'role' in ('etudiant','entreprise')
          then new.raw_user_meta_data->>'role' else 'etudiant' end,
-    coalesce(new.raw_user_meta_data->>'universite', '')
+    coalesce(new.raw_user_meta_data->>'universite', ''),
+    coalesce(new.raw_user_meta_data->>'avatar_url', new.raw_user_meta_data->>'picture')
   )
   on conflict (user_id) do nothing;
   return new;
