@@ -274,7 +274,7 @@ async function chargerProfil(userId) {
   if (!verifierDB()) return null;
   const { data, error } = await db
     .from('profils')
-    .select('id, user_id, nom, type, universite, competences, created_at')
+    .select('id, user_id, nom, type, universite, competences, avatar_url, created_at')
     .eq('user_id', userId)
     .maybeSingle();
   if (error) { console.warn('Erreur profil:', error.message); return null; }
@@ -366,6 +366,8 @@ async function seDeconnecter() {
 /* ══════════════════════════════════════════
    ÉDITION DE PROFIL
 ══════════════════════════════════════════ */
+let fichierAvatarSelectionne = null;
+
 function ouvrirEditProfil() {
   if (!utilisateurConnecte || !profilConnecte) return;
   document.getElementById('edit-nom').value = profilConnecte.nom || '';
@@ -374,11 +376,39 @@ function ouvrirEditProfil() {
   if (wrapUniv) wrapUniv.style.display = profilConnecte.type === 'etudiant' ? 'block' : 'none';
   competencesEditProfil = Array.isArray(profilConnecte.competences) ? [...profilConnecte.competences] : [];
   afficherChipsEditProfil();
+
+  fichierAvatarSelectionne = null;
+  const preview = document.getElementById('edit-avatar-preview');
+  const placeholder = document.getElementById('edit-avatar-placeholder');
+  if (profilConnecte.avatar_url) {
+    if (preview) { preview.src = profilConnecte.avatar_url; preview.style.display = 'block'; }
+    if (placeholder) placeholder.style.display = 'none';
+  } else {
+    if (preview) { preview.src = ''; preview.style.display = 'none'; }
+    if (placeholder) {
+      placeholder.style.display = 'flex';
+      const nom = profilConnecte.nom || '';
+      placeholder.textContent = nom.split(' ').map(m=>m[0]).join('').substring(0,2).toUpperCase() || '?';
+    }
+  }
+
   document.getElementById('modal-edit-profil').classList.add('visible');
 }
 
 function fermerEditProfil() {
   document.getElementById('modal-edit-profil').classList.remove('visible');
+}
+
+function previewAvatarProfil(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { afficherToast('⚠️','Choisis une image (JPG, PNG...)','rouge'); event.target.value = ''; return; }
+  if (file.size > 3 * 1024 * 1024) { afficherToast('⚠️','Image trop lourde (max 3 Mo)','rouge'); event.target.value = ''; return; }
+  fichierAvatarSelectionne = file;
+  const preview = document.getElementById('edit-avatar-preview');
+  const placeholder = document.getElementById('edit-avatar-placeholder');
+  if (preview) { preview.src = URL.createObjectURL(file); preview.style.display = 'block'; }
+  if (placeholder) placeholder.style.display = 'none';
 }
 
 function ajouterCompetenceProfil(event) {
@@ -406,13 +436,31 @@ async function enregistrerProfil() {
   const univ = document.getElementById('edit-univ').value.trim();
   if (!nom) { afficherToast('⚠️','Le nom est obligatoire','rouge'); return; }
   setBtnLoading('btn-enregistrer-profil', true, 'Enregistrement...');
+
+  let avatarUrl = profilConnecte?.avatar_url || null;
+  if (fichierAvatarSelectionne) {
+    const ext = (fichierAvatarSelectionne.name.split('.').pop() || 'jpg').toLowerCase();
+    const chemin = `${utilisateurConnecte.id}/avatar.${ext}`;
+    const { error: uploadErr } = await db.storage.from('avatars')
+      .upload(chemin, fichierAvatarSelectionne, { upsert: true, cacheControl: '3600' });
+    if (uploadErr) {
+      setBtnLoading('btn-enregistrer-profil', false, 'Enregistrer →');
+      afficherToast('❌', 'Erreur photo : ' + uploadErr.message, 'rouge');
+      return;
+    }
+    const { data: urlData } = db.storage.from('avatars').getPublicUrl(chemin);
+    avatarUrl = urlData.publicUrl + '?t=' + Date.now(); // cache-busting : même chemin réutilisé à chaque changement
+  }
+
   const { error } = await db.from('profils').update({
     nom,
     universite: profilConnecte?.type === 'etudiant' ? univ : '',
-    competences: competencesEditProfil
+    competences: competencesEditProfil,
+    avatar_url: avatarUrl
   }).eq('user_id', utilisateurConnecte.id);
   setBtnLoading('btn-enregistrer-profil', false, 'Enregistrer →');
   if (error) { afficherToast('❌', 'Erreur : ' + error.message, 'rouge'); return; }
+  fichierAvatarSelectionne = null;
   profilConnecte = await chargerProfil(utilisateurConnecte.id);
   fermerEditProfil();
   mettreAJourNavbar();
@@ -697,7 +745,7 @@ async function mettreAJourProfil() {
   const p   = profilConnecte;
   const nom = p?.nom || utilisateurConnecte.email.split('@')[0];
   const ini = nom.split(' ').map(m => m[0]).join('').substring(0,2).toUpperCase();
-  setText('profil-avatar', ini);
+  appliquerAvatarVisuel(document.getElementById('profil-avatar'), p?.avatar_url, ini);
   setText('profil-nom-affiche', nom);
   setText('profil-type-affiche', p?.type === 'entreprise' ? 'Entreprise' : p?.type === 'admin' ? 'Administrateur' : 'Étudiant(e)');
   setText('profil-univ-affiche', p?.universite || '');
@@ -985,6 +1033,20 @@ function filtrerNotifs(btn) {
 /* ══════════════════════════════════════════
    NAVBAR
 ══════════════════════════════════════════ */
+// Affiche une photo de profil (si avatar_url est défini) ou les initiales en repli.
+function appliquerAvatarVisuel(el, url, initiales) {
+  if (!el) return;
+  if (url) {
+    el.style.backgroundImage = `url('${url}')`;
+    el.style.backgroundSize = 'cover';
+    el.style.backgroundPosition = 'center';
+    el.textContent = '';
+  } else {
+    el.style.backgroundImage = '';
+    el.textContent = initiales;
+  }
+}
+
 function mettreAJourNavbar() {
   const btnCx      = document.getElementById('btn-cx');
   const btnIns     = document.getElementById('btn-ins');
@@ -997,7 +1059,8 @@ function mettreAJourNavbar() {
     if (avatarWrap) avatarWrap.style.display = 'block';
     if (avatar) {
       const nom = profilConnecte?.nom || utilisateurConnecte.email;
-      avatar.textContent = nom.split(' ').map(m=>m[0]).join('').substring(0,2).toUpperCase();
+      const ini = nom.split(' ').map(m=>m[0]).join('').substring(0,2).toUpperCase();
+      appliquerAvatarVisuel(avatar, profilConnecte?.avatar_url, ini);
       avatar.title = nom;
     }
   } else {

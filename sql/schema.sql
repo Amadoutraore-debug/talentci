@@ -41,6 +41,7 @@ create table if not exists profils (
   type         text not null check (type in ('etudiant','entreprise','admin')),
   universite   text default '',
   competences  text[] default '{}',
+  avatar_url   text,
   created_at   timestamptz not null default now(),
   unique (user_id)
 );
@@ -225,3 +226,31 @@ create policy "notifications_suppression_soi_meme" on notifications
 --
 -- Le lien "⚙️ Admin" apparaîtra automatiquement dans la navbar de
 -- ce compte à sa prochaine connexion.
+
+-- ══════════════════════════════════════════
+-- STOCKAGE : photos de profil
+-- ══════════════════════════════════════════
+-- Bucket public en lecture (les photos de profil sont visibles par
+-- tous, comme le nom), mais chacun ne peut écrire que dans son propre
+-- dossier (préfixé par son UUID) — vérifié via storage.foldername().
+insert into storage.buckets (id, name, public)
+values ('avatars', 'avatars', true)
+on conflict (id) do nothing;
+
+create policy "avatars_lecture_publique" on storage.objects
+  for select using (bucket_id = 'avatars');
+
+create policy "avatars_upload_soi_meme" on storage.objects
+  for insert with check (
+    bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+create policy "avatars_maj_soi_meme" on storage.objects
+  for update using (
+    bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+create policy "avatars_suppression_soi_meme" on storage.objects
+  for delete using (
+    bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text
+  );

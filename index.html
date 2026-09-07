@@ -514,6 +514,15 @@
       <div class="login-titre">Modifier mon profil</div>
       <div class="login-sous-titre">Ces informations sont visibles par les autres utilisateurs</div>
     </div>
+    <div class="login-champ" style="text-align:center;">
+      <img id="edit-avatar-preview" src="" alt="" style="display:none;width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 10px;border:3px solid var(--vert);"/>
+      <div id="edit-avatar-placeholder" style="width:88px;height:88px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-family:'Syne',sans-serif;font-size:24px;font-weight:700;">?</div>
+      <label class="btn btn-blanc" style="cursor:pointer;">
+        📷 Changer la photo
+        <input type="file" id="edit-avatar-input" accept="image/*" style="display:none;" onchange="previewAvatarProfil(event)"/>
+      </label>
+      <div class="form-hint">JPG ou PNG, 3 Mo maximum</div>
+    </div>
     <div class="login-champ"><label class="login-label">Nom complet</label><input class="login-input" id="edit-nom" type="text"/></div>
     <div class="login-champ" id="edit-univ-wrap"><label class="login-label">Université / École</label><input class="login-input" id="edit-univ" type="text" placeholder="INPHB, UFHB, PIGIER..."/></div>
     <div class="login-champ">
