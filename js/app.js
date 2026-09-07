@@ -14,8 +14,12 @@
    │  COLLE TES CLÉS ICI  ↓↓↓  (ou laisse "" pour config UI) │
    └─────────────────────────────────────────────────────────┘ */
 const CONFIG_SUPABASE = {
-  url: "",   // ← ex: "https://abcdefgh.supabase.co"
-  key: ""    // ← ex: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." (clé anon/public — jamais la clé service_role)
+  url: "https://zqjzcuttmocmwjesvwdw.supabase.co",
+  key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxanpjdXR0bW9jbXdqZXN2d2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjM0MDcsImV4cCI6MjA5MTMzOTQwN30.Suw4HBPl3JNn_xIYmbm6MaxEAmkL9JuHrjiMcz1-1EY"
+  // Clé "anon / public" — conçue pour être visible côté client, ce n'est pas un secret.
+  // Codée en dur ici pour que le site fonctionne sur tout appareil sans qu'un
+  // visiteur ait besoin de reconfigurer Supabase lui-même (auparavant stockée
+  // en localStorage = à refaire à chaque nouveau navigateur/téléphone).
 };
 /* ┌─────────────────────────────────────────────────────────┐
    │  FIN DE LA CONFIGURATION                                 │
@@ -588,6 +592,17 @@ async function chargerStats() {
 /* ══════════════════════════════════════════
    AFFICHAGE MISSIONS
 ══════════════════════════════════════════ */
+function labelType(type) {
+  if (type === 'etudiant') return 'Étudiant';
+  if (type === 'admin') return 'Admin';
+  return 'Entreprise';
+}
+function badgeType(type) {
+  if (type === 'etudiant') return 'vert';
+  if (type === 'admin') return 'amber';
+  return 'bleu';
+}
+
 function couleurCategorie(cat) {
   const map = {Design:'violet',Développement:'bleu',Marketing:'vert',Comptabilité:'amber',Data:'amber',Rédaction:'vert',Vidéo:'bleu'};
   return map[cat] || 'vert';
@@ -835,7 +850,7 @@ async function chargerDonneesAdmin() {
   if (tbody && users) {
     tbody.innerHTML = users.slice(0,5).map(u => {
       const ini = (u.nom||'?').split(' ').map(m=>m[0]).join('').substring(0,2).toUpperCase();
-      return `<tr><td><div class="user-cell"><div class="user-avatar-mini" style="background:var(--vert-clair);color:var(--vert-fonce)">${ini}</div><div><div class="user-nom-mini">${escHtml(u.nom||'—')}</div></div></div></td><td><span class="badge badge-${u.type==='etudiant'?'vert':'bleu'}">${u.type==='etudiant'?'Étudiant':'Entreprise'}</span></td><td>${formatDate(u.created_at)}</td><td><span class="statut-pill pill-actif">● Actif</span></td></tr>`;
+      return `<tr><td><div class="user-cell"><div class="user-avatar-mini" style="background:var(--vert-clair);color:var(--vert-fonce)">${ini}</div><div><div class="user-nom-mini">${escHtml(u.nom||'—')}</div></div></div></td><td><span class="badge badge-${badgeType(u.type)}">${labelType(u.type)}</span></td><td>${formatDate(u.created_at)}</td><td><span class="statut-pill pill-actif">● Actif</span></td></tr>`;
     }).join('');
   }
   const tablU = document.getElementById('table-users');
@@ -844,7 +859,7 @@ async function chargerDonneesAdmin() {
     if (nbUsersEl) nbUsersEl.textContent = users.length + ' comptes';
     tablU.innerHTML = users.map(u => {
       const ini = (u.nom||'?').split(' ').map(m=>m[0]).join('').substring(0,2).toUpperCase();
-      return `<tr><td><div class="user-cell"><div class="user-avatar-mini" style="background:var(--vert-clair);color:var(--vert-fonce)">${ini}</div><div><div class="user-nom-mini">${escHtml(u.nom||'—')}</div><div class="user-email-mini">ID: ${u.user_id?u.user_id.substring(0,8):'—'}</div></div></div></td><td><span class="badge badge-${u.type==='etudiant'?'vert':'bleu'}">${u.type==='etudiant'?'Étudiant':'Entreprise'}</span></td><td>${escHtml(u.universite||'—')}</td><td>${formatDate(u.created_at)}</td><td><div class="action-btns"><button class="btn-action" onclick="afficherToast('👁️','Profil ouvert','')">Voir</button><button class="btn-action danger" onclick="afficherToast('⛔','Bientôt disponible','rouge')">Suspendre</button></div></td></tr>`;
+      return `<tr><td><div class="user-cell"><div class="user-avatar-mini" style="background:var(--vert-clair);color:var(--vert-fonce)">${ini}</div><div><div class="user-nom-mini">${escHtml(u.nom||'—')}</div><div class="user-email-mini">ID: ${u.user_id?u.user_id.substring(0,8):'—'}</div></div></div></td><td><span class="badge badge-${badgeType(u.type)}">${labelType(u.type)}</span></td><td>${escHtml(u.universite||'—')}</td><td>${formatDate(u.created_at)}</td><td><div class="action-btns"><button class="btn-action" onclick="afficherToast('👁️','Profil ouvert','')">Voir</button><button class="btn-action danger" onclick="afficherToast('⛔','Bientôt disponible','rouge')">Suspendre</button></div></td></tr>`;
     }).join('');
   }
   const { data: missionsList } = await db.from('missions').select('id, titre, entreprise, salaire, categorie, created_at').order('created_at', { ascending: false }).limit(20);
@@ -971,15 +986,16 @@ function filtrerNotifs(btn) {
    NAVBAR
 ══════════════════════════════════════════ */
 function mettreAJourNavbar() {
-  const btnCx    = document.getElementById('btn-cx');
-  const btnIns   = document.getElementById('btn-ins');
-  const avatar   = document.getElementById('avatar-nav');
-  const btnAdmin = document.getElementById('nav-lien-admin');
+  const btnCx      = document.getElementById('btn-cx');
+  const btnIns     = document.getElementById('btn-ins');
+  const avatarWrap = document.getElementById('avatar-nav-wrap');
+  const avatar     = document.getElementById('avatar-nav');
+  const btnAdmin   = document.getElementById('nav-lien-admin');
   if (utilisateurConnecte) {
     if (btnCx)  btnCx.style.display  = 'none';
     if (btnIns) btnIns.style.display = 'none';
+    if (avatarWrap) avatarWrap.style.display = 'block';
     if (avatar) {
-      avatar.style.display = 'flex';
       const nom = profilConnecte?.nom || utilisateurConnecte.email;
       avatar.textContent = nom.split(' ').map(m=>m[0]).join('').substring(0,2).toUpperCase();
       avatar.title = nom;
@@ -987,13 +1003,23 @@ function mettreAJourNavbar() {
   } else {
     if (btnCx)  btnCx.style.display  = 'inline-flex';
     if (btnIns) btnIns.style.display = 'inline-flex';
-    if (avatar) avatar.style.display = 'none';
+    if (avatarWrap) avatarWrap.style.display = 'none';
+    fermerAvatarMenu();
   }
   // Le lien Admin n'apparaît que pour un profil de type 'admin'.
   // Rappel : ceci est un confort d'UI, pas une protection — la
   // vraie barrière est la policy RLS côté Supabase.
   if (btnAdmin) btnAdmin.style.display = estAdmin() ? 'inline-flex' : 'none';
 }
+
+function toggleAvatarMenu(event) {
+  if (event) event.stopPropagation();
+  document.getElementById('avatar-dropdown')?.classList.toggle('visible');
+}
+function fermerAvatarMenu() {
+  document.getElementById('avatar-dropdown')?.classList.remove('visible');
+}
+document.addEventListener('click', fermerAvatarMenu);
 
 /* ══════════════════════════════════════════
    TOAST

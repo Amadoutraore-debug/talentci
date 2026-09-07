@@ -123,7 +123,13 @@
     <div class="navbar-actions">
       <button class="btn btn-blanc" id="btn-cx" onclick="ouvrirAuth('connexion')">Connexion</button>
       <button class="btn btn-vert" id="btn-ins" onclick="ouvrirAuth('inscription')">S'inscrire</button>
-      <div class="avatar-nav" id="avatar-nav" onclick="allerVers('profil')" style="display:none;">?</div>
+      <div class="avatar-nav-wrap" id="avatar-nav-wrap" style="display:none;position:relative;">
+        <div class="avatar-nav" id="avatar-nav" onclick="toggleAvatarMenu(event)">?</div>
+        <div class="avatar-dropdown" id="avatar-dropdown">
+          <button class="avatar-dropdown-item" onclick="fermerAvatarMenu();allerVers('profil')">👤 Mon profil</button>
+          <button class="avatar-dropdown-item danger" onclick="fermerAvatarMenu();seDeconnecter()">🚪 Se déconnecter</button>
+        </div>
+      </div>
     </div>
   </nav>
 
