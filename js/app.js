@@ -1024,6 +1024,7 @@ function reinitialiserFormulaire() {
 const PAGES = ['accueil','missions','profil','entreprise','notifications','admin'];
 
 function allerVers(nomPage) {
+  fermerMobileMenu();
   if (nomPage === 'admin' && !estAdmin()) {
     afficherToast('error','Accès réservé aux administrateurs','rouge');
     nomPage = 'accueil';
@@ -1143,6 +1144,20 @@ function fermerAvatarMenu() {
   document.getElementById('avatar-dropdown')?.classList.remove('visible');
 }
 document.addEventListener('click', fermerAvatarMenu);
+
+function toggleMobileMenu(event) {
+  if (event) event.stopPropagation();
+  document.querySelector('.navbar')?.classList.toggle('mobile-ouvert');
+}
+function fermerMobileMenu() {
+  document.querySelector('.navbar')?.classList.remove('mobile-ouvert');
+}
+document.addEventListener('click', (e) => {
+  const navbar = document.querySelector('.navbar');
+  if (navbar && navbar.classList.contains('mobile-ouvert') && !navbar.contains(e.target)) {
+    fermerMobileMenu();
+  }
+});
 
 /* ══════════════════════════════════════════
    TOAST

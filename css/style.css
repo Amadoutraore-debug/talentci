@@ -35,6 +35,11 @@ a{text-decoration:none;color:inherit;}
 .nav-lien:hover{background:var(--bg-2);color:var(--texte);}
 .nav-lien.actif{background:var(--vert-clair);color:var(--vert-fonce);}
 .navbar-actions{display:flex;gap:10px;align-items:center;}
+.mobile-menu-btn{display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--texte);align-items:center;justify-content:center;}
+.mobile-menu-btn .icon{width:22px;height:22px;}
+.mobile-menu-btn .icon-menu-fermer{display:none;}
+.navbar.mobile-ouvert .mobile-menu-btn .icon-menu-ouvert{display:none;}
+.navbar.mobile-ouvert .mobile-menu-btn .icon-menu-fermer{display:block;}
 .avatar-nav{width:36px;height:36px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid var(--bordure-2);}
 
 /* ═══ ICÔNES SVG ═══ */
@@ -374,8 +379,29 @@ footer strong{color:var(--vert);font-weight:600;}
 .edit-profil-liste-comp{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
 
 /* ═══ RESPONSIVE ═══ */
+/* Le menu hamburger couvre aussi les tablettes : à cette largeur, la
+   navbar desktop devient trop à l'étroit (ex: "Mon profil" qui casse
+   sur deux lignes) bien avant qu'on ait besoin d'empiler le reste. */
+@media(max-width:900px){
+  .navbar-liens{display:none;}
+  .mobile-menu-btn{display:flex;}
+  .navbar.mobile-ouvert .navbar-liens{
+    display:flex;flex-direction:column;gap:2px;
+    position:fixed;top:64px;left:0;right:0;
+    background:var(--bg);border-bottom:1px solid var(--bordure);box-shadow:var(--ombre);
+    padding:10px;z-index:90;max-height:calc(100vh - 64px);overflow-y:auto;
+  }
+  .navbar.mobile-ouvert .navbar-liens .nav-lien{width:100%;text-align:left;padding:14px 16px;justify-content:flex-start;}
+}
+
+/* Les cartes KPI admin (icône + badge "Live") ont besoin de plus de
+   place que les KPI du profil — 4 colonnes débordent dès la tablette. */
+@media(max-width:960px){
+  .admin-kpi-grille{grid-template-columns:repeat(2,1fr);}
+}
+
 @media(max-width:700px){
-  .navbar{padding:0 16px;}.navbar-liens{display:none;}
+  .navbar{padding:0 16px;}
   .main-content{padding:20px 14px;}
   .hero{flex-direction:column;padding:32px 24px;}.hero h1{font-size:30px;}
   .hero-illustration{width:100%;height:140px;}
@@ -394,4 +420,15 @@ footer strong{color:var(--vert);font-weight:600;}
   .admin-layout{grid-template-columns:1fr;}.admin-kpi-grille{grid-template-columns:repeat(2,1fr);}
   .admin-sidebar{position:static;}
   .config-modal{max-height:90vh;overflow-y:auto;}
+  footer{flex-direction:column;gap:6px;text-align:center;padding:16px;}
+  .config-banner{flex-direction:column;text-align:center;}
+  .login-modal{padding:28px 20px;}
+  .hero-boutons{flex-direction:column;align-items:stretch;}
+  .hero-boutons .btn{justify-content:center;}
+}
+
+@media(max-width:420px){
+  .categories-grille{grid-template-columns:1fr;}
+  .kpi-grille{grid-template-columns:1fr;}
+  .admin-kpi-grille{grid-template-columns:1fr;}
 }
