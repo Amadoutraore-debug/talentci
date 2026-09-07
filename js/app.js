@@ -28,6 +28,54 @@ const CONFIG_SUPABASE = {
 /* ══════════════════════════════════════════
    INIT CLIENT SUPABASE
 ══════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   ICÔNES SVG (remplace les emojis — traits fins, currentColor)
+══════════════════════════════════════════ */
+const ICON_ATTRS = 'class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+const ICONS = {
+  check:        `<svg ${ICON_ATTRS}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+  error:        `<svg ${ICON_ATTRS}><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+  warning:      `<svg ${ICON_ATTRS}><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  info:         `<svg ${ICON_ATTRS}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+  party:        `<svg ${ICON_ATTRS}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  lock:         `<svg ${ICON_ATTRS}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+  login:        `<svg ${ICON_ATTRS}><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>`,
+  logout:       `<svg ${ICON_ATTRS}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
+  settings:     `<svg ${ICON_ATTRS}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>`,
+  database:     `<svg ${ICON_ATTRS}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg>`,
+  camera:       `<svg ${ICON_ATTRS}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>`,
+  search:       `<svg ${ICON_ATTRS}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+  bell:         `<svg ${ICON_ATTRS}><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+  lightbulb:    `<svg ${ICON_ATTRS}><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2Z"/></svg>`,
+  mail:         `<svg ${ICON_ATTRS}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2Z"/><polyline points="22 6 12 13 2 6"/></svg>`,
+  zap:          `<svg ${ICON_ATTRS}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  save:         `<svg ${ICON_ATTRS}><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`,
+  clipboard:    `<svg ${ICON_ATTRS}><path d="M9 5H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>`,
+  trash:        `<svg ${ICON_ATTRS}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
+  users:        `<svg ${ICON_ATTRS}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  target:       `<svg ${ICON_ATTRS}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+  inbox:        `<svg ${ICON_ATTRS}><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z"/></svg>`,
+  clock:        `<svg ${ICON_ATTRS}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  eye:          `<svg ${ICON_ATTRS}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  user:         `<svg ${ICON_ATTRS}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  pencil:       `<svg ${ICON_ATTRS}><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>`,
+  chart:        `<svg ${ICON_ATTRS}><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+  code:         `<svg ${ICON_ATTRS}><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
+  palette:      `<svg ${ICON_ATTRS}><circle cx="13.5" cy="6.5" r="1.3"/><circle cx="17.5" cy="10.5" r="1.3"/><circle cx="8.5" cy="7.5" r="1.3"/><circle cx="6.5" cy="12.5" r="1.3"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.4-.3-.4-.5-.9-.5-1.4 0-1.1.9-2 2-2h2.4c2.3 0 4.1-1.8 4.1-4.1C21.5 6 17.2 2 12 2Z"/></svg>`,
+  smartphone:   `<svg ${ICON_ATTRS}><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`,
+  fileText:     `<svg ${ICON_ATTRS}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  trendingUp:   `<svg ${ICON_ATTRS}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
+  video:        `<svg ${ICON_ATTRS}><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>`,
+  globe:        `<svg ${ICON_ATTRS}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></svg>`,
+  graduationCap:`<svg ${ICON_ATTRS}><path d="M2 9 12 4l10 5-10 5L2 9Z"/><path d="M6 11.5v4c0 1.1 2.7 2 6 2s6-.9 6-2v-4"/><path d="M22 9v6"/></svg>`,
+  building:     `<svg ${ICON_ATTRS}><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22v-4h6v4"/><line x1="9" y1="7" x2="9.01" y2="7"/><line x1="14" y1="7" x2="14.01" y2="7"/><line x1="9" y1="11" x2="9.01" y2="11"/><line x1="14" y1="11" x2="14.01" y2="11"/><line x1="9" y1="15" x2="9.01" y2="15"/><line x1="14" y1="15" x2="14.01" y2="15"/></svg>`,
+  bars:         `<svg ${ICON_ATTRS}><line x1="4" y1="20" x2="4" y2="14"/><line x1="10" y1="20" x2="10" y2="10"/><line x1="16" y1="20" x2="16" y2="6"/></svg>`,
+  mapPin:       `<svg ${ICON_ATTRS}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  starOutline:  `<svg ${ICON_ATTRS}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  starFilled:   `<svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+};
+function icon(name) { return ICONS[name] || ''; }
+
 const { createClient } = supabase;
 let db = null;
 let dbPret = false;
@@ -93,7 +141,7 @@ function validerChampURL(input) {
   if (!val) { input.className = 'config-input'; if(iconEl) iconEl.textContent = ''; return; }
   const ok = val.startsWith('https://') && val.includes('.supabase.co');
   input.className = 'config-input ' + (ok ? 'ok' : 'err');
-  if(iconEl) iconEl.textContent = ok ? '✅' : '❌';
+  if(iconEl) iconEl.innerHTML = ok ? ICONS.check : ICONS.error;
 }
 
 function validerChampKey(input) {
@@ -103,7 +151,7 @@ function validerChampKey(input) {
   if (!val) { input.className = 'config-input'; if(iconEl) iconEl.textContent = ''; return; }
   const ok = val.startsWith('eyJ') && val.length > 50;
   input.className = 'config-input ' + (ok ? 'ok' : 'err');
-  if(iconEl) iconEl.textContent = ok ? '✅' : '❌';
+  if(iconEl) iconEl.innerHTML = ok ? ICONS.check : ICONS.error;
 }
 
 async function testerConnexion() {
@@ -112,26 +160,26 @@ async function testerConnexion() {
   const statusEl = document.getElementById('config-status');
 
   if (!url || !key) {
-    statusEl.textContent = '⚠️ Remplis les deux champs avant de tester.';
+    statusEl.textContent = 'Remplis les deux champs avant de tester.';
     statusEl.className = 'config-status err';
     return;
   }
 
-  statusEl.textContent = '🔌 Test en cours...';
+  statusEl.textContent = 'Test en cours...';
   statusEl.className = 'config-status ok';
 
   try {
     const testClient = createClient(url, key);
     const { error } = await testClient.from('profils').select('id').limit(1);
     if (error && !error.message.includes('does not exist') && !error.message.includes('relation')) {
-      statusEl.textContent = '❌ Erreur : ' + error.message;
+      statusEl.textContent = 'Erreur : ' + error.message;
       statusEl.className = 'config-status err';
     } else {
-      statusEl.textContent = '✅ Connexion réussie ! Supabase répond correctement.';
+      statusEl.textContent = 'Connexion réussie ! Supabase répond correctement.';
       statusEl.className = 'config-status ok';
     }
   } catch(e) {
-    statusEl.textContent = '❌ Impossible de joindre Supabase. Vérifie l\'URL.';
+    statusEl.textContent = 'Impossible de joindre Supabase. Vérifie l\'URL.';
     statusEl.className = 'config-status err';
   }
 }
@@ -142,17 +190,17 @@ function sauvegarderConfig() {
   const statusEl = document.getElementById('config-status');
 
   if (!url || !key) {
-    statusEl.textContent = '⚠️ Remplis les deux champs obligatoires.';
+    statusEl.textContent = 'Remplis les deux champs obligatoires.';
     statusEl.className = 'config-status err';
     return;
   }
   if (!url.startsWith('https://') || !url.includes('.supabase.co')) {
-    statusEl.textContent = '❌ URL invalide. Elle doit commencer par https:// et se terminer par .supabase.co';
+    statusEl.textContent = 'URL invalide. Elle doit commencer par https:// et se terminer par .supabase.co';
     statusEl.className = 'config-status err';
     return;
   }
   if (!key.startsWith('eyJ')) {
-    statusEl.textContent = '❌ Clé invalide. Elle doit commencer par eyJ';
+    statusEl.textContent = 'Clé invalide. Elle doit commencer par eyJ';
     statusEl.className = 'config-status err';
     return;
   }
@@ -163,12 +211,12 @@ function sauvegarderConfig() {
   if (ok) {
     fermerConfigDB();
     document.getElementById('config-banner').style.display = 'none';
-    afficherToast('✅', 'Base de données connectée avec succès !', 'vert');
+    afficherToast('check', 'Base de données connectée avec succès !', 'vert');
     setTimeout(async () => {
       await demarrerApp();
     }, 300);
   } else {
-    statusEl.textContent = '❌ Impossible d\'initialiser le client Supabase.';
+    statusEl.textContent = 'Impossible d\'initialiser le client Supabase.';
     statusEl.className = 'config-status err';
   }
 }
@@ -216,7 +264,7 @@ function afficherAlerteAccueil() {
   const el = document.getElementById('alerte-db-accueil');
   if (el) {
     el.innerHTML = `<div class="db-alerte">
-      <div class="db-alerte-icone">⚙️</div>
+      <div class="db-alerte-icone">${icon('database')}</div>
       <div class="db-alerte-texte"><strong>Base de données non configurée</strong><br>
       Configure Supabase pour activer les inscriptions, les missions en temps réel et les candidatures.</div>
       <button class="db-alerte-btn" onclick="ouvrirConfigDB()">Configurer →</button>
@@ -260,7 +308,7 @@ async function demarrerApp() {
 ══════════════════════════════════════════ */
 function verifierDB(action) {
   if (!dbPret || !db) {
-    afficherToast('⚙️', 'Configure d\'abord la base de données !', 'rouge');
+    afficherToast('settings', 'Configure d\'abord la base de données !', 'rouge');
     ouvrirConfigDB();
     return false;
   }
@@ -292,8 +340,8 @@ async function sInscrire() {
   const type  = document.getElementById('ins-type').value;
   const univ  = document.getElementById('ins-univ').value.trim();
 
-  if (!nom || !email || !pass) { afficherMsgAuth('⚠️ Remplis tous les champs obligatoires.', 'erreur'); return; }
-  if (pass.length < 6) { afficherMsgAuth('⚠️ Le mot de passe doit faire au moins 6 caractères.', 'erreur'); return; }
+  if (!nom || !email || !pass) { afficherMsgAuth('Remplis tous les champs obligatoires.', 'erreur'); return; }
+  if (pass.length < 6) { afficherMsgAuth('Le mot de passe doit faire au moins 6 caractères.', 'erreur'); return; }
 
   setBtnLoading('btn-sinscrire', true, 'Création...');
 
@@ -303,7 +351,7 @@ async function sInscrire() {
   });
 
   if (authErr) {
-    afficherMsgAuth('❌ ' + tradErreur(authErr.message), 'erreur');
+    afficherMsgAuth(tradErreur(authErr.message), 'erreur');
     setBtnLoading('btn-sinscrire', false, 'Créer mon compte →');
     return;
   }
@@ -317,12 +365,12 @@ async function sInscrire() {
   fermerAuth();
 
   if (!authData.session) {
-    afficherToast('📧', 'Vérifie tes e-mails pour confirmer ton compte !', 'vert');
+    afficherToast('mail', 'Vérifie tes e-mails pour confirmer ton compte !', 'vert');
   } else {
-    afficherToast('🎉', 'Bienvenue ' + nom + ' !', 'vert');
+    afficherToast('party', 'Bienvenue ' + nom + ' !', 'vert');
     await ajouterNotification({
       user_id: authData.user.id,
-      type:'systeme', icone:'🎉', icone_bg:'#E1F5EE', icone_color:'#0F6E56',
+      type:'systeme', icone:'party', icone_bg:'#E1F5EE', icone_color:'#0F6E56',
       texte: 'Bienvenue sur TalentCI, <b>' + escHtml(nom) + '</b> !', lue: false
     });
   }
@@ -335,18 +383,18 @@ async function seConnecter() {
   if (!verifierDB()) return;
   const email = document.getElementById('cx-email').value.trim();
   const pass  = document.getElementById('cx-pass').value;
-  if (!email || !pass) { afficherMsgAuth('⚠️ Remplis tous les champs.', 'erreur'); return; }
+  if (!email || !pass) { afficherMsgAuth('Remplis tous les champs.', 'erreur'); return; }
   setBtnLoading('btn-seconnecter', true, 'Connexion...');
   const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
   if (error) {
-    afficherMsgAuth('❌ ' + tradErreur(error.message), 'erreur');
+    afficherMsgAuth(tradErreur(error.message), 'erreur');
     setBtnLoading('btn-seconnecter', false, 'Se connecter →');
     return;
   }
   setBtnLoading('btn-seconnecter', false, 'Se connecter →');
   fermerAuth();
   const nom = profilConnecte?.nom || data.user.email.split('@')[0];
-  afficherToast('👋', 'Bienvenue ' + nom + ' !', 'vert');
+  afficherToast('login', 'Bienvenue ' + nom + ' !', 'vert');
   await chargerMissions();
   await chargerNotifications();
 }
@@ -360,7 +408,7 @@ async function seDeconnecter() {
   utilisateurConnecte = null; profilConnecte = null;
   mettreAJourNavbar();
   allerVers('accueil');
-  afficherToast('👋', 'Tu es déconnecté(e)', '');
+  afficherToast('logout', 'Tu es déconnecté(e)', '');
 }
 
 /* ══════════════════════════════════════════
@@ -402,8 +450,8 @@ function fermerEditProfil() {
 function previewAvatarProfil(event) {
   const file = event.target.files[0];
   if (!file) return;
-  if (!file.type.startsWith('image/')) { afficherToast('⚠️','Choisis une image (JPG, PNG...)','rouge'); event.target.value = ''; return; }
-  if (file.size > 3 * 1024 * 1024) { afficherToast('⚠️','Image trop lourde (max 3 Mo)','rouge'); event.target.value = ''; return; }
+  if (!file.type.startsWith('image/')) { afficherToast('warning','Choisis une image (JPG, PNG...)','rouge'); event.target.value = ''; return; }
+  if (file.size > 3 * 1024 * 1024) { afficherToast('warning','Image trop lourde (max 3 Mo)','rouge'); event.target.value = ''; return; }
   fichierAvatarSelectionne = file;
   const preview = document.getElementById('edit-avatar-preview');
   const placeholder = document.getElementById('edit-avatar-placeholder');
@@ -424,7 +472,7 @@ function ajouterCompetenceProfilDepuisInput() {
   const input = document.getElementById('edit-competence-input');
   const val = input.value.trim();
   if (!val || competencesEditProfil.includes(val)) { input.value = ''; return; }
-  if (competencesEditProfil.length >= 10) { afficherToast('⚠️','Maximum 10 compétences',''); return; }
+  if (competencesEditProfil.length >= 10) { afficherToast('warning','Maximum 10 compétences',''); return; }
   competencesEditProfil.push(val);
   input.value = '';
   afficherChipsEditProfil();
@@ -441,7 +489,7 @@ async function enregistrerProfil() {
   if (!verifierDB() || !utilisateurConnecte) return;
   const nom  = document.getElementById('edit-nom').value.trim();
   const univ = document.getElementById('edit-univ').value.trim();
-  if (!nom) { afficherToast('⚠️','Le nom est obligatoire','rouge'); return; }
+  if (!nom) { afficherToast('warning','Le nom est obligatoire','rouge'); return; }
   setBtnLoading('btn-enregistrer-profil', true, 'Enregistrement...');
 
   let avatarUrl = profilConnecte?.avatar_url || null;
@@ -452,7 +500,7 @@ async function enregistrerProfil() {
       .upload(chemin, fichierAvatarSelectionne, { upsert: true, cacheControl: '3600' });
     if (uploadErr) {
       setBtnLoading('btn-enregistrer-profil', false, 'Enregistrer →');
-      afficherToast('❌', 'Erreur photo : ' + uploadErr.message, 'rouge');
+      afficherToast('error', 'Erreur photo : ' + uploadErr.message, 'rouge');
       return;
     }
     const { data: urlData } = db.storage.from('avatars').getPublicUrl(chemin);
@@ -466,13 +514,13 @@ async function enregistrerProfil() {
     avatar_url: avatarUrl
   }).eq('user_id', utilisateurConnecte.id);
   setBtnLoading('btn-enregistrer-profil', false, 'Enregistrer →');
-  if (error) { afficherToast('❌', 'Erreur : ' + error.message, 'rouge'); return; }
+  if (error) { afficherToast('error', 'Erreur : ' + error.message, 'rouge'); return; }
   fichierAvatarSelectionne = null;
   profilConnecte = await chargerProfil(utilisateurConnecte.id);
   fermerEditProfil();
   mettreAJourNavbar();
   await mettreAJourProfil();
-  afficherToast('✅','Profil mis à jour !','vert');
+  afficherToast('check','Profil mis à jour !','vert');
 }
 
 /* ══════════════════════════════════════════
@@ -482,7 +530,7 @@ async function chargerMissions() {
   if (!verifierDB()) {
     toutesLesMissions = [];
     const grille = document.getElementById('missions-grille');
-    if (grille) grille.innerHTML = '<div class="aucun-resultat"><div style="font-size:48px">⚙️</div><p>Configure la base de données pour voir les missions.</p><button class="btn btn-vert" style="margin-top:16px;" onclick="ouvrirConfigDB()">Configurer →</button></div>';
+    if (grille) grille.innerHTML = `<div class="aucun-resultat"><div style="font-size:48px">${icon('database')}</div><p>Configure la base de données pour voir les missions.</p><button class="btn btn-vert" style="margin-top:16px;" onclick="ouvrirConfigDB()">Configurer →</button></div>`;
     return;
   }
   const { data, error } = await db
@@ -500,17 +548,17 @@ async function chargerMissions() {
 ══════════════════════════════════════════ */
 async function publierMission() {
   if (!verifierDB()) return;
-  if (!utilisateurConnecte) { afficherToast('🔐', 'Connecte-toi pour publier', 'rouge'); ouvrirAuth('connexion'); return; }
+  if (!utilisateurConnecte) { afficherToast('lock', 'Connecte-toi pour publier', 'rouge'); ouvrirAuth('connexion'); return; }
   const titre       = document.getElementById('champ-titre').value.trim();
   const categorie   = document.getElementById('champ-categorie').value;
   const description = document.getElementById('champ-description').value.trim();
   const budget      = parseInt(document.getElementById('champ-budget').value);
   const duree       = document.getElementById('champ-duree').value;
   const niveau      = document.getElementById('champ-niveau').value;
-  if (!titre)                   { afficherToast('⚠️','Titre obligatoire','rouge'); return; }
-  if (!categorie)               { afficherToast('⚠️','Choisis une catégorie','rouge'); return; }
-  if (description.length < 30) { afficherToast('⚠️','Description trop courte (min 30 car.)','rouge'); return; }
-  if (!budget || budget < 5000) { afficherToast('⚠️','Budget minimum : 5 000 FCFA','rouge'); return; }
+  if (!titre)                   { afficherToast('warning','Titre obligatoire','rouge'); return; }
+  if (!categorie)               { afficherToast('warning','Choisis une catégorie','rouge'); return; }
+  if (description.length < 30) { afficherToast('warning','Description trop courte (min 30 car.)','rouge'); return; }
+  if (!budget || budget < 5000) { afficherToast('warning','Budget minimum : 5 000 FCFA','rouge'); return; }
   const nomEntreprise = profilConnecte?.nom || utilisateurConnecte.email.split('@')[0];
   const ini = nomEntreprise.split(' ').map(m => m[0]).join('').substring(0,2).toUpperCase();
   const bgMap  = {Design:'#EEEDFE',Développement:'#E6F1FB',Marketing:'#E1F5EE',Comptabilité:'#FAEEDA',Data:'#FAEEDA',Rédaction:'#E1F5EE',Vidéo:'#FBEAF0'};
@@ -524,10 +572,10 @@ async function publierMission() {
     competences: competencesSaisies, created_at: new Date().toISOString()
   });
   setBtnLoading('btn-publier', false, 'Publier la mission →');
-  if (error) { afficherToast('❌', 'Erreur : ' + error.message, 'rouge'); return; }
+  if (error) { afficherToast('error', 'Erreur : ' + error.message, 'rouge'); return; }
   document.getElementById('succes-publication').classList.add('visible');
   document.querySelector('.form-actions').style.display = 'none';
-  afficherToast('🎉','Mission publiée avec succès !','vert');
+  afficherToast('party','Mission publiée avec succès !','vert');
   await chargerMissions();
   await chargerMissionsEntreprise();
 }
@@ -537,23 +585,23 @@ async function publierMission() {
 ══════════════════════════════════════════ */
 async function postuler(missionId) {
   if (!verifierDB()) return;
-  if (!utilisateurConnecte) { afficherToast('🔐','Connecte-toi pour postuler','rouge'); ouvrirAuth('connexion'); return; }
-  if (profilConnecte?.type !== 'etudiant') { afficherToast('⚠️','Seuls les étudiants peuvent postuler',''); return; }
+  if (!utilisateurConnecte) { afficherToast('lock','Connecte-toi pour postuler','rouge'); ouvrirAuth('connexion'); return; }
+  if (profilConnecte?.type !== 'etudiant') { afficherToast('warning','Seuls les étudiants peuvent postuler',''); return; }
   const { data: existant } = await db.from('candidatures').select('id').eq('mission_id', missionId).eq('user_id', utilisateurConnecte.id).maybeSingle();
-  if (existant) { afficherToast('ℹ️','Tu as déjà postulé à cette mission !',''); return; }
+  if (existant) { afficherToast('info','Tu as déjà postulé à cette mission !',''); return; }
   const mission = toutesLesMissions.find(m => m.id === missionId);
   const { error } = await db.from('candidatures').insert({
     mission_id: missionId, user_id: utilisateurConnecte.id,
     statut: 'en_attente', created_at: new Date().toISOString()
   });
-  if (error) { afficherToast('❌','Erreur : ' + error.message,'rouge'); return; }
+  if (error) { afficherToast('error','Erreur : ' + error.message,'rouge'); return; }
   await ajouterNotification({
     user_id: utilisateurConnecte.id, type: 'candidature',
-    icone:'✅', icone_bg:'#E1F5EE', icone_color:'#0F6E56',
+    icone:'check', icone_bg:'#E1F5EE', icone_color:'#0F6E56',
     texte: 'Candidature envoyée pour "<b>' + escHtml(mission?.titre||'cette mission') + '</b>" !',
     montant: mission ? mission.salaire.toLocaleString('fr-FR') + ' FCFA' : null, lue: false
   });
-  afficherToast('✅','Candidature envoyée !','vert');
+  afficherToast('check','Candidature envoyée !','vert');
   if (document.getElementById('page-profil').classList.contains('active')) await mettreAJourProfil();
 }
 
@@ -574,11 +622,11 @@ async function chargerNotifications() {
   const liste = document.getElementById('notif-liste');
   if (!liste) return;
   if (!dbPret || !db) {
-    liste.innerHTML = '<div style="text-align:center;padding:48px;color:var(--texte-3);"><div style="font-size:40px;margin-bottom:12px;">⚙️</div><p>Configure la base de données pour voir tes notifications.</p><button class="btn btn-vert" style="margin-top:12px;" onclick="ouvrirConfigDB()">Configurer →</button></div>';
+    liste.innerHTML = `<div style="text-align:center;padding:48px;color:var(--texte-3);"><div style="font-size:40px;margin-bottom:12px;">${icon('database')}</div><p>Configure la base de données pour voir tes notifications.</p><button class="btn btn-vert" style="margin-top:12px;" onclick="ouvrirConfigDB()">Configurer →</button></div>`;
     return;
   }
   if (!utilisateurConnecte) {
-    liste.innerHTML = '<div style="text-align:center;padding:48px;color:var(--texte-3);"><div style="font-size:40px;margin-bottom:12px;">🔐</div><p>Connecte-toi pour voir tes notifications.</p></div>';
+    liste.innerHTML = `<div style="text-align:center;padding:48px;color:var(--texte-3);"><div style="font-size:40px;margin-bottom:12px;">${icon('lock')}</div><p>Connecte-toi pour voir tes notifications.</p></div>`;
     return;
   }
   let query = db.from('notifications')
@@ -595,13 +643,13 @@ async function chargerNotifications() {
   const btnNotifNav = document.getElementById('btn-notif-nav');
   if (btnNotifNav) btnNotifNav.classList.toggle('notif-badge-nav', nbNonLues > 0);
   if (notifs.length === 0) {
-    liste.innerHTML = '<div style="text-align:center;padding:48px;color:var(--texte-3);"><div style="font-size:40px;margin-bottom:12px;">🔔</div><p>Aucune notification pour l\'instant.</p></div>';
+    liste.innerHTML = `<div style="text-align:center;padding:48px;color:var(--texte-3);"><div style="font-size:40px;margin-bottom:12px;">${icon('bell')}</div><p>Aucune notification pour l'instant.</p></div>`;
     return;
   }
   liste.innerHTML = notifs.map(n => `
     <div class="notif-item${n.lue ? '' : ' non-lue'}" onclick="marquerLu(${n.id})">
       <div class="notif-point ${n.lue ? 'invisible' : ''}"></div>
-      <div class="notif-icone-rond" style="background:${escAttr(n.icone_bg)};color:${escAttr(n.icone_color)}">${n.icone}</div>
+      <div class="notif-icone-rond" style="background:${escAttr(n.icone_bg)};color:${escAttr(n.icone_color)}">${icon(n.icone) || escHtml(n.icone||'')}</div>
       <div class="notif-corps">
         <div class="notif-texte">${n.texte}</div>
         <div class="notif-temps">${formatDate(n.created_at)}</div>
@@ -621,7 +669,7 @@ async function toutMarquerLu() {
   if (!utilisateurConnecte) return;
   await db.from('notifications').update({ lue: true }).eq('user_id', utilisateurConnecte.id).eq('lue', false);
   await chargerNotifications();
-  afficherToast('✅','Toutes les notifications sont lues !','vert');
+  afficherToast('check','Toutes les notifications sont lues !','vert');
 }
 
 /* ══════════════════════════════════════════
@@ -667,7 +715,7 @@ function rendreCarte(m) {
   return `<div class="mission-carte">
     <div class="mission-carte-top">
       <div class="mission-titre">${escHtml(m.titre)}</div>
-      <span class="mission-fav" onclick="toggleFav(${m.id})" title="${m.fav ? 'Retirer des favoris' : 'Ajouter aux favoris'}">${m.fav ? '⭐' : '☆'}</span>
+      <span class="mission-fav" onclick="toggleFav(${m.id})" title="${m.fav ? 'Retirer des favoris' : 'Ajouter aux favoris'}" style="color:${m.fav ? '#F5A623' : 'var(--texte-3)'};">${icon(m.fav ? 'starFilled' : 'starOutline')}</span>
     </div>
     <div class="mission-entreprise">
       <div class="entreprise-logo" style="background:${escAttr(m.couleur_bg||'#E1F5EE')};color:${escAttr(m.couleur_txt||'#0F6E56')}">${escHtml(m.initiales||'?')}</div>
@@ -676,8 +724,8 @@ function rendreCarte(m) {
     <div class="mission-description">${escHtml(m.description)}</div>
     <div class="mission-meta">
       <span class="badge badge-${couleurCategorie(m.categorie)}">${escHtml(m.categorie)}</span>
-      <span class="meta-item">⏱ ${escHtml(m.duree)}</span>
-      <span class="meta-item">📶 ${escHtml(m.niveau)}</span>
+      <span class="meta-item">${icon('clock')} ${escHtml(m.duree)}</span>
+      <span class="meta-item">${icon('bars')} ${escHtml(m.niveau)}</span>
     </div>
     <div class="mission-footer-carte">
       <div class="mission-salaire">${m.salaire.toLocaleString('fr-FR')} FCFA <span>/ mission</span></div>
@@ -704,8 +752,8 @@ function filtrerMissions() {
   if (nbEl) nbEl.textContent = resultats.length;
   if (resultats.length === 0) {
     grille.innerHTML = toutesLesMissions.length === 0
-      ? '<div class="aucun-resultat"><div style="font-size:48px">📋</div><p>Aucune mission disponible pour l\'instant.<br><span style="font-size:13px">Sois le premier à publier une mission !</span></p></div>'
-      : '<div class="aucun-resultat"><div style="font-size:48px">🔍</div><p>Aucune mission trouvée pour cette recherche.</p></div>';
+      ? `<div class="aucun-resultat"><div style="font-size:48px">${icon('clipboard')}</div><p>Aucune mission disponible pour l'instant.<br><span style="font-size:13px">Sois le premier à publier une mission !</span></p></div>`
+      : `<div class="aucun-resultat"><div style="font-size:48px">${icon('search')}</div><p>Aucune mission trouvée pour cette recherche.</p></div>`;
   } else {
     grille.innerHTML = resultats.map(rendreCarte).join('');
   }
@@ -731,7 +779,7 @@ function toggleFav(id) {
   const m = toutesLesMissions.find(x => x.id === id);
   if (m) {
     m.fav = !m.fav;
-    afficherToast(m.fav ? '⭐' : '☆', m.fav ? 'Mission sauvegardée !' : 'Retirée des favoris', m.fav ? 'vert' : '');
+    afficherToast(m.fav ? 'starFilled' : 'starOutline', m.fav ? 'Mission sauvegardée !' : 'Retirée des favoris', m.fav ? 'vert' : '');
     filtrerMissions();
   }
 }
@@ -784,7 +832,7 @@ async function mettreAJourProfil() {
         listeCands.innerHTML = cands.map(c => {
           const titreM   = c.missions?.titre || 'Mission supprimée';
           const montantM = c.missions?.salaire ? c.missions.salaire.toLocaleString('fr-FR') + ' FCFA' : '—';
-          const icone = c.statut === 'acceptee' ? '✅' : c.statut === 'refusee' ? '❌' : '⏳';
+          const icone = c.statut === 'acceptee' ? icon('check') : c.statut === 'refusee' ? icon('error') : icon('clock');
           const bg    = c.statut === 'acceptee' ? 'var(--vert-clair)' : c.statut === 'refusee' ? '#FCEBEB' : 'var(--amber-clair)';
           const txt   = c.statut === 'acceptee' ? 'Acceptée' : c.statut === 'refusee' ? 'Refusée' : 'En attente';
           return `<div class="historique-item">
@@ -829,11 +877,11 @@ async function chargerMissionsEntreprise() {
   const nomEntreprise = profilConnecte?.nom || utilisateurConnecte.email.split('@')[0];
   setText('ent-logo', nomEntreprise.split(' ').map(m=>m[0]).join('').substring(0,2).toUpperCase());
   setText('ent-nom', nomEntreprise);
-  const icones = {Design:'🎨',Développement:'💻',Marketing:'📱',Comptabilité:'📊',Data:'📈',Rédaction:'✍️',Vidéo:'🎥'};
+  const icones = {Design:icon('palette'),Développement:icon('code'),Marketing:icon('smartphone'),Comptabilité:icon('chart'),Data:icon('trendingUp'),Rédaction:icon('fileText'),Vidéo:icon('video')};
   conteneur.innerHTML = missions.map(m => {
     const nb = compterCands(m.id);
     return `<div class="mission-publiee">
-      <div class="pub-icone" style="background:${escAttr(m.couleur_bg||'#E1F5EE')}">${icones[m.categorie]||'📋'}</div>
+      <div class="pub-icone" style="background:${escAttr(m.couleur_bg||'#E1F5EE')}">${icones[m.categorie]||icon('clipboard')}</div>
       <div class="pub-info">
         <div class="pub-titre">${escHtml(m.titre)}</div>
         <div class="pub-meta">${escHtml(m.duree)} · ${nb} candidature(s)</div>
@@ -841,7 +889,7 @@ async function chargerMissionsEntreprise() {
       </div>
       <div class="pub-actions">
         <div class="pub-montant">${m.salaire.toLocaleString('fr-FR')} FCFA</div>
-        <button class="btn-mini" onclick="afficherToast('👥','${nb} candidature(s) pour cette mission','')">Candidatures</button>
+        <button class="btn-mini" onclick="afficherToast('users','${nb} candidature(s) pour cette mission','')">Candidatures</button>
         <button class="btn-mini" style="color:#A32D2D;" onclick="supprimerMission(${m.id})">Supprimer</button>
       </div>
     </div>`;
@@ -852,8 +900,8 @@ async function supprimerMission(id) {
   if (!verifierDB()) return;
   if (!confirm('Supprimer cette mission ? Cette action est irréversible.')) return;
   const { error } = await db.from('missions').delete().eq('id', id).eq('user_id', utilisateurConnecte.id);
-  if (!error) { afficherToast('🗑️','Mission supprimée','rouge'); await chargerMissions(); await chargerMissionsEntreprise(); }
-  else { afficherToast('❌','Erreur lors de la suppression','rouge'); }
+  if (!error) { afficherToast('trash','Mission supprimée','rouge'); await chargerMissions(); await chargerMissionsEntreprise(); }
+  else { afficherToast('error','Erreur lors de la suppression','rouge'); }
 }
 
 /* ══════════════════════════════════════════
@@ -868,7 +916,7 @@ async function supprimerMission(id) {
 ══════════════════════════════════════════ */
 async function ouvrirAdmin() {
   if (!estAdmin()) {
-    afficherToast('⛔','Accès réservé aux administrateurs','rouge');
+    afficherToast('error','Accès réservé aux administrateurs','rouge');
     return;
   }
   allerVers('admin');
@@ -914,7 +962,7 @@ async function chargerDonneesAdmin() {
     if (nbUsersEl) nbUsersEl.textContent = users.length + ' comptes';
     tablU.innerHTML = users.map(u => {
       const ini = (u.nom||'?').split(' ').map(m=>m[0]).join('').substring(0,2).toUpperCase();
-      return `<tr><td><div class="user-cell"><div class="user-avatar-mini" style="background:var(--vert-clair);color:var(--vert-fonce)">${ini}</div><div><div class="user-nom-mini">${escHtml(u.nom||'—')}</div><div class="user-email-mini">ID: ${u.user_id?u.user_id.substring(0,8):'—'}</div></div></div></td><td><span class="badge badge-${badgeType(u.type)}">${labelType(u.type)}</span></td><td>${escHtml(u.universite||'—')}</td><td>${formatDate(u.created_at)}</td><td><div class="action-btns"><button class="btn-action" onclick="afficherToast('👁️','Profil ouvert','')">Voir</button><button class="btn-action danger" onclick="afficherToast('⛔','Bientôt disponible','rouge')">Suspendre</button></div></td></tr>`;
+      return `<tr><td><div class="user-cell"><div class="user-avatar-mini" style="background:var(--vert-clair);color:var(--vert-fonce)">${ini}</div><div><div class="user-nom-mini">${escHtml(u.nom||'—')}</div><div class="user-email-mini">ID: ${u.user_id?u.user_id.substring(0,8):'—'}</div></div></div></td><td><span class="badge badge-${badgeType(u.type)}">${labelType(u.type)}</span></td><td>${escHtml(u.universite||'—')}</td><td>${formatDate(u.created_at)}</td><td><div class="action-btns"><button class="btn-action" onclick="afficherToast('eye','Profil ouvert','')">Voir</button><button class="btn-action danger" onclick="afficherToast('error','Bientôt disponible','rouge')">Suspendre</button></div></td></tr>`;
     }).join('');
   }
   const { data: missionsList } = await db.from('missions').select('id, titre, entreprise, salaire, categorie, created_at').order('created_at', { ascending: false }).limit(20);
@@ -930,8 +978,8 @@ async function supprimerMissionAdmin(id) {
   if (!verifierDB()) return;
   if (!confirm('Supprimer cette mission ?')) return;
   const { error } = await db.from('missions').delete().eq('id', id);
-  if (!error) { afficherToast('🗑️','Mission supprimée','rouge'); await chargerDonneesAdmin(); await chargerMissions(); }
-  else { afficherToast('❌','Erreur : ' + error.message,'rouge'); }
+  if (!error) { afficherToast('trash','Mission supprimée','rouge'); await chargerDonneesAdmin(); await chargerMissions(); }
+  else { afficherToast('error','Erreur : ' + error.message,'rouge'); }
 }
 
 /* ══════════════════════════════════════════
@@ -948,7 +996,7 @@ function ajouterCompetenceDepuisInput() {
   const input = document.getElementById('champ-competence-input');
   const val = input.value.trim();
   if (!val || competencesSaisies.includes(val)) { input.value = ''; return; }
-  if (competencesSaisies.length >= 6) { afficherToast('⚠️','Maximum 6 compétences',''); return; }
+  if (competencesSaisies.length >= 6) { afficherToast('warning','Maximum 6 compétences',''); return; }
   competencesSaisies.push(val);
   input.value = '';
   afficherChips();
@@ -977,7 +1025,7 @@ const PAGES = ['accueil','missions','profil','entreprise','notifications','admin
 
 function allerVers(nomPage) {
   if (nomPage === 'admin' && !estAdmin()) {
-    afficherToast('⛔','Accès réservé aux administrateurs','rouge');
+    afficherToast('error','Accès réservé aux administrateurs','rouge');
     nomPage = 'accueil';
   }
   PAGES.forEach(p => { const el = document.getElementById('page-' + p); if (el) el.classList.remove('active'); });
@@ -1104,7 +1152,7 @@ function afficherToast(icone, texte, couleur) {
   if (!toast) return;
   toast.classList.remove('vert','rouge');
   if (couleur) toast.classList.add(couleur);
-  document.getElementById('toast-icone').textContent = icone;
+  document.getElementById('toast-icone').innerHTML = ICONS[icone] || '';
   document.getElementById('toast-texte').textContent = texte;
   toast.classList.add('visible');
   if (toastTimer) clearTimeout(toastTimer);

@@ -9,14 +9,48 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+<!-- Sprite d'icônes SVG partagé (traits fins, currentColor) — référencé via <use href="#i-xxx"/> -->
+<svg style="display:none" aria-hidden="true">
+  <defs>
+    <symbol id="i-database" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></g></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></g></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></g></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></g></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></g></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></g></symbol>
+    <symbol id="i-graduation" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9 12 4l10 5-10 5L2 9Z"/><path d="M6 11.5v4c0 1.1 2.7 2 6 2s6-.9 6-2v-4"/><path d="M22 9v6"/></g></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22v-4h6v4"/><line x1="9" y1="7" x2="9.01" y2="7"/><line x1="14" y1="7" x2="14.01" y2="7"/><line x1="9" y1="11" x2="9.01" y2="11"/><line x1="14" y1="11" x2="14.01" y2="11"/><line x1="9" y1="15" x2="9.01" y2="15"/><line x1="14" y1="15" x2="14.01" y2="15"/></g></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></g></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></g></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.3"/><circle cx="17.5" cy="10.5" r="1.3"/><circle cx="8.5" cy="7.5" r="1.3"/><circle cx="6.5" cy="12.5" r="1.3"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.4-.3-.4-.5-.9-.5-1.4 0-1.1.9-2 2-2h2.4c2.3 0 4.1-1.8 4.1-4.1C21.5 6 17.2 2 12 2Z"/></g></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></g></symbol>
+    <symbol id="i-smartphone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></g></symbol>
+    <symbol id="i-filetext" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></g></symbol>
+    <symbol id="i-trending" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></g></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></g></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></g></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></g></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></g></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></g></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z"/></g></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3"/><rect x="8" y="2" width="8" height="4" rx="1"/></g></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></g></symbol>
+    <symbol id="i-lightbulb" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2Z"/></g></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></g></symbol>
+    <symbol id="i-mappin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></g></symbol>
+  </defs>
+</svg>
 <div class="app-wrapper">
 
   <!-- ════════════════════════════════
        BANDEAU CONFIG DB (affiché si pas configuré)
   ════════════════════════════════ -->
   <div class="config-banner" id="config-banner" style="display:none;">
-    <div class="config-banner-text">⚠️ <strong>Base de données non configurée</strong> — Clique pour connecter Supabase et activer toutes les fonctionnalités.</div>
-    <button class="config-banner-btn" onclick="ouvrirConfigDB()">⚙️ Configurer maintenant</button>
+    <div class="config-banner-text"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <strong>Base de données non configurée</strong> — Clique pour connecter Supabase et activer toutes les fonctionnalités.</div>
+    <button class="config-banner-btn" onclick="ouvrirConfigDB()"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg> Configurer maintenant</button>
     <button class="config-banner-close" onclick="this.parentElement.style.display='none'" title="Fermer">×</button>
   </div>
 
@@ -27,7 +61,7 @@
     <div class="config-modal">
       <div class="config-modal-header">
         <div>
-          <div class="config-modal-title">🗄️ Configuration Supabase</div>
+          <div class="config-modal-title"><svg class="icon"><use href="#i-database"/></svg> Configuration Supabase</div>
           <div class="config-modal-subtitle">Connecte ta base de données en 3 étapes simples</div>
         </div>
       </div>
@@ -95,8 +129,8 @@
 
         <!-- Actions -->
         <div class="config-actions">
-          <button class="config-btn-test" onclick="testerConnexion()">🔌 Tester la connexion</button>
-          <button class="config-btn-save" onclick="sauvegarderConfig()">💾 Sauvegarder et connecter</button>
+          <button class="config-btn-test" onclick="testerConnexion()"><svg class="icon"><use href="#i-zap"/></svg> Tester la connexion</button>
+          <button class="config-btn-save" onclick="sauvegarderConfig()"><svg class="icon"><use href="#i-save"/></svg> Sauvegarder et connecter</button>
         </div>
 
         <div style="text-align:center;margin-top:16px;">
@@ -118,7 +152,7 @@
       <button class="nav-lien" onclick="allerVers('entreprise')">Entreprises</button>
       <button class="nav-lien" id="btn-notif-nav" onclick="allerVers('notifications')">Notifications</button>
       <!-- Visible uniquement si profilConnecte.type === 'admin' (voir mettreAJourNavbar). Protection réelle = RLS Supabase. -->
-      <button class="nav-lien nav-lien-admin" id="nav-lien-admin" onclick="ouvrirAdmin()" style="display:none;">⚙️ Admin</button>
+      <button class="nav-lien nav-lien-admin" id="nav-lien-admin" onclick="ouvrirAdmin()" style="display:none;"><svg class="icon"><use href="#i-settings"/></svg> Admin</button>
     </div>
     <div class="navbar-actions">
       <button class="btn btn-blanc" id="btn-cx" onclick="ouvrirAuth('connexion')">Connexion</button>
@@ -126,8 +160,8 @@
       <div class="avatar-nav-wrap" id="avatar-nav-wrap" style="display:none;position:relative;">
         <div class="avatar-nav" id="avatar-nav" onclick="toggleAvatarMenu(event)">?</div>
         <div class="avatar-dropdown" id="avatar-dropdown">
-          <button class="avatar-dropdown-item" onclick="fermerAvatarMenu();allerVers('profil')">👤 Mon profil</button>
-          <button class="avatar-dropdown-item danger" onclick="fermerAvatarMenu();seDeconnecter()">🚪 Se déconnecter</button>
+          <button class="avatar-dropdown-item" onclick="fermerAvatarMenu();allerVers('profil')"><svg class="icon"><use href="#i-user"/></svg> Mon profil</button>
+          <button class="avatar-dropdown-item danger" onclick="fermerAvatarMenu();seDeconnecter()"><svg class="icon"><use href="#i-logout"/></svg> Se déconnecter</button>
         </div>
       </div>
     </div>
@@ -152,25 +186,25 @@
           </div>
         </div>
         <div class="hero-illustration">
-          <div class="hero-icon">🎓</div>
+          <div class="hero-icon"><svg class="icon"><use href="#i-graduation"/></svg></div>
           <div class="hero-illus-texte">Étudiant + Entreprise<br>= Succès</div>
         </div>
       </div>
       <div class="stats-grille anime anime-2">
-        <div class="stat-carte"><div class="stat-icone">👩‍🎓</div><div class="stat-nombre" id="stat-etudiants">—</div><div class="stat-label">Étudiants actifs</div></div>
-        <div class="stat-carte"><div class="stat-icone">🏢</div><div class="stat-nombre" id="stat-entreprises">—</div><div class="stat-label">Entreprises partenaires</div></div>
-        <div class="stat-carte"><div class="stat-icone">✅</div><div class="stat-nombre" id="stat-missions">—</div><div class="stat-label">Missions disponibles</div></div>
+        <div class="stat-carte"><div class="stat-icone"><svg class="icon"><use href="#i-graduation"/></svg></div><div class="stat-nombre" id="stat-etudiants">—</div><div class="stat-label">Étudiants actifs</div></div>
+        <div class="stat-carte"><div class="stat-icone"><svg class="icon"><use href="#i-building"/></svg></div><div class="stat-nombre" id="stat-entreprises">—</div><div class="stat-label">Entreprises partenaires</div></div>
+        <div class="stat-carte"><div class="stat-icone"><svg class="icon"><use href="#i-check"/></svg></div><div class="stat-nombre" id="stat-missions">—</div><div class="stat-label">Missions disponibles</div></div>
       </div>
       <div class="section-titre anime anime-3">Explore par catégorie</div>
       <div class="categories-grille anime anime-3">
-        <div class="categorie-carte" onclick="allerVersCategorie('Développement')"><div class="cat-icone">💻</div><div class="cat-nom">Développement web</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Design')"><div class="cat-icone">🎨</div><div class="cat-nom">Design graphique</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Comptabilité')"><div class="cat-icone">📊</div><div class="cat-nom">Comptabilité</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Marketing')"><div class="cat-icone">📱</div><div class="cat-nom">Marketing digital</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Rédaction')"><div class="cat-icone">✍️</div><div class="cat-nom">Rédaction & Contenu</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Data')"><div class="cat-icone">📈</div><div class="cat-nom">Data & Analyse</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Vidéo')"><div class="cat-icone">🎥</div><div class="cat-nom">Vidéo & Photo</div></div>
-        <div class="categorie-carte" onclick="allerVers('missions')"><div class="cat-icone">🌐</div><div class="cat-nom">Traduction</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Développement')"><div class="cat-icone"><svg class="icon"><use href="#i-code"/></svg></div><div class="cat-nom">Développement web</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Design')"><div class="cat-icone"><svg class="icon"><use href="#i-palette"/></svg></div><div class="cat-nom">Design graphique</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Comptabilité')"><div class="cat-icone"><svg class="icon"><use href="#i-chart"/></svg></div><div class="cat-nom">Comptabilité</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Marketing')"><div class="cat-icone"><svg class="icon"><use href="#i-smartphone"/></svg></div><div class="cat-nom">Marketing digital</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Rédaction')"><div class="cat-icone"><svg class="icon"><use href="#i-filetext"/></svg></div><div class="cat-nom">Rédaction & Contenu</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Data')"><div class="cat-icone"><svg class="icon"><use href="#i-trending"/></svg></div><div class="cat-nom">Data & Analyse</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Vidéo')"><div class="cat-icone"><svg class="icon"><use href="#i-video"/></svg></div><div class="cat-nom">Vidéo & Photo</div></div>
+        <div class="categorie-carte" onclick="allerVers('missions')"><div class="cat-icone"><svg class="icon"><use href="#i-globe"/></svg></div><div class="cat-nom">Traduction</div></div>
       </div>
       <div class="section-titre anime anime-4">Ils ont fait confiance à TalentCI</div>
       <div class="temoignages-grille anime anime-4">
@@ -202,7 +236,7 @@
       <div class="missions-header">
         <div class="missions-top">
           <div class="recherche-wrap">
-            <span class="recherche-icone">🔍</span>
+            <span class="recherche-icone"><svg class="icon"><use href="#i-search"/></svg></span>
             <input class="recherche-input" id="recherche-input" type="text" placeholder="Rechercher une mission..." oninput="filtrerMissions()"/>
           </div>
           <select class="tri-select" id="tri-select" onchange="filtrerMissions()">
@@ -214,24 +248,24 @@
         </div>
         <div class="filtres-ligne" id="filtres-ligne">
           <button class="filtre-btn actif" data-cat="Tous" onclick="changerFiltre(this)">Toutes</button>
-          <button class="filtre-btn" data-cat="Développement" onclick="changerFiltre(this)">💻 Développement</button>
-          <button class="filtre-btn" data-cat="Design" onclick="changerFiltre(this)">🎨 Design</button>
-          <button class="filtre-btn" data-cat="Marketing" onclick="changerFiltre(this)">📱 Marketing</button>
-          <button class="filtre-btn" data-cat="Comptabilité" onclick="changerFiltre(this)">📊 Comptabilité</button>
-          <button class="filtre-btn" data-cat="Rédaction" onclick="changerFiltre(this)">✍️ Rédaction</button>
-          <button class="filtre-btn" data-cat="Data" onclick="changerFiltre(this)">📈 Data</button>
-          <button class="filtre-btn" data-cat="Vidéo" onclick="changerFiltre(this)">🎥 Vidéo</button>
+          <button class="filtre-btn" data-cat="Développement" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-code"/></svg> Développement</button>
+          <button class="filtre-btn" data-cat="Design" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-palette"/></svg> Design</button>
+          <button class="filtre-btn" data-cat="Marketing" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-smartphone"/></svg> Marketing</button>
+          <button class="filtre-btn" data-cat="Comptabilité" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-chart"/></svg> Comptabilité</button>
+          <button class="filtre-btn" data-cat="Rédaction" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-filetext"/></svg> Rédaction</button>
+          <button class="filtre-btn" data-cat="Data" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-trending"/></svg> Data</button>
+          <button class="filtre-btn" data-cat="Vidéo" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-video"/></svg> Vidéo</button>
         </div>
       </div>
       <div class="missions-grille" id="missions-grille">
-        <div class="aucun-resultat"><div style="font-size:48px">⏳</div><p>Chargement des missions...</p></div>
+        <div class="aucun-resultat"><div style="font-size:48px"><svg class="icon"><use href="#i-clock"/></svg></div><p>Chargement des missions...</p></div>
       </div>
     </div>
 
     <!-- PAGE PROFIL -->
     <div id="page-profil" class="page">
       <div id="profil-non-connecte" style="text-align:center;padding:80px 24px;">
-        <div style="font-size:64px;margin-bottom:16px;">🔐</div>
+        <div style="font-size:64px;margin-bottom:16px;"><svg class="icon"><use href="#i-lock"/></svg></div>
         <h2 style="margin-bottom:12px;">Connecte-toi pour voir ton profil</h2>
         <p style="margin-bottom:24px;">Crée un compte ou connecte-toi pour accéder à ton tableau de bord.</p>
         <div style="display:flex;gap:12px;justify-content:center;">
@@ -249,8 +283,8 @@
               <div class="profil-univ" id="profil-univ-affiche"></div>
               <div class="dispo-badge">Disponible</div>
               <hr class="profil-divider"/>
-              <button class="btn-editer" onclick="ouvrirEditProfil()">✏️ Modifier mon profil</button>
-              <button class="btn-editer" style="margin-top:8px;color:#A32D2D;" onclick="seDeconnecter()">🚪 Se déconnecter</button>
+              <button class="btn-editer" onclick="ouvrirEditProfil()"><svg class="icon"><use href="#i-pencil"/></svg> Modifier mon profil</button>
+              <button class="btn-editer" style="margin-top:8px;color:#A32D2D;" onclick="seDeconnecter()"><svg class="icon"><use href="#i-logout"/></svg> Se déconnecter</button>
             </div>
             <div class="carte-bloc">
               <div class="bloc-titre">Compétences</div>
@@ -261,10 +295,10 @@
           </aside>
           <div class="profil-main">
             <div class="kpi-grille">
-              <div class="kpi-carte"><div class="kpi-icone">✅</div><div class="kpi-valeur" id="kpi-terminees">0</div><div class="kpi-label">Missions terminées</div></div>
-              <div class="kpi-carte"><div class="kpi-icone">⏳</div><div class="kpi-valeur" id="kpi-encours">0</div><div class="kpi-label">En attente</div></div>
-              <div class="kpi-carte"><div class="kpi-icone">📨</div><div class="kpi-valeur" id="kpi-total">0</div><div class="kpi-label">Total candidatures</div></div>
-              <div class="kpi-carte"><div class="kpi-icone">⭐</div><div class="kpi-valeur">—</div><div class="kpi-label">Note moyenne</div></div>
+              <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-check"/></svg></div><div class="kpi-valeur" id="kpi-terminees">0</div><div class="kpi-label">Missions terminées</div></div>
+              <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-clock"/></svg></div><div class="kpi-valeur" id="kpi-encours">0</div><div class="kpi-label">En attente</div></div>
+              <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-inbox"/></svg></div><div class="kpi-valeur" id="kpi-total">0</div><div class="kpi-label">Total candidatures</div></div>
+              <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-star"/></svg></div><div class="kpi-valeur">—</div><div class="kpi-label">Note moyenne</div></div>
             </div>
             <div class="carte-bloc" style="padding-top:20px;">
               <div class="onglets-profil">
@@ -299,7 +333,7 @@
         </aside>
         <div class="entreprise-main">
           <div class="form-carte">
-            <div class="form-titre">📋 Publier une nouvelle mission</div>
+            <div class="form-titre"><svg class="icon"><use href="#i-clipboard"/></svg> Publier une nouvelle mission</div>
             <div class="form-sous-titre">Remplis ce formulaire pour trouver l'étudiant idéal.</div>
             <div class="form-groupe">
               <label class="form-label">Titre de la mission <span>*</span></label>
@@ -352,7 +386,7 @@
               <div class="competences-chips" id="chips-competences"></div>
             </div>
             <div class="succes-message" id="succes-publication">
-              <div class="succes-icone">🎉</div>
+              <div class="succes-icone"><svg class="icon"><use href="#i-star"/></svg></div>
               <div class="succes-titre">Mission publiée avec succès !</div>
               <div class="succes-texte">Ta mission est maintenant visible par tous les étudiants.</div>
             </div>
@@ -388,7 +422,7 @@
         </div>
         <aside class="notif-resume">
           <div class="resume-carte" style="background:var(--vert-clair);border-color:rgba(29,158,117,.3);">
-            <div class="resume-titre" style="color:var(--vert-fonce);">💡 Conseil du jour</div>
+            <div class="resume-titre" style="color:var(--vert-fonce);"><svg class="icon"><use href="#i-lightbulb"/></svg> Conseil du jour</div>
             <p style="font-size:13px;color:var(--vert-fonce);line-height:1.6;">Complète ton profil à 100% pour recevoir 3x plus de missions. Ajoute une photo et une bio courte !</p>
             <button class="btn btn-vert" style="margin-top:14px;width:100%;justify-content:center;font-size:13px;" onclick="allerVers('profil')">Compléter mon profil →</button>
           </div>
@@ -401,25 +435,25 @@
       <div class="admin-layout">
         <aside class="admin-sidebar">
           <div class="admin-sidebar-header">
-            <div class="admin-badge">🔐 ADMIN</div>
+            <div class="admin-badge"><svg class="icon"><use href="#i-lock"/></svg> ADMIN</div>
             <div class="admin-nom" id="admin-nom-affiche">Administrateur</div>
             <div class="admin-role">Administrateur TalentCI</div>
           </div>
-          <button class="admin-menu-item actif" onclick="changerPanneau('dashboard',this)"><span class="admin-menu-icone">📊</span> Tableau de bord</button>
-          <button class="admin-menu-item" onclick="changerPanneau('utilisateurs',this)"><span class="admin-menu-icone">👥</span> Utilisateurs</button>
-          <button class="admin-menu-item" onclick="changerPanneau('missions-admin',this)"><span class="admin-menu-icone">🎯</span> Missions</button>
-          <button class="admin-menu-item" onclick="ouvrirConfigDB()" style="color:rgba(255,200,0,.8);"><span class="admin-menu-icone">🗄️</span> Config Base de données</button>
+          <button class="admin-menu-item actif" onclick="changerPanneau('dashboard',this)"><span class="admin-menu-icone"><svg class="icon"><use href="#i-chart"/></svg></span> Tableau de bord</button>
+          <button class="admin-menu-item" onclick="changerPanneau('utilisateurs',this)"><span class="admin-menu-icone"><svg class="icon"><use href="#i-users"/></svg></span> Utilisateurs</button>
+          <button class="admin-menu-item" onclick="changerPanneau('missions-admin',this)"><span class="admin-menu-icone"><svg class="icon"><use href="#i-target"/></svg></span> Missions</button>
+          <button class="admin-menu-item" onclick="ouvrirConfigDB()" style="color:rgba(255,200,0,.8);"><span class="admin-menu-icone"><svg class="icon"><use href="#i-database"/></svg></span> Config Base de données</button>
           <div class="admin-deconnexion">
-            <button class="admin-menu-item" onclick="deconnecterAdmin()" style="color:rgba(226,75,74,.8);"><span class="admin-menu-icone">🚪</span> Quitter le panneau</button>
+            <button class="admin-menu-item" onclick="deconnecterAdmin()" style="color:rgba(226,75,74,.8);"><span class="admin-menu-icone"><svg class="icon"><use href="#i-logout"/></svg></span> Quitter le panneau</button>
           </div>
         </aside>
         <div class="admin-contenu">
           <div class="admin-panneau actif" id="admin-dashboard">
             <div class="admin-kpi-grille">
-              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:var(--vert-clair)">👩‍🎓</div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-etudiants">—</div><div class="admin-kpi-label">Étudiants inscrits</div></div>
-              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:var(--bleu-clair)">🏢</div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-entreprises">—</div><div class="admin-kpi-label">Entreprises actives</div></div>
-              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:var(--amber-clair)">🎯</div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-missions">—</div><div class="admin-kpi-label">Missions publiées</div></div>
-              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:#FCEBEB">📨</div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-candidatures">—</div><div class="admin-kpi-label">Candidatures</div></div>
+              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:var(--vert-clair)"><svg class="icon"><use href="#i-graduation"/></svg></div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-etudiants">—</div><div class="admin-kpi-label">Étudiants inscrits</div></div>
+              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:var(--bleu-clair)"><svg class="icon"><use href="#i-building"/></svg></div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-entreprises">—</div><div class="admin-kpi-label">Entreprises actives</div></div>
+              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:var(--amber-clair)"><svg class="icon"><use href="#i-target"/></svg></div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-missions">—</div><div class="admin-kpi-label">Missions publiées</div></div>
+              <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:#FCEBEB"><svg class="icon"><use href="#i-inbox"/></svg></div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-candidatures">—</div><div class="admin-kpi-label">Candidatures</div></div>
             </div>
             <div class="admin-table-wrap">
               <div style="padding:16px 20px;border-bottom:1px solid var(--bordure);"><span style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;">Utilisateurs récents</span></div>
@@ -455,7 +489,7 @@
 
   <footer>
     <div>© 2025 <strong>TalentCI</strong> — Tous droits réservés</div>
-    <div>Fait avec passion à Abidjan 🇨🇮</div>
+    <div>Fait avec passion à Abidjan</div>
     <div>Contact : contact@talentci.ci</div>
   </footer>
 </div>
@@ -472,7 +506,7 @@
     <div class="login-erreur" id="auth-message" style="display:none;background:var(--vert-clair);color:var(--vert-fonce);border:1px solid var(--vert);"></div>
     <div id="form-connexion">
       <div class="login-logo-admin" style="margin-bottom:16px;">
-        <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);">🎓</div>
+        <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);"><svg class="icon"><use href="#i-graduation"/></svg></div>
         <div class="login-titre">Bon retour !</div>
         <div class="login-sous-titre">Connecte-toi à TalentCI</div>
       </div>
@@ -483,7 +517,7 @@
     </div>
     <div id="form-inscription" style="display:none;">
       <div class="login-logo-admin" style="margin-bottom:16px;">
-        <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);">✨</div>
+        <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);"><svg class="icon"><use href="#i-star"/></svg></div>
         <div class="login-titre">Rejoindre TalentCI</div>
         <div class="login-sous-titre">Crée ton compte gratuitement</div>
       </div>
@@ -513,7 +547,7 @@
 <div class="admin-overlay" id="modal-edit-profil" style="z-index:600;">
   <div class="login-modal" style="max-width:440px;">
     <div class="login-logo-admin" style="margin-bottom:16px;">
-      <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);">✏️</div>
+      <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);"><svg class="icon"><use href="#i-pencil"/></svg></div>
       <div class="login-titre">Modifier mon profil</div>
       <div class="login-sous-titre">Ces informations sont visibles par les autres utilisateurs</div>
     </div>
@@ -521,7 +555,7 @@
       <img id="edit-avatar-preview" src="" alt="" style="display:none;width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 10px;border:3px solid var(--vert);"/>
       <div id="edit-avatar-placeholder" style="width:88px;height:88px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-family:'Syne',sans-serif;font-size:24px;font-weight:700;">?</div>
       <label class="btn btn-blanc" style="cursor:pointer;">
-        📷 Changer la photo
+        <svg class="icon"><use href="#i-camera"/></svg> Changer la photo
         <input type="file" id="edit-avatar-input" accept="image/*" style="display:none;" onchange="previewAvatarProfil(event)"/>
       </label>
       <div class="form-hint">JPG ou PNG, 3 Mo maximum</div>
@@ -541,7 +575,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast"><span id="toast-icone">✅</span><span id="toast-texte">Action réalisée !</span></div>
+<div class="toast" id="toast"><span id="toast-icone"><svg class="icon"><use href="#i-check"/></svg></span><span id="toast-texte">Action réalisée !</span></div>
 
 <script src="js/app.js"></script>
 </body>

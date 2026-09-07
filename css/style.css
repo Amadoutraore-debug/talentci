@@ -36,6 +36,12 @@ a{text-decoration:none;color:inherit;}
 .nav-lien.actif{background:var(--vert-clair);color:var(--vert-fonce);}
 .navbar-actions{display:flex;gap:10px;align-items:center;}
 .avatar-nav{width:36px;height:36px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid var(--bordure-2);}
+
+/* ═══ ICÔNES SVG ═══ */
+.icon{width:1em;height:1em;display:inline-block;vertical-align:-0.15em;flex-shrink:0;}
+.icon-inline{width:14px;height:14px;vertical-align:-2px;margin-right:2px;}
+.btn .icon,.btn-mini .icon,.btn-action .icon,.filtre-btn .icon,.avatar-dropdown-item .icon,.admin-menu-item .icon,.nav-lien .icon{width:15px;height:15px;vertical-align:-3px;margin-right:2px;}
+.toast .icon{width:18px;height:18px;}
 .avatar-dropdown{display:none;position:absolute;top:46px;right:0;background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);box-shadow:0 12px 32px rgba(0,0,0,.16);min-width:180px;overflow:hidden;z-index:150;}
 .avatar-dropdown.visible{display:block;}
 .avatar-dropdown-item{display:block;width:100%;padding:11px 16px;text-align:left;background:none;border:none;font-size:13px;font-weight:500;color:var(--texte-2);cursor:pointer;transition:background .15s,color .15s;}
