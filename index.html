@@ -43,6 +43,7 @@
     <symbol id="i-check" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></g></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></g></symbol>
     <symbol id="i-x" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></g></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></g></symbol>
   </defs>
 </svg>
 <div class="app-wrapper">
@@ -252,15 +253,15 @@
           </select>
           <div class="missions-compteur"><strong id="nb-resultats">0</strong> missions trouvées</div>
         </div>
-        <div class="filtres-ligne" id="filtres-ligne">
-          <button class="filtre-btn actif" data-cat="Tous" onclick="changerFiltre(this)">Toutes</button>
-          <button class="filtre-btn" data-cat="Développement" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-code"/></svg> Développement</button>
-          <button class="filtre-btn" data-cat="Design" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-palette"/></svg> Design</button>
-          <button class="filtre-btn" data-cat="Marketing" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-smartphone"/></svg> Marketing</button>
-          <button class="filtre-btn" data-cat="Comptabilité" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-chart"/></svg> Comptabilité</button>
-          <button class="filtre-btn" data-cat="Rédaction" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-filetext"/></svg> Rédaction</button>
-          <button class="filtre-btn" data-cat="Data" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-trending"/></svg> Data</button>
-          <button class="filtre-btn" data-cat="Vidéo" onclick="changerFiltre(this)"><svg class="icon"><use href="#i-video"/></svg> Vidéo</button>
+        <div class="filtres-cat-ligne" id="filtres-ligne">
+          <button class="filtre-cat-btn actif" data-cat="Tous" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-grid"/></svg></span><span>Toutes</span></button>
+          <button class="filtre-cat-btn" data-cat="Développement" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-code"/></svg></span><span>Développement</span></button>
+          <button class="filtre-cat-btn" data-cat="Design" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-palette"/></svg></span><span>Design</span></button>
+          <button class="filtre-cat-btn" data-cat="Marketing" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-smartphone"/></svg></span><span>Marketing</span></button>
+          <button class="filtre-cat-btn" data-cat="Comptabilité" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-chart"/></svg></span><span>Comptabilité</span></button>
+          <button class="filtre-cat-btn" data-cat="Rédaction" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-filetext"/></svg></span><span>Rédaction</span></button>
+          <button class="filtre-cat-btn" data-cat="Data" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-trending"/></svg></span><span>Data</span></button>
+          <button class="filtre-cat-btn" data-cat="Vidéo" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-video"/></svg></span><span>Vidéo</span></button>
         </div>
       </div>
       <div class="missions-grille" id="missions-grille">

@@ -711,25 +711,33 @@ function couleurCategorie(cat) {
   return map[cat] || 'vert';
 }
 
+function iconCategorie(cat) {
+  const map = {Design:'palette',Développement:'code',Marketing:'smartphone',Comptabilité:'chart',Data:'trendingUp',Rédaction:'fileText',Vidéo:'video',Traduction:'globe'};
+  return icon(map[cat] || 'clipboard');
+}
+
 function rendreCarte(m) {
+  const bg  = escAttr(m.couleur_bg||'#E1F5EE');
+  const txt = escAttr(m.couleur_txt||'#0F6E56');
   return `<div class="mission-carte">
-    <div class="mission-carte-top">
+    <div class="mission-banniere" style="background:${bg};color:${txt}">
+      <span class="mission-badge-cat" style="color:${txt}">${iconCategorie(m.categorie)}<span>${escHtml(m.categorie)}</span></span>
+      <span class="mission-fav" onclick="toggleFav(${m.id})" title="${m.fav ? 'Retirer des favoris' : 'Ajouter aux favoris'}" style="color:${m.fav ? '#F5A623' : 'var(--texte-2)'};">${icon(m.fav ? 'starFilled' : 'starOutline')}</span>
+      <div class="mission-banniere-icone">${iconCategorie(m.categorie)}</div>
+    </div>
+    <div class="mission-corps">
       <div class="mission-titre">${escHtml(m.titre)}</div>
-      <span class="mission-fav" onclick="toggleFav(${m.id})" title="${m.fav ? 'Retirer des favoris' : 'Ajouter aux favoris'}" style="color:${m.fav ? '#F5A623' : 'var(--texte-3)'};">${icon(m.fav ? 'starFilled' : 'starOutline')}</span>
-    </div>
-    <div class="mission-entreprise">
-      <div class="entreprise-logo" style="background:${escAttr(m.couleur_bg||'#E1F5EE')};color:${escAttr(m.couleur_txt||'#0F6E56')}">${escHtml(m.initiales||'?')}</div>
-      <span class="entreprise-nom">${escHtml(m.entreprise)}</span>
-    </div>
-    <div class="mission-description">${escHtml(m.description)}</div>
-    <div class="mission-meta">
-      <span class="badge badge-${couleurCategorie(m.categorie)}">${escHtml(m.categorie)}</span>
-      <span class="meta-item">${icon('clock')} ${escHtml(m.duree)}</span>
-      <span class="meta-item">${icon('bars')} ${escHtml(m.niveau)}</span>
-    </div>
-    <div class="mission-footer-carte">
-      <div class="mission-salaire">${m.salaire.toLocaleString('fr-FR')} FCFA <span>/ mission</span></div>
-      <button class="btn-postuler" onclick="postuler(${m.id})">Postuler →</button>
+      <div class="mission-description">${escHtml(m.description)}</div>
+      <div class="mission-infos-liste">
+        <div class="mission-info-item">${icon('clock')}<span>${escHtml(m.duree)}</span></div>
+        <div class="mission-info-item">${icon('bars')}<span>${escHtml(m.niveau)}</span></div>
+      </div>
+      <div class="mission-salaire-grande">${m.salaire.toLocaleString('fr-FR')} FCFA</div>
+      <button class="btn-postuler-large" onclick="postuler(${m.id})">Postuler →</button>
+      <div class="mission-editeur">
+        <div class="mission-editeur-logo" style="background:${bg};color:${txt}">${escHtml(m.initiales||'?')}</div>
+        <span>Publié par ${escHtml(m.entreprise)}</span>
+      </div>
     </div>
   </div>`;
 }
@@ -760,7 +768,7 @@ function filtrerMissions() {
 }
 
 function changerFiltre(btn) {
-  document.querySelectorAll('#filtres-ligne .filtre-btn').forEach(b => b.classList.remove('actif'));
+  document.querySelectorAll('#filtres-ligne .filtre-cat-btn').forEach(b => b.classList.remove('actif'));
   btn.classList.add('actif');
   filtreCourant = btn.getAttribute('data-cat');
   filtrerMissions();
@@ -769,7 +777,7 @@ function changerFiltre(btn) {
 function allerVersCategorie(cat) {
   allerVers('missions');
   filtreCourant = cat;
-  document.querySelectorAll('#filtres-ligne .filtre-btn').forEach(b => {
+  document.querySelectorAll('#filtres-ligne .filtre-cat-btn').forEach(b => {
     b.classList.toggle('actif', b.getAttribute('data-cat') === cat);
   });
   filtrerMissions();
@@ -877,11 +885,10 @@ async function chargerMissionsEntreprise() {
   const nomEntreprise = profilConnecte?.nom || utilisateurConnecte.email.split('@')[0];
   setText('ent-logo', nomEntreprise.split(' ').map(m=>m[0]).join('').substring(0,2).toUpperCase());
   setText('ent-nom', nomEntreprise);
-  const icones = {Design:icon('palette'),Développement:icon('code'),Marketing:icon('smartphone'),Comptabilité:icon('chart'),Data:icon('trendingUp'),Rédaction:icon('fileText'),Vidéo:icon('video')};
   conteneur.innerHTML = missions.map(m => {
     const nb = compterCands(m.id);
     return `<div class="mission-publiee">
-      <div class="pub-icone" style="background:${escAttr(m.couleur_bg||'#E1F5EE')}">${icones[m.categorie]||icon('clipboard')}</div>
+      <div class="pub-icone" style="background:${escAttr(m.couleur_bg||'#E1F5EE')}">${iconCategorie(m.categorie)}</div>
       <div class="pub-info">
         <div class="pub-titre">${escHtml(m.titre)}</div>
         <div class="pub-meta">${escHtml(m.duree)} · ${nb} candidature(s)</div>

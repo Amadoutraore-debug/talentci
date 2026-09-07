@@ -166,25 +166,39 @@ footer strong{color:var(--vert);font-weight:600;}
 .filtre-btn{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--bordure-2);background:var(--bg);color:var(--texte-2);cursor:pointer;transition:all .15s;}
 .filtre-btn:hover{border-color:var(--vert);color:var(--vert);}
 .filtre-btn.actif{background:var(--vert);color:#fff;border-color:var(--vert);}
+
+/* Filtres de catégorie façon "icône ronde au-dessus du libellé" */
+.filtres-cat-ligne{display:flex;gap:10px;flex-wrap:wrap;}
+.filtre-cat-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 14px 10px;border-radius:var(--radius-md);border:1px solid var(--bordure-2);background:var(--bg);color:var(--texte-2);cursor:pointer;transition:border-color .15s,transform .15s;min-width:80px;box-shadow:var(--ombre);}
+.filtre-cat-btn:hover{border-color:var(--vert);transform:translateY(-2px);}
+.filtre-cat-icone{width:38px;height:38px;border-radius:50%;background:var(--bg-2);display:flex;align-items:center;justify-content:center;color:var(--texte-2);transition:background .15s,color .15s;}
+.filtre-cat-icone .icon{width:18px;height:18px;}
+.filtre-cat-btn span:last-child{font-size:12px;font-weight:600;white-space:nowrap;}
+.filtre-cat-btn.actif{border-color:var(--vert);}
+.filtre-cat-btn.actif .filtre-cat-icone{background:var(--vert);color:#fff;}
+.filtre-cat-btn.actif span:last-child{color:var(--vert-fonce);}
 .tri-select{padding:8px 14px;border-radius:var(--radius-sm);border:1px solid var(--bordure-2);background:var(--bg);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--texte-2);cursor:pointer;outline:none;}
 .missions-grille{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-.mission-carte{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:20px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--ombre);cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;}
+.mission-carte{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--ombre);transition:transform .15s,border-color .15s,box-shadow .15s;}
 .mission-carte:hover{transform:translateY(-3px);border-color:var(--vert);box-shadow:0 6px 24px rgba(29,158,117,.12);}
-.mission-carte-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.mission-banniere{position:relative;height:104px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mission-banniere-icone .icon{width:38px;height:38px;opacity:.85;}
+.mission-badge-cat{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.88);padding:4px 10px 4px 8px;border-radius:20px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;}
+.mission-badge-cat .icon{width:12px;height:12px;}
+.mission-fav{position:absolute;top:9px;right:9px;width:30px;height:30px;background:rgba(255,255,255,.88);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s;}
+.mission-fav:hover{transform:scale(1.12);}
+.mission-fav .icon{width:15px;height:15px;}
+.mission-corps{padding:16px;display:flex;flex-direction:column;gap:10px;flex:1;}
 .mission-titre{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--texte);line-height:1.35;}
-.mission-fav{font-size:18px;cursor:pointer;flex-shrink:0;transition:transform .15s;user-select:none;}
-.mission-fav:hover{transform:scale(1.2);}
-.mission-entreprise{display:flex;align-items:center;gap:8px;}
-.entreprise-logo{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
-.entreprise-nom{font-size:13px;color:var(--texte-2);}
 .mission-description{font-size:13px;color:var(--texte-2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.mission-meta{display:flex;flex-wrap:wrap;gap:8px;}
-.meta-item{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--texte-3);}
-.mission-footer-carte{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--bordure);padding-top:12px;margin-top:4px;}
-.mission-salaire{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--vert);}
-.mission-salaire span{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--texte-3);}
-.btn-postuler{padding:8px 18px;background:var(--vert);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s,transform .12s;}
-.btn-postuler:hover{opacity:.85;}.btn-postuler:active{transform:scale(.96);}
+.mission-infos-liste{display:flex;flex-direction:column;gap:6px;}
+.mission-info-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--texte-2);}
+.mission-info-item .icon{width:14px;height:14px;color:var(--texte-3);flex-shrink:0;}
+.mission-salaire-grande{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--vert);}
+.btn-postuler-large{width:100%;padding:11px;background:var(--vert);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .12s;}
+.btn-postuler-large:hover{opacity:.88;}.btn-postuler-large:active{transform:scale(.98);}
+.mission-editeur{display:flex;align-items:center;gap:8px;padding-top:10px;margin-top:2px;border-top:1px solid var(--bordure);font-size:12px;color:var(--texte-3);}
+.mission-editeur-logo{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
 .aucun-resultat{grid-column:1/-1;text-align:center;padding:60px 24px;color:var(--texte-3);}
 .aucun-resultat p{font-size:15px;margin-top:10px;}
 
@@ -411,6 +425,8 @@ footer strong{color:var(--vert);font-weight:600;}
   .cta-banniere{flex-direction:column;text-align:center;padding:32px 24px;}
   .missions-top{flex-direction:column;align-items:stretch;}
   .missions-grille{grid-template-columns:1fr;}
+  .filtres-cat-ligne{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;}
+  .filtre-cat-btn{flex-shrink:0;}
   .profil-layout{flex-direction:column;}.profil-sidebar{width:100%;}
   .kpi-grille{grid-template-columns:repeat(2,1fr);}
   .entreprise-layout{flex-direction:column;}.entreprise-sidebar{width:100%;}
