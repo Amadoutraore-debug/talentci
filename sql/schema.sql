@@ -65,6 +65,41 @@ create policy "profils_modification_soi_meme" on profils
 create policy "profils_suppression_admin" on profils
   for delete using (is_admin());
 
+-- ─────────────────────────────────────────
+-- Création automatique du profil à l'inscription
+-- ─────────────────────────────────────────
+-- Le client (js/app.js) ne fait PLUS l'insertion dans `profils` lui-même :
+-- juste après signUp(), s'il faut confirmer l'email, il n'existe encore
+-- aucune session -> auth.uid() est NULL -> la policy "profils_creation_soi_meme"
+-- rejette l'insert, en silence côté client. Ce trigger s'exécute côté
+-- serveur (SECURITY DEFINER, propriétaire = postgres) dans la même
+-- transaction que la création du compte, donc il ne dépend jamais de
+-- l'état de session du client.
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.profils (user_id, nom, type, universite)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)),
+    case when new.raw_user_meta_data->>'role' in ('etudiant','entreprise')
+         then new.raw_user_meta_data->>'role' else 'etudiant' end,
+    coalesce(new.raw_user_meta_data->>'universite', '')
+  )
+  on conflict (user_id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
+
 -- ══════════════════════════════════════════
 -- TABLE : missions
 -- ══════════════════════════════════════════

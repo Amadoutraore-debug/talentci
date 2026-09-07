@@ -295,7 +295,7 @@ async function sInscrire() {
 
   const { data: authData, error: authErr } = await db.auth.signUp({
     email, password: pass,
-    options: { data: { full_name: nom, role: type } }
+    options: { data: { full_name: nom, role: type, universite: type === 'etudiant' ? univ : '' } }
   });
 
   if (authErr) {
@@ -304,14 +304,10 @@ async function sInscrire() {
     return;
   }
 
-  if (authData.user) {
-    const { error: profErr } = await db.from('profils').insert({
-      user_id: authData.user.id, nom, type,
-      universite: type === 'etudiant' ? univ : '',
-      created_at: new Date().toISOString()
-    });
-    if (profErr) console.warn('Erreur création profil:', profErr.message);
-  }
+  // Le profil (table `profils`) est créé automatiquement côté serveur par
+  // le trigger `on_auth_user_created` (voir sql/schema.sql) à partir des
+  // métadonnées passées ci-dessus. Ça fonctionne même si la confirmation
+  // d'email est activée et qu'aucune session n'existe encore côté client.
 
   setBtnLoading('btn-sinscrire', false, 'Créer mon compte →');
   fermerAuth();
@@ -321,6 +317,7 @@ async function sInscrire() {
   } else {
     afficherToast('🎉', 'Bienvenue ' + nom + ' !', 'vert');
     await ajouterNotification({
+      user_id: authData.user.id,
       type:'systeme', icone:'🎉', icone_bg:'#E1F5EE', icone_color:'#0F6E56',
       texte: 'Bienvenue sur TalentCI, <b>' + escHtml(nom) + '</b> !', lue: false
     });
