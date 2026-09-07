@@ -412,8 +412,15 @@ function previewAvatarProfil(event) {
 }
 
 function ajouterCompetenceProfil(event) {
+  // Sur certains claviers virtuels mobiles, "Entrée" ne déclenche pas
+  // toujours un vrai keydown avec key==='Enter' — le bouton "+ Ajouter"
+  // (ajouterCompetenceProfilDepuisInput) est le chemin fiable, celui-ci
+  // n'est qu'un raccourci clavier pour desktop.
   if (event.key !== 'Enter') return;
   event.preventDefault();
+  ajouterCompetenceProfilDepuisInput();
+}
+function ajouterCompetenceProfilDepuisInput() {
   const input = document.getElementById('edit-competence-input');
   const val = input.value.trim();
   if (!val || competencesEditProfil.includes(val)) { input.value = ''; return; }
@@ -931,8 +938,13 @@ async function supprimerMissionAdmin(id) {
    FORMULAIRE ENTREPRISE — HELPERS
 ══════════════════════════════════════════ */
 function ajouterCompetence(event) {
+  // Voir la note sur ajouterCompetenceProfil : le bouton "+ Ajouter"
+  // (ajouterCompetenceDepuisInput) est le chemin fiable sur mobile.
   if (event.key !== 'Enter') return;
   event.preventDefault();
+  ajouterCompetenceDepuisInput();
+}
+function ajouterCompetenceDepuisInput() {
   const input = document.getElementById('champ-competence-input');
   const val = input.value.trim();
   if (!val || competencesSaisies.includes(val)) { input.value = ''; return; }

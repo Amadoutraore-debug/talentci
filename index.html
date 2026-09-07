@@ -343,9 +343,12 @@
             </div>
             <div class="form-groupe">
               <label class="form-label">Compétences souhaitées</label>
-              <input class="form-input" id="champ-competence-input" type="text"
-                placeholder="Tape une compétence et appuie sur Entrée (ex: Figma)"
-                onkeydown="ajouterCompetence(event)"/>
+              <div style="display:flex;gap:8px;">
+                <input class="form-input" id="champ-competence-input" type="text"
+                  placeholder="ex: Figma"
+                  onkeydown="ajouterCompetence(event)" style="flex:1;"/>
+                <button type="button" class="btn btn-outline" style="flex-shrink:0;" onclick="ajouterCompetenceDepuisInput()">+ Ajouter</button>
+              </div>
               <div class="competences-chips" id="chips-competences"></div>
             </div>
             <div class="succes-message" id="succes-publication">
@@ -527,7 +530,10 @@
     <div class="login-champ" id="edit-univ-wrap"><label class="login-label">Université / École</label><input class="login-input" id="edit-univ" type="text" placeholder="INPHB, UFHB, PIGIER..."/></div>
     <div class="login-champ">
       <label class="login-label">Compétences</label>
-      <input class="login-input" id="edit-competence-input" type="text" placeholder="Tape une compétence et appuie sur Entrée" onkeydown="ajouterCompetenceProfil(event)"/>
+      <div style="display:flex;gap:8px;">
+        <input class="login-input" id="edit-competence-input" type="text" placeholder="ex: Figma" onkeydown="ajouterCompetenceProfil(event)" style="flex:1;"/>
+        <button type="button" class="btn btn-blanc" style="flex-shrink:0;" onclick="ajouterCompetenceProfilDepuisInput()">+ Ajouter</button>
+      </div>
       <div class="edit-profil-liste-comp" id="edit-chips-competences"></div>
     </div>
     <button class="btn-login-admin" id="btn-enregistrer-profil" style="background:var(--vert);" onclick="enregistrerProfil()">Enregistrer →</button>
