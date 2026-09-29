@@ -204,36 +204,57 @@
         <button class="btn btn-vert" onclick="installerApplication()">Installer</button>
         <button class="banniere-installation-fermer" onclick="masquerBanniereInstallation()" aria-label="Masquer">×</button>
       </div>
-      <div class="hero anime">
-        <div class="hero-texte">
-          <div class="hero-label">Plateforme étudiante #1 en Côte d'Ivoire</div>
-          <h1>Trouve des missions,<br>construis ton <em>avenir</em></h1>
-          <p>Connecte-toi aux PME et startups locales qui ont besoin de tes compétences — à ton rythme, selon ton emploi du temps.</p>
-          <div class="hero-boutons">
-            <button class="btn btn-vert" onclick="allerVers('missions')">Voir les missions →</button>
-            <button class="btn btn-outline" onclick="allerVers('entreprise')">Je suis une entreprise</button>
+      <!-- Bandeau défilant des offres à la une (rempli par rendreAccueil) -->
+      <section class="carrousel anime" id="carrousel" aria-label="Offres à la une">
+        <div class="carrousel-piste" id="carrousel-piste">
+          <div class="carrousel-slide carrousel-slide-intro">
+            <div class="carrousel-contenu">
+              <div class="carrousel-label">Plateforme étudiante #1 en Côte d'Ivoire</div>
+              <h1>Trouve des missions,<br>construis ton <em>avenir</em></h1>
+              <p>Les PME et startups d'Abidjan publient leurs offres ici. Postule en un clic.</p>
+              <div class="hero-boutons">
+                <button class="btn btn-blanc-plein" onclick="allerVers('missions')">Voir les offres →</button>
+                <button class="btn btn-contour-blanc" onclick="allerVers('entreprise')">Publier une offre</button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="hero-illustration">
-          <div class="hero-icon"><svg class="icon"><use href="#i-graduation"/></svg></div>
-          <div class="hero-illus-texte">Étudiant + Entreprise<br>= Succès</div>
-        </div>
+        <div class="carrousel-points" id="carrousel-points"></div>
+      </section>
+
+      <!-- Recherche -->
+      <form class="accueil-recherche anime anime-2" onsubmit="event.preventDefault();rechercherDepuisAccueil();">
+        <span class="recherche-icone"><svg class="icon"><use href="#i-search"/></svg></span>
+        <input id="accueil-recherche-input" type="search" placeholder="Offre, entreprise, compétence..." autocomplete="off"/>
+        <button type="submit" class="btn btn-vert">Rechercher</button>
+      </form>
+
+      <!-- Catégories -->
+      <div class="accueil-cats anime anime-2">
+        <button class="accueil-cat" onclick="allerVersCategorie('Développement')"><span class="accueil-cat-icone"><svg class="icon"><use href="#i-code"/></svg></span><span>Développement</span></button>
+        <button class="accueil-cat" onclick="allerVersCategorie('Design')"><span class="accueil-cat-icone"><svg class="icon"><use href="#i-palette"/></svg></span><span>Design</span></button>
+        <button class="accueil-cat" onclick="allerVersCategorie('Marketing')"><span class="accueil-cat-icone"><svg class="icon"><use href="#i-smartphone"/></svg></span><span>Marketing</span></button>
+        <button class="accueil-cat" onclick="allerVersCategorie('Comptabilité')"><span class="accueil-cat-icone"><svg class="icon"><use href="#i-chart"/></svg></span><span>Comptabilité</span></button>
+        <button class="accueil-cat" onclick="allerVersCategorie('Rédaction')"><span class="accueil-cat-icone"><svg class="icon"><use href="#i-filetext"/></svg></span><span>Rédaction</span></button>
+        <button class="accueil-cat" onclick="allerVersCategorie('Data')"><span class="accueil-cat-icone"><svg class="icon"><use href="#i-trending"/></svg></span><span>Data</span></button>
+        <button class="accueil-cat" onclick="allerVersCategorie('Vidéo')"><span class="accueil-cat-icone"><svg class="icon"><use href="#i-video"/></svg></span><span>Vidéo</span></button>
+        <button class="accueil-cat" onclick="allerVersCategorie('Traduction')"><span class="accueil-cat-icone"><svg class="icon"><use href="#i-globe"/></svg></span><span>Traduction</span></button>
       </div>
-      <div class="stats-grille anime anime-2">
-        <div class="stat-carte"><div class="stat-icone"><svg class="icon"><use href="#i-graduation"/></svg></div><div class="stat-nombre" id="stat-etudiants">—</div><div class="stat-label">Étudiants actifs</div></div>
+
+      <!-- Rangées d'offres -->
+      <div class="rangee anime anime-3">
+        <div class="rangee-entete"><h2 class="section-titre">Offres à la une</h2><button class="rangee-voir-tout" onclick="allerVers('missions')">Voir tout →</button></div>
+        <div class="rangee-cartes" id="rangee-une"><div class="rangee-vide">Chargement des offres...</div></div>
+      </div>
+      <div class="rangee anime anime-3">
+        <div class="rangee-entete"><h2 class="section-titre">Nouvelles offres</h2><button class="rangee-voir-tout" onclick="allerVers('missions')">Voir tout →</button></div>
+        <div class="rangee-cartes" id="rangee-recentes"><div class="rangee-vide">Chargement des offres...</div></div>
+      </div>
+
+      <div class="stats-grille anime anime-4">
+        <div class="stat-carte"><div class="stat-icone"><svg class="icon"><use href="#i-graduation"/></svg></div><div class="stat-nombre" id="stat-etudiants">—</div><div class="stat-label">Étudiants inscrits</div></div>
         <div class="stat-carte"><div class="stat-icone"><svg class="icon"><use href="#i-building"/></svg></div><div class="stat-nombre" id="stat-entreprises">—</div><div class="stat-label">Entreprises partenaires</div></div>
-        <div class="stat-carte"><div class="stat-icone"><svg class="icon"><use href="#i-check"/></svg></div><div class="stat-nombre" id="stat-missions">—</div><div class="stat-label">Missions disponibles</div></div>
-      </div>
-      <div class="section-titre anime anime-3">Explore par catégorie</div>
-      <div class="categories-grille anime anime-3">
-        <div class="categorie-carte" onclick="allerVersCategorie('Développement')"><div class="cat-icone"><svg class="icon"><use href="#i-code"/></svg></div><div class="cat-nom">Développement web</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Design')"><div class="cat-icone"><svg class="icon"><use href="#i-palette"/></svg></div><div class="cat-nom">Design graphique</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Comptabilité')"><div class="cat-icone"><svg class="icon"><use href="#i-chart"/></svg></div><div class="cat-nom">Comptabilité</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Marketing')"><div class="cat-icone"><svg class="icon"><use href="#i-smartphone"/></svg></div><div class="cat-nom">Marketing digital</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Rédaction')"><div class="cat-icone"><svg class="icon"><use href="#i-filetext"/></svg></div><div class="cat-nom">Rédaction & Contenu</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Data')"><div class="cat-icone"><svg class="icon"><use href="#i-trending"/></svg></div><div class="cat-nom">Data & Analyse</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Vidéo')"><div class="cat-icone"><svg class="icon"><use href="#i-video"/></svg></div><div class="cat-nom">Vidéo & Photo</div></div>
-        <div class="categorie-carte" onclick="allerVersCategorie('Traduction')"><div class="cat-icone"><svg class="icon"><use href="#i-globe"/></svg></div><div class="cat-nom">Traduction</div></div>
+        <div class="stat-carte"><div class="stat-icone"><svg class="icon"><use href="#i-check"/></svg></div><div class="stat-nombre" id="stat-missions">—</div><div class="stat-label">Offres disponibles</div></div>
       </div>
       <div class="section-titre anime anime-4">Ils ont fait confiance à TalentCI</div>
       <div class="temoignages-grille anime anime-4">
@@ -266,14 +287,15 @@
         <div class="missions-top">
           <div class="recherche-wrap">
             <span class="recherche-icone"><svg class="icon"><use href="#i-search"/></svg></span>
-            <input class="recherche-input" id="recherche-input" type="text" placeholder="Rechercher une mission..." oninput="filtrerMissions()"/>
+            <input class="recherche-input" id="recherche-input" type="text" placeholder="Rechercher une offre..." oninput="filtrerMissions()"/>
           </div>
           <select class="tri-select" id="tri-select" onchange="filtrerMissions()">
             <option value="recent">Plus récentes</option>
-            <option value="salaire-desc">Budget décroissant</option>
-            <option value="salaire-asc">Budget croissant</option>
+            <option value="salaire-desc">Montant / personne décroissant</option>
+            <option value="salaire-asc">Montant / personne croissant</option>
+            <option value="places">Plus de places</option>
           </select>
-          <div class="missions-compteur"><strong id="nb-resultats">0</strong> missions trouvées</div>
+          <div class="missions-compteur"><strong id="nb-resultats">0</strong> offres trouvées</div>
         </div>
         <div class="filtres-cat-ligne" id="filtres-ligne">
           <button class="filtre-cat-btn actif" data-cat="Tous" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-grid"/></svg></span><span>Toutes</span></button>
@@ -364,10 +386,10 @@
         </aside>
         <div class="entreprise-main">
           <div class="form-carte">
-            <div class="form-titre"><svg class="icon"><use href="#i-clipboard"/></svg> Publier une nouvelle mission</div>
+            <div class="form-titre"><svg class="icon"><use href="#i-clipboard"/></svg> Publier une nouvelle offre</div>
             <div class="form-sous-titre">Remplis ce formulaire pour trouver l'étudiant idéal.</div>
             <div class="form-groupe">
-              <label class="form-label">Titre de la mission <span>*</span></label>
+              <label class="form-label">Titre de l'offre <span>*</span></label>
               <input class="form-input" id="champ-titre" type="text" placeholder="ex: Création de logo pour ma boutique"/>
             </div>
             <div class="form-rangee">
@@ -394,10 +416,18 @@
             </div>
             <div class="form-rangee">
               <div class="form-groupe">
-                <label class="form-label">Budget (FCFA) <span>*</span></label>
-                <input class="form-input" id="champ-budget" type="number" placeholder="ex: 35000" min="5000" step="1000"/>
-                <div class="form-hint">Minimum recommandé : 10 000 FCFA</div>
+                <label class="form-label">Nombre de personnes <span>*</span></label>
+                <input class="form-input" id="champ-places" type="number" inputmode="numeric" value="1" min="1" max="500" step="1" oninput="majTotalOffre()"/>
+                <div class="form-hint">Combien d'étudiants veux-tu recruter ?</div>
               </div>
+              <div class="form-groupe">
+                <label class="form-label">Montant par personne (FCFA) <span>*</span></label>
+                <input class="form-input" id="champ-montant" type="number" inputmode="numeric" placeholder="ex: 25000" min="1000" step="500" oninput="majTotalOffre()"/>
+                <div class="form-hint">Ce que chaque personne recevra</div>
+              </div>
+            </div>
+            <div class="total-offre" id="total-offre">Budget total : <strong>—</strong></div>
+            <div class="form-rangee">
               <div class="form-groupe">
                 <label class="form-label">Durée estimée <span>*</span></label>
                 <select class="form-select" id="champ-duree">
@@ -405,6 +435,14 @@
                   <option>2 à 4 semaines</option><option>1 à 2 mois</option><option>Plus de 2 mois</option>
                 </select>
               </div>
+            </div>
+            <div class="form-groupe">
+              <label class="form-label">Photo de couverture <span style="color:var(--texte-3);font-weight:400;">(optionnel)</span></label>
+              <label class="couverture-choix" id="couverture-choix">
+                <img id="couverture-apercu" alt="" style="display:none;"/>
+                <span id="couverture-texte"><svg class="icon"><use href="#i-camera"/></svg> Ajouter une image (JPG/PNG, 3 Mo max)</span>
+                <input type="file" id="champ-couverture" accept="image/*" style="display:none;" onchange="choisirCouverture(event)"/>
+              </label>
             </div>
             <div class="form-groupe">
               <label class="form-label">Compétences souhaitées</label>
@@ -418,16 +456,16 @@
             </div>
             <div class="succes-message" id="succes-publication">
               <div class="succes-icone"><svg class="icon"><use href="#i-star"/></svg></div>
-              <div class="succes-titre">Mission publiée avec succès !</div>
-              <div class="succes-texte">Ta mission est maintenant visible par tous les étudiants.</div>
+              <div class="succes-titre">Offre publiée avec succès !</div>
+              <div class="succes-texte">Ton offre est maintenant visible par tous les étudiants.</div>
             </div>
             <div class="form-actions">
               <button class="btn btn-blanc" onclick="reinitialiserFormulaire()">Annuler</button>
-              <button class="btn btn-vert" id="btn-publier" onclick="publierMission()">Publier la mission →</button>
+              <button class="btn btn-vert" id="btn-publier" onclick="publierMission()">Publier l'offre →</button>
             </div>
           </div>
           <div class="carte-bloc">
-            <div class="bloc-titre" style="margin-bottom:16px;">Missions publiées</div>
+            <div class="bloc-titre" style="margin-bottom:16px;">Mes offres publiées</div>
             <div id="liste-missions-publiees"><div style="text-align:center;padding:24px;color:var(--texte-3);">Chargement...</div></div>
           </div>
         </div>
@@ -619,6 +657,13 @@
     <button class="btn-login-admin" id="btn-enregistrer-profil" style="background:var(--vert);" onclick="enregistrerProfil()">Enregistrer →</button>
     <button class="login-annuler" onclick="fermerEditProfil()">Annuler</button>
   </div>
+</div>
+
+<!-- ════════════════════════════════
+     MODAL DÉTAIL D'UNE OFFRE
+════════════════════════════════ -->
+<div class="admin-overlay" id="modal-offre" style="z-index:600;">
+  <div class="login-modal offre-modal" id="offre-detail"></div>
 </div>
 
 <!-- ════════════════════════════════

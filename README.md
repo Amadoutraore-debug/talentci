@@ -46,6 +46,10 @@ Tant que Supabase n'est pas configuré, le site s'affiche en **mode dégradé** 
      ```
      Pratique pour un déploiement où tu ne veux pas que chaque visiteur configure sa propre base — c'est bien la clé `anon` (publique par nature), donc pas un problème de sécurité de la committer.
 
+### 🆕 Offres avec nombre de places — migration à exécuter
+
+Exécute aussi [`sql/migration-2026-10-offres-places.sql`](sql/migration-2026-10-offres-places.sql) dans **SQL Editor** (menu **Database**). Il ajoute aux offres le **nombre de personnes** recherchées, le **montant par personne**, le compteur de **places prises** (mis à jour automatiquement quand une candidature est acceptée, et qui empêche d'accepter plus de personnes que prévu) et le stockage des **photos de couverture**. Sans cette migration, la publication d'une offre affiche un message demandant de l'exécuter.
+
 ### ⚠️ Base déjà en place ? Exécute la migration de sécurité
 
 Si `schema.sql` a été exécuté **avant** l'ajout de [`sql/migration-2026-09-securite-candidatures.sql`](sql/migration-2026-09-securite-candidatures.sql), exécute ce fichier une fois dans **SQL Editor**. Il :
@@ -156,7 +160,9 @@ Ces identifiants ont été supprimés. L'accès admin repose maintenant sur :
 ## 🧭 Fonctionnalités
 
 - Inscription / connexion (étudiant ou entreprise) via Supabase Auth
-- Fil de missions avec recherche, filtres par catégorie, tri par budget
+- Accueil façon place de marché : bandeau défilant des offres à la une, recherche, catégories, rangées « À la une » / « Nouvelles offres »
+- Offres avec photo de couverture, **nombre de personnes** et **montant par personne** (budget total calculé), places restantes, fiche détaillée
+- Fil d'offres avec recherche, filtres par catégorie, tri par montant ou par places
 - Publication de missions par les entreprises, suppression de ses propres missions
 - Candidature des étudiants aux missions, suivi dans "Mon profil"
 - Côté entreprise : liste des candidats par mission (nom, école, compétences) avec **Accepter / Refuser**
