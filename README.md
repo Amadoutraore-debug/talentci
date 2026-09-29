@@ -12,6 +12,10 @@ Application statique (HTML / CSS / JS, aucun build requis) utilisant [Supabase](
 ├── css/style.css        → styles
 ├── js/app.js             → logique applicative (auth, missions, admin...)
 ├── sql/schema.sql        → tables Supabase + policies de sécurité (RLS)
+├── sql/migration-2026-09-securite-candidatures.sql → correctif sécurité + notifications de candidature
+├── manifest.webmanifest  → description de l'application installable (nom, icônes, couleurs)
+├── sw.js                 → service worker (démarrage rapide, mode hors-ligne)
+├── icons/                → icônes de l'application
 └── README.md
 ```
 
@@ -29,7 +33,7 @@ Tant que Supabase n'est pas configuré, le site s'affiche en **mode dégradé** 
 ## 🗄️ Configurer Supabase (obligatoire pour une utilisation réelle)
 
 1. **Crée un projet** sur [supabase.com/dashboard](https://supabase.com/dashboard) (gratuit).
-2. **Crée les tables et les règles de sécurité** : ouvre l'onglet **SQL Editor** du projet, colle le contenu de [`sql/schema.sql`](sql/schema.sql) et exécute-le. Ce script crée les 4 tables (`profils`, `missions`, `candidatures`, `notifications`) et active la **Row Level Security (RLS)** sur chacune — c'est cette partie qui empêche un visiteur d'accéder aux données des autres utilisateurs.
+2. **Crée les tables et les règles de sécurité** : ouvre l'onglet **SQL Editor** du projet, colle le contenu de [`sql/schema.sql`](sql/schema.sql) et exécute-le, **puis** fais de même avec [`sql/migration-2026-09-securite-candidatures.sql`](sql/migration-2026-09-securite-candidatures.sql). Ce script crée les 4 tables (`profils`, `missions`, `candidatures`, `notifications`) et active la **Row Level Security (RLS)** sur chacune — c'est cette partie qui empêche un visiteur d'accéder aux données des autres utilisateurs.
 3. **Récupère tes clés** : `Settings → API` → copie la **Project URL** et la clé **`anon` / `public`** (jamais la clé `service_role`, qui donne un accès total et ne doit jamais être exposée côté client).
 4. **Connecte l'app** — deux options :
    - **Interface (recommandé)** : ouvre le site, clique sur la bannière "Configurer maintenant", colle l'URL et la clé. Elles sont stockées dans le `localStorage` du navigateur.
@@ -41,6 +45,29 @@ Tant que Supabase n'est pas configuré, le site s'affiche en **mode dégradé** 
      };
      ```
      Pratique pour un déploiement où tu ne veux pas que chaque visiteur configure sa propre base — c'est bien la clé `anon` (publique par nature), donc pas un problème de sécurité de la committer.
+
+### ⚠️ Base déjà en place ? Exécute la migration de sécurité
+
+Si `schema.sql` a été exécuté **avant** l'ajout de [`sql/migration-2026-09-securite-candidatures.sql`](sql/migration-2026-09-securite-candidatures.sql), exécute ce fichier une fois dans **SQL Editor**. Il :
+- **ferme une faille** qui permettait à n'importe quel utilisateur connecté de se donner lui-même le rôle `admin` (en modifiant la colonne `type` de son profil via l'API) ;
+- réserve la publication de missions aux comptes **Entreprise** ;
+- envoie automatiquement une notification à l'entreprise quand un étudiant postule, et à l'étudiant quand sa candidature est acceptée ou refusée.
+
+Le script peut être relancé sans risque.
+
+## 📱 Application mobile (PWA)
+
+TalentCI est une **Progressive Web App** : elle s'installe sur l'écran d'accueil d'un téléphone comme une application, sans passer par un store.
+- **Android (Chrome)** : un bandeau « Installer l'application TalentCI » apparaît sur la page d'accueil (ou menu ⋮ → *Installer l'application*).
+- **iPhone (Safari)** : bouton *Partager* → *Sur l'écran d'accueil*. Le bouton « Installer » du site affiche ces instructions.
+
+Une fois installée : icône dédiée, plein écran, barre d'onglets en bas, bouton *Retour* du téléphone qui revient à la page précédente, et raccourcis (appui long sur l'icône → Missions / Alertes / Profil). L'interface s'ouvre même sans connexion ; les données (missions, candidatures) nécessitent Internet.
+
+L'installation exige que le site soit servi en **HTTPS** (c'est le cas sur GitHub Pages, Netlify, Vercel). En local, `http://localhost` fonctionne aussi.
+
+> Après toute modification de `sw.js` ou de la liste des fichiers mis en cache, incrémente `VERSION` en haut de `sw.js` pour que les téléphones récupèrent la nouvelle version.
+
+**Publier sur le Google Play Store (optionnel)** : la PWA peut être emballée en application Android avec [PWABuilder](https://www.pwabuilder.com) (entrer l'URL du site → *Package for stores → Android*). Il faut un compte développeur Google Play (frais unique de 25 $).
 
 ## 🔑 Activer la connexion Google
 
@@ -110,12 +137,15 @@ Ces identifiants ont été supprimés. L'accès admin repose maintenant sur :
 - Fil de missions avec recherche, filtres par catégorie, tri par budget
 - Publication de missions par les entreprises, suppression de ses propres missions
 - Candidature des étudiants aux missions, suivi dans "Mon profil"
+- Côté entreprise : liste des candidats par mission (nom, école, compétences) avec **Accepter / Refuser**
+- Missions favorites (étoile) conservées sur l'appareil, filtre "Favoris"
+- Application installable sur téléphone (PWA), utilisable hors-ligne pour l'interface
 - Édition de profil (nom, université, compétences)
 - Notifications par utilisateur
 - Panneau admin (tableau de bord, gestion des utilisateurs et des missions)
 
 ## 🛣️ Limites connues / pistes d'amélioration
 
-- Navigation par affichage/masquage de blocs, sans mise à jour de l'URL (pas de deep-linking, SEO limité).
+- Navigation par affichage/masquage de blocs ; chaque page a une adresse `#/missions`, `#/profil`… (liens directs possibles), mais le référencement Google reste limité.
 - Pas de tests automatisés.
 - Le panneau admin n'implémente pas encore la suspension de compte ni la vue détaillée d'un utilisateur (boutons présents, action réelle à ajouter si besoin).

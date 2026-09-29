@@ -2,8 +2,18 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>TalentCI — Plateforme Étudiante</title>
+  <meta name="description" content="Trouve des missions rémunérées auprès des PME et startups de Côte d'Ivoire."/>
+  <!-- Application installable (PWA) -->
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <meta name="theme-color" content="#1D9E75"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="TalentCI"/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/style.css"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -44,6 +54,10 @@
     <symbol id="i-menu" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></g></symbol>
     <symbol id="i-x" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></g></symbol>
     <symbol id="i-grid" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></g></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></g></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><polyline points="9 22 9 12 15 12 15 22"/></g></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></g></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></g></symbol>
   </defs>
 </svg>
 <div class="app-wrapper">
@@ -155,6 +169,7 @@
       <button class="nav-lien" onclick="allerVers('entreprise')">Entreprises</button>
       <button class="nav-lien" id="btn-notif-nav" onclick="allerVers('notifications')">Notifications</button>
       <!-- Visible uniquement si profilConnecte.type === 'admin' (voir mettreAJourNavbar). Protection réelle = RLS Supabase. -->
+      <button class="nav-lien btn-installer" style="display:none;" onclick="installerApplication()"><svg class="icon"><use href="#i-download"/></svg> Installer l'app</button>
       <button class="nav-lien nav-lien-admin" id="nav-lien-admin" onclick="ouvrirAdmin()" style="display:none;"><svg class="icon"><use href="#i-settings"/></svg> Admin</button>
     </div>
     <div class="navbar-actions">
@@ -164,6 +179,7 @@
         <div class="avatar-nav" id="avatar-nav" onclick="toggleAvatarMenu(event)">?</div>
         <div class="avatar-dropdown" id="avatar-dropdown">
           <button class="avatar-dropdown-item" onclick="fermerAvatarMenu();allerVers('profil')"><svg class="icon"><use href="#i-user"/></svg> Mon profil</button>
+          <button class="avatar-dropdown-item btn-installer" style="display:none;" onclick="fermerAvatarMenu();installerApplication()"><svg class="icon"><use href="#i-download"/></svg> Installer l'application</button>
           <button class="avatar-dropdown-item danger" onclick="fermerAvatarMenu();seDeconnecter()"><svg class="icon"><use href="#i-logout"/></svg> Se déconnecter</button>
         </div>
       </div>
@@ -182,6 +198,12 @@
     <!-- PAGE ACCUEIL -->
     <div id="page-accueil" class="page active">
       <div id="alerte-db-accueil"></div>
+      <div class="banniere-installation" id="banniere-installation" style="display:none;">
+        <img src="icons/icon-192.png" alt="" class="banniere-installation-icone"/>
+        <div class="banniere-installation-texte"><strong>Installe l'application TalentCI</strong><br>Accède aux missions en un clic depuis ton écran d'accueil.</div>
+        <button class="btn btn-vert" onclick="installerApplication()">Installer</button>
+        <button class="banniere-installation-fermer" onclick="masquerBanniereInstallation()" aria-label="Masquer">×</button>
+      </div>
       <div class="hero anime">
         <div class="hero-texte">
           <div class="hero-label">Plateforme étudiante #1 en Côte d'Ivoire</div>
@@ -211,7 +233,7 @@
         <div class="categorie-carte" onclick="allerVersCategorie('Rédaction')"><div class="cat-icone"><svg class="icon"><use href="#i-filetext"/></svg></div><div class="cat-nom">Rédaction & Contenu</div></div>
         <div class="categorie-carte" onclick="allerVersCategorie('Data')"><div class="cat-icone"><svg class="icon"><use href="#i-trending"/></svg></div><div class="cat-nom">Data & Analyse</div></div>
         <div class="categorie-carte" onclick="allerVersCategorie('Vidéo')"><div class="cat-icone"><svg class="icon"><use href="#i-video"/></svg></div><div class="cat-nom">Vidéo & Photo</div></div>
-        <div class="categorie-carte" onclick="allerVers('missions')"><div class="cat-icone"><svg class="icon"><use href="#i-globe"/></svg></div><div class="cat-nom">Traduction</div></div>
+        <div class="categorie-carte" onclick="allerVersCategorie('Traduction')"><div class="cat-icone"><svg class="icon"><use href="#i-globe"/></svg></div><div class="cat-nom">Traduction</div></div>
       </div>
       <div class="section-titre anime anime-4">Ils ont fait confiance à TalentCI</div>
       <div class="temoignages-grille anime anime-4">
@@ -255,6 +277,7 @@
         </div>
         <div class="filtres-cat-ligne" id="filtres-ligne">
           <button class="filtre-cat-btn actif" data-cat="Tous" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-grid"/></svg></span><span>Toutes</span></button>
+          <button class="filtre-cat-btn" data-cat="Favoris" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-star"/></svg></span><span>Favoris</span></button>
           <button class="filtre-cat-btn" data-cat="Développement" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-code"/></svg></span><span>Développement</span></button>
           <button class="filtre-cat-btn" data-cat="Design" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-palette"/></svg></span><span>Design</span></button>
           <button class="filtre-cat-btn" data-cat="Marketing" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-smartphone"/></svg></span><span>Marketing</span></button>
@@ -262,6 +285,7 @@
           <button class="filtre-cat-btn" data-cat="Rédaction" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-filetext"/></svg></span><span>Rédaction</span></button>
           <button class="filtre-cat-btn" data-cat="Data" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-trending"/></svg></span><span>Data</span></button>
           <button class="filtre-cat-btn" data-cat="Vidéo" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-video"/></svg></span><span>Vidéo</span></button>
+          <button class="filtre-cat-btn" data-cat="Traduction" onclick="changerFiltre(this)"><span class="filtre-cat-icone"><svg class="icon"><use href="#i-globe"/></svg></span><span>Traduction</span></button>
         </div>
       </div>
       <div class="missions-grille" id="missions-grille">
@@ -302,7 +326,7 @@
           </aside>
           <div class="profil-main">
             <div class="kpi-grille">
-              <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-check"/></svg></div><div class="kpi-valeur" id="kpi-terminees">0</div><div class="kpi-label">Missions terminées</div></div>
+              <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-check"/></svg></div><div class="kpi-valeur" id="kpi-terminees">0</div><div class="kpi-label">Acceptées</div></div>
               <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-clock"/></svg></div><div class="kpi-valeur" id="kpi-encours">0</div><div class="kpi-label">En attente</div></div>
               <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-inbox"/></svg></div><div class="kpi-valeur" id="kpi-total">0</div><div class="kpi-label">Total candidatures</div></div>
               <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-star"/></svg></div><div class="kpi-valeur">—</div><div class="kpi-label">Note moyenne</div></div>
@@ -591,6 +615,58 @@
     <button class="login-annuler" onclick="fermerEditProfil()">Annuler</button>
   </div>
 </div>
+
+<!-- ════════════════════════════════
+     MODAL CANDIDATURES REÇUES (entreprise)
+════════════════════════════════ -->
+<div class="admin-overlay" id="modal-candidatures" style="z-index:600;">
+  <div class="login-modal" style="max-width:560px;">
+    <div class="login-titre" style="margin-bottom:4px;">Candidatures reçues</div>
+    <div class="login-sous-titre" id="candidatures-mission-titre" style="margin-bottom:18px;"></div>
+    <div id="candidatures-recues-liste"></div>
+    <button class="login-annuler" onclick="fermerCandidatures()">Fermer</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     MODAL INSTALLATION (instructions manuelles)
+════════════════════════════════ -->
+<div class="admin-overlay" id="modal-installation" style="z-index:600;">
+  <div class="login-modal" style="max-width:440px;">
+    <div class="login-logo-admin" style="margin-bottom:16px;">
+      <img src="icons/icon-192.png" alt="" style="width:64px;height:64px;border-radius:16px;margin:0 auto 10px;display:block;"/>
+      <div class="login-titre">Installer TalentCI</div>
+      <div class="login-sous-titre">Ajoute l'application sur ton écran d'accueil</div>
+    </div>
+    <div class="install-etapes">
+      <div class="install-bloc">
+        <div class="install-bloc-titre">Sur iPhone / iPad (Safari)</div>
+        <ol>
+          <li>Touche le bouton <strong>Partager</strong> <svg class="icon"><use href="#i-share"/></svg> en bas de l'écran.</li>
+          <li>Choisis <strong>« Sur l'écran d'accueil »</strong>.</li>
+          <li>Touche <strong>Ajouter</strong>.</li>
+        </ol>
+      </div>
+      <div class="install-bloc">
+        <div class="install-bloc-titre">Sur Android (Chrome)</div>
+        <ol>
+          <li>Touche le menu <strong>⋮</strong> en haut à droite.</li>
+          <li>Choisis <strong>« Installer l'application »</strong> ou <strong>« Ajouter à l'écran d'accueil »</strong>.</li>
+        </ol>
+      </div>
+    </div>
+    <button class="login-annuler" onclick="fermerInstallation()">Fermer</button>
+  </div>
+</div>
+
+<!-- Barre de navigation du bas (téléphones) — comme une application -->
+<nav class="bottom-nav" aria-label="Navigation principale">
+  <button class="bottom-nav-item actif" data-page="accueil" onclick="allerVers('accueil')"><svg class="icon"><use href="#i-home"/></svg><span>Accueil</span></button>
+  <button class="bottom-nav-item" data-page="missions" onclick="allerVers('missions')"><svg class="icon"><use href="#i-search"/></svg><span>Missions</span></button>
+  <button class="bottom-nav-item" data-page="entreprise" onclick="allerVers('entreprise')"><svg class="icon"><use href="#i-building"/></svg><span>Entreprises</span></button>
+  <button class="bottom-nav-item" data-page="notifications" id="bottom-nav-notif" onclick="allerVers('notifications')"><svg class="icon"><use href="#i-bell"/></svg><span>Alertes</span></button>
+  <button class="bottom-nav-item" data-page="profil" onclick="allerVers('profil')"><svg class="icon"><use href="#i-user"/></svg><span>Profil</span></button>
+</nav>
 
 <div class="toast" id="toast"><span id="toast-icone"><svg class="icon"><use href="#i-check"/></svg></span><span id="toast-texte">Action réalisée !</span></div>
 
