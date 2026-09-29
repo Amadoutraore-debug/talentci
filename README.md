@@ -91,6 +91,20 @@ Le bouton "Continuer avec Google" est déjà dans l'interface, mais il ne foncti
 
 ⚠️ Google ne dit pas si un utilisateur est "étudiant" ou "entreprise" : un compte créé via Google est toujours classé `étudiant` par défaut (modifiable ensuite manuellement via `update profils set type = 'entreprise' where user_id = '...';` si besoin).
 
+## 🛠️ Réparer les comptes et devenir administrateur
+
+Exécute [`sql/migration-2026-10-reparation-comptes.sql`](sql/migration-2026-10-reparation-comptes.sql) dans **SQL Editor** (menu **Database**). Il confirme les comptes restés bloqués, crée les fiches profil manquantes, interdit de se créer un profil admin soi-même et permet de passer son compte Étudiant ↔ Entreprise depuis « Modifier mon profil ».
+
+Pour devenir administrateur, exécute ensuite (avec l'e-mail de ton compte) :
+
+```sql
+update profils set type = 'admin'
+where user_id = (select id from auth.users where email = 'ton-email@exemple.com')
+returning nom, type;
+```
+
+Depuis le panneau Admin, tu peux ensuite changer le rôle de n'importe quel compte (Étudiant / Entreprise / Admin), masquer ou réafficher une offre, ou la supprimer.
+
 ## 📧 Connexion par e-mail : réglages Supabase indispensables
 
 Si les utilisateurs ne reçoivent pas l'e-mail de confirmation ou n'arrivent pas à se connecter, vérifie ces 3 réglages :

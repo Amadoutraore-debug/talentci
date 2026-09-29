@@ -369,6 +369,7 @@ function afficherAlerteReseau() {
 
 async function demarrerApp() {
   if (!dbPret || !db) return;
+  chargerReglagesAuth();
 
   // ⚠️ Le callback ne doit PAS attendre (await) d'autres appels Supabase :
   // supabase-js garde un verrou pendant son exécution, et chargerProfil()
@@ -436,7 +437,87 @@ async function chargerProfil(userId) {
     .eq('user_id', userId)
     .maybeSingle();
   if (error) { console.warn('Erreur profil:', error.message); return null; }
-  return data || null;
+  if (data) return data;
+  // Compte sans fiche profil (créé avant le trigger on_auth_user_created,
+  // ou trigger absent) : on la crée maintenant, sinon l'utilisateur est
+  // "connecté sans compte" (pas de nom, pas de type, rien ne marche).
+  if (utilisateurConnecte && utilisateurConnecte.id === userId) return await reparerProfil(utilisateurConnecte);
+  return null;
+}
+
+// Une seule réparation à la fois (la connexion et onAuthStateChange
+// peuvent la déclencher en même temps).
+let reparationProfilEnCours = null;
+function reparerProfil(user) {
+  if (!reparationProfilEnCours) {
+    reparationProfilEnCours = creerProfilManquant(user).finally(() => { reparationProfilEnCours = null; });
+  }
+  return reparationProfilEnCours;
+}
+
+async function creerProfilManquant(user) {
+  const meta = user.user_metadata || {};
+  const profil = {
+    user_id: user.id,
+    nom: meta.full_name || meta.name || (user.email || 'Utilisateur').split('@')[0],
+    type: meta.role === 'entreprise' ? 'entreprise' : 'etudiant',
+    universite: meta.universite || '',
+    avatar_url: meta.avatar_url || meta.picture || null
+  };
+  const { data, error } = await db.from('profils').insert(profil)
+    .select('id, user_id, nom, type, universite, competences, avatar_url, created_at').maybeSingle();
+  if (error) {
+    console.warn('Création du profil impossible :', error.message);
+    // Conflit = le profil existe (créé entre-temps) : on le relit.
+    const { data: existant } = await db.from('profils')
+      .select('id, user_id, nom, type, universite, competences, avatar_url, created_at')
+      .eq('user_id', user.id).maybeSingle();
+    return existant || null;
+  }
+  return data;
+}
+
+// Réglages publics du serveur d'authentification Supabase : quels modes
+// de connexion sont activés, confirmation d'e-mail obligatoire ou non.
+// Permet de ne montrer que les boutons qui fonctionnent vraiment
+// (un bouton Google non activé mène sinon à une page d'erreur brute).
+let reglagesAuth = null;
+async function chargerReglagesAuth() {
+  const { url, key } = chargerConfig();
+  if (!url || !key) return;
+  try {
+    const rep = await avecDelai(fetch(url.replace(/\/$/, '') + '/auth/v1/settings', { headers: { apikey: key } }), 8000);
+    if (rep.ok) reglagesAuth = await rep.json();
+  } catch (e) { console.warn('Réglages auth indisponibles :', e.message); }
+  appliquerReglagesAuth();
+}
+function appliquerReglagesAuth() {
+  if (!reglagesAuth || !reglagesAuth.external) return;
+  const google = !!reglagesAuth.external.google;
+  const facebook = !!reglagesAuth.external.facebook;
+  const g = document.getElementById('btn-oauth-google');
+  const f = document.getElementById('btn-oauth-facebook');
+  if (g) g.style.display = google ? '' : 'none';
+  if (f) f.style.display = facebook ? '' : 'none';
+  const bloc = document.getElementById('auth-oauth');
+  if (bloc) bloc.style.display = google || facebook ? '' : 'none';
+}
+
+// Évite un bouton qui "tourne" indéfiniment sur un réseau mobile instable.
+function avecDelai(promesse, ms) {
+  return Promise.race([
+    promesse,
+    new Promise((_, rejeter) => setTimeout(() => rejeter(new Error('Délai dépassé')), ms))
+  ]);
+}
+
+function basculerMdp(id, bouton) {
+  const input = document.getElementById(id);
+  if (!input) return;
+  const visible = input.type === 'text';
+  input.type = visible ? 'password' : 'text';
+  bouton.innerHTML = `<svg class="icon"><use href="#i-${visible ? 'eye' : 'eye-off'}"/></svg>`;
+  bouton.setAttribute('aria-label', visible ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
 }
 
 /* ══════════════════════════════════════════
@@ -445,7 +526,7 @@ async function chargerProfil(userId) {
 async function sInscrire() {
   if (!verifierDB()) return;
   const nom   = document.getElementById('ins-nom').value.trim();
-  const email = document.getElementById('ins-email').value.trim();
+  const email = document.getElementById('ins-email').value.trim().toLowerCase();
   const pass  = document.getElementById('ins-pass').value;
   const type  = document.getElementById('ins-type').value;
   const univ  = document.getElementById('ins-univ').value.trim();
@@ -455,7 +536,9 @@ async function sInscrire() {
 
   setBtnLoading('btn-sinscrire', true, 'Création...');
 
-  const { data: authData, error: authErr } = await db.auth.signUp({
+  let authData = null, authErr = null;
+  try {
+    ({ data: authData, error: authErr } = await avecDelai(db.auth.signUp({
     email, password: pass,
     options: {
       data: { full_name: nom, role: type, universite: type === 'etudiant' ? univ : '' },
@@ -463,11 +546,24 @@ async function sInscrire() {
       // utilise la "Site URL" du projet, souvent restée sur localhost).
       emailRedirectTo: urlRetourSite()
     }
-  });
+  }), 20000));
+  } catch (e) { authErr = e; }
 
   if (authErr) {
     afficherMsgAuth(tradErreur(authErr.message), 'erreur');
     setBtnLoading('btn-sinscrire', false, 'Créer mon compte →');
+    return;
+  }
+
+  // Quand l'e-mail a DÉJÀ un compte, Supabase ne renvoie pas d'erreur (pour
+  // ne pas révéler qui est inscrit) mais un utilisateur sans "identities" et
+  // n'envoie aucun e-mail. Sans ce test, l'inscription semblait réussir
+  // alors que rien ne se passait.
+  if (authData?.user && Array.isArray(authData.user.identities) && authData.user.identities.length === 0) {
+    setBtnLoading('btn-sinscrire', false, 'Créer mon compte →');
+    basculerAuth('connexion');
+    document.getElementById('cx-email').value = email;
+    afficherMsgAuth('Cet e-mail a déjà un compte TalentCI. Connecte-toi avec ton mot de passe, ou clique sur « Mot de passe oublié ? ».', 'erreur');
     return;
   }
 
@@ -477,11 +573,19 @@ async function sInscrire() {
   // d'email est activée et qu'aucune session n'existe encore côté client.
 
   setBtnLoading('btn-sinscrire', false, 'Créer mon compte →');
-  fermerAuth();
 
   if (!authData.session) {
-    afficherToast('mail', 'Vérifie tes e-mails pour confirmer ton compte !', 'vert');
+    // Confirmation d'e-mail requise : on reste dans la fenêtre avec des
+    // instructions claires au lieu d'un message qui disparaît.
+    document.getElementById('cx-email').value = email;
+    document.getElementById('inscription-ok-email').textContent = email;
+    basculerAuth('inscription-ok');
   } else {
+    fermerAuth();
+    utilisateurConnecte = authData.session.user;
+    profilConnecte = await chargerProfil(authData.session.user.id);
+    mettreAJourNavbar();
+    mettreAJourProfil();
     afficherToast('party', 'Bienvenue ' + nom + ' !', 'vert');
     await ajouterNotification({
       user_id: authData.user.id,
@@ -496,14 +600,20 @@ async function sInscrire() {
 ══════════════════════════════════════════ */
 async function seConnecter() {
   if (!verifierDB()) return;
-  const email = document.getElementById('cx-email').value.trim();
+  // Les claviers de téléphone mettent souvent une majuscule au début
+  // de l'e-mail ou un espace à la fin : on normalise.
+  const email = document.getElementById('cx-email').value.trim().toLowerCase();
   const pass  = document.getElementById('cx-pass').value;
   if (!email || !pass) { afficherMsgAuth('Remplis tous les champs.', 'erreur'); return; }
   setBtnLoading('btn-seconnecter', true, 'Connexion...');
-  const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+  let data = null, error = null;
+  try {
+    ({ data, error } = await avecDelai(db.auth.signInWithPassword({ email, password: pass }), 20000));
+  } catch (e) { error = e; }
   if (error) {
     afficherMsgAuth(tradErreur(error.message), 'erreur');
-    if (error.message.includes('Email not confirmed')) afficherActionAuth('Renvoyer l\'e-mail de confirmation', renvoyerConfirmation);
+    if (error.message.includes('Email not confirmed')) afficherActionAuth('Renvoyer l\'e-mail de confirmation', () => renvoyerConfirmation());
+    else if (error.message.includes('Invalid login')) afficherActionAuth('Mot de passe oublié ? Recevoir un lien', motDePasseOublie);
     setBtnLoading('btn-seconnecter', false, 'Se connecter →');
     return;
   }
@@ -562,15 +672,15 @@ function afficherErreurRetourAuth() {
 ══════════════════════════════════════════ */
 async function motDePasseOublie() {
   if (!verifierDB()) return;
-  const email = document.getElementById('cx-email').value.trim();
+  const email = document.getElementById('cx-email').value.trim().toLowerCase();
   if (!email) { afficherMsgAuth('Écris ton adresse e-mail ci-dessus, puis clique à nouveau sur « Mot de passe oublié ».', 'erreur'); return; }
   const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: urlRetourSite() });
   if (error) { afficherMsgAuth(tradErreur(error.message), 'erreur'); return; }
   afficherMsgAuth('Si un compte existe pour ' + email + ', un e-mail pour choisir un nouveau mot de passe vient d\'être envoyé. Pense à regarder dans les spams.', 'ok');
 }
 
-async function renvoyerConfirmation() {
-  const email = document.getElementById('cx-email').value.trim();
+async function renvoyerConfirmation(emailForce) {
+  const email = (typeof emailForce === 'string' && emailForce) || document.getElementById('cx-email').value.trim().toLowerCase();
   if (!email) return;
   const { error } = await db.auth.resend({ type: 'signup', email, options: { emailRedirectTo: urlRetourSite() } });
   if (error) { afficherMsgAuth(tradErreur(error.message), 'erreur'); return; }
@@ -611,10 +721,19 @@ async function seDeconnecter() {
 ══════════════════════════════════════════ */
 let fichierAvatarSelectionne = null;
 
-function ouvrirEditProfil() {
-  if (!utilisateurConnecte || !profilConnecte) return;
+async function ouvrirEditProfil() {
+  if (!utilisateurConnecte) return;
+  if (!profilConnecte) profilConnecte = await chargerProfil(utilisateurConnecte.id);
+  if (!profilConnecte) { afficherToast('error', 'Profil introuvable — réessaie dans un instant', 'rouge'); return; }
   document.getElementById('edit-nom').value = profilConnecte.nom || '';
   document.getElementById('edit-univ').value = profilConnecte.universite || '';
+  // Étudiant ↔ Entreprise : modifiable par l'utilisateur (utile pour les
+  // comptes Google, créés "Étudiant" par défaut). Le rôle admin, lui, ne
+  // se gère que depuis le panneau d'administration.
+  const wrapType = document.getElementById('edit-type-wrap');
+  if (wrapType) wrapType.style.display = profilConnecte.type === 'admin' ? 'none' : 'block';
+  const selType = document.getElementById('edit-type');
+  if (selType && profilConnecte.type !== 'admin') selType.value = profilConnecte.type;
   const wrapUniv = document.getElementById('edit-univ-wrap');
   if (wrapUniv) wrapUniv.style.display = profilConnecte.type === 'etudiant' ? 'block' : 'none';
   competencesEditProfil = Array.isArray(profilConnecte.competences) ? [...profilConnecte.competences] : [];
@@ -702,14 +821,20 @@ async function enregistrerProfil() {
     avatarUrl = urlData.publicUrl + '?t=' + Date.now(); // cache-busting : même chemin réutilisé à chaque changement
   }
 
-  const { error } = await db.from('profils').update({
-    nom,
-    universite: profilConnecte?.type === 'etudiant' ? univ : '',
-    competences: competencesEditProfil,
-    avatar_url: avatarUrl
-  }).eq('user_id', utilisateurConnecte.id);
+  const maj = { nom, competences: competencesEditProfil, avatar_url: avatarUrl };
+  const typeChoisi = document.getElementById('edit-type')?.value;
+  const nouveauType = profilConnecte?.type === 'admin' ? 'admin'
+    : (typeChoisi === 'entreprise' || typeChoisi === 'etudiant' ? typeChoisi : profilConnecte?.type);
+  if (nouveauType !== profilConnecte?.type) maj.type = nouveauType;
+  maj.universite = nouveauType === 'etudiant' ? univ : '';
+  const { error } = await db.from('profils').update(maj).eq('user_id', utilisateurConnecte.id);
   setBtnLoading('btn-enregistrer-profil', false, 'Enregistrer →');
-  if (error) { afficherToast('error', 'Erreur : ' + error.message, 'rouge'); return; }
+  if (error) {
+    const msg = /type de compte/i.test(error.message)
+      ? 'Changement de type refusé : exécute sql/migration-2026-10-reparation-comptes.sql dans Supabase.'
+      : 'Erreur : ' + error.message;
+    afficherToast('error', msg, 'rouge'); return;
+  }
   fichierAvatarSelectionne = null;
   profilConnecte = await chargerProfil(utilisateurConnecte.id);
   fermerEditProfil();
@@ -1290,7 +1415,31 @@ async function mettreAJourProfil() {
 /* ══════════════════════════════════════════
    PAGE ENTREPRISE
 ══════════════════════════════════════════ */
+// Page "Entreprises" : le formulaire n'a de sens que pour un compte
+// Entreprise (ou admin). Sinon, on explique quoi faire au lieu de laisser
+// remplir tout le formulaire pour un refus au dernier moment.
+function majAccesEntreprise() {
+  const gate = document.getElementById('entreprise-acces');
+  const form = document.getElementById('form-carte-offre');
+  if (!gate || !form) return;
+  const peutPublier = !!utilisateurConnecte && (profilConnecte?.type === 'entreprise' || estAdmin());
+  form.style.display = peutPublier ? '' : 'none';
+  gate.style.display = peutPublier ? 'none' : 'block';
+  if (peutPublier) return;
+  gate.innerHTML = !utilisateurConnecte
+    ? `<div class="acces-icone">${icon('building')}</div>
+       <h3>Publie tes offres sur TalentCI</h3>
+       <p>Connecte-toi avec un compte <strong>Entreprise</strong> pour publier une offre et recevoir des candidatures d'étudiants.</p>
+       <div class="acces-boutons"><button class="btn btn-vert" onclick="ouvrirAuth('inscription');document.getElementById('ins-type').value='entreprise';document.getElementById('champ-univ-wrap').style.display='none';">Créer un compte Entreprise</button>
+       <button class="btn btn-outline" onclick="ouvrirAuth('connexion')">Se connecter</button></div>`
+    : `<div class="acces-icone">${icon('building')}</div>
+       <h3>Ton compte est un compte Étudiant</h3>
+       <p>Pour publier des offres, passe ton compte en <strong>Entreprise</strong> (tu pourras revenir en arrière à tout moment).</p>
+       <div class="acces-boutons"><button class="btn btn-vert" onclick="ouvrirEditProfil().then(() => { const t = document.getElementById('edit-type'); if (t) { t.value = 'entreprise'; t.onchange(); } })">Passer en compte Entreprise</button></div>`;
+}
+
 async function chargerMissionsEntreprise() {
+  majAccesEntreprise();
   const conteneur = document.getElementById('liste-missions-publiees');
   if (!conteneur) return;
   if (!verifierDB()) {
@@ -1443,6 +1592,7 @@ async function ouvrirAdmin() {
     return;
   }
   allerVers('admin');
+  setText('admin-nom-affiche', profilConnecte?.nom || 'Administrateur');
   await chargerDonneesAdmin();
 }
 
@@ -1471,7 +1621,7 @@ async function chargerDonneesAdmin() {
   setText('adm-entreprises',  r2.count||0);
   setText('adm-missions',     r3.count||0);
   setText('adm-candidatures', r4.count||0);
-  const { data: users } = await db.from('profils').select('id, user_id, nom, type, universite, created_at').order('created_at', { ascending: false }).limit(20);
+  const { data: users } = await db.from('profils').select('id, user_id, nom, type, universite, created_at').order('created_at', { ascending: false }).limit(200);
   const tbody = document.getElementById('admin-users-recents');
   if (tbody && users) {
     tbody.innerHTML = users.slice(0,5).map(u => {
@@ -1483,18 +1633,43 @@ async function chargerDonneesAdmin() {
   const nbUsersEl = document.getElementById('admin-nb-users');
   if (tablU && users) {
     if (nbUsersEl) nbUsersEl.textContent = users.length + ' comptes';
+    tablU.dataset.charge = '1';
     tablU.innerHTML = users.map(u => {
       const ini = (u.nom||'?').split(' ').map(m=>m[0]).join('').substring(0,2).toUpperCase();
-      return `<tr><td><div class="user-cell"><div class="user-avatar-mini" style="background:var(--vert-clair);color:var(--vert-fonce)">${ini}</div><div><div class="user-nom-mini">${escHtml(u.nom||'—')}</div><div class="user-email-mini">ID: ${u.user_id?u.user_id.substring(0,8):'—'}</div></div></div></td><td><span class="badge badge-${badgeType(u.type)}">${labelType(u.type)}</span></td><td>${escHtml(u.universite||'—')}</td><td>${formatDate(u.created_at)}</td><td><div class="action-btns"><button class="btn-action" onclick="afficherToast('eye','Profil ouvert','')">Voir</button><button class="btn-action danger" onclick="afficherToast('error','Bientôt disponible','rouge')">Suspendre</button></div></td></tr>`;
+      const moi = u.user_id === utilisateurConnecte?.id;
+      const options = ['etudiant','entreprise','admin'].map(t => `<option value="${t}"${u.type === t ? ' selected' : ''}>${labelType(t)}</option>`).join('');
+      return `<tr><td><div class="user-cell"><div class="user-avatar-mini" style="background:var(--vert-clair);color:var(--vert-fonce)">${escHtml(ini)}</div><div><div class="user-nom-mini">${escHtml(u.nom||'—')}${moi ? ' <small>(toi)</small>' : ''}</div><div class="user-email-mini">ID: ${u.user_id?u.user_id.substring(0,8):'—'}</div></div></div></td><td><span class="badge badge-${badgeType(u.type)}">${labelType(u.type)}</span></td><td>${escHtml(u.universite||'—')}</td><td>${formatDate(u.created_at)}</td><td><select class="admin-select-type" ${moi ? 'disabled title="Tu ne peux pas changer ton propre rôle ici"' : ''} onchange="changerTypeUtilisateur('${escAttr(u.user_id)}', this)">${options}</select></td></tr>`;
     }).join('');
   }
-  const { data: missionsList } = await db.from('missions').select('id, titre, entreprise, salaire, categorie, created_at').order('created_at', { ascending: false }).limit(20);
+  const { data: missionsList } = await db.from('missions').select('*').order('created_at', { ascending: false }).limit(200);
   const tablM   = document.getElementById('table-missions-admin');
   const nbMissEl = document.getElementById('admin-nb-missions');
   if (tablM && missionsList) {
-    if (nbMissEl) nbMissEl.textContent = missionsList.length + ' missions';
-    tablM.innerHTML = missionsList.map(m => `<tr><td><strong>${escHtml(m.titre)}</strong></td><td>${escHtml(m.entreprise)}</td><td style="color:var(--vert);font-weight:600;">${m.salaire.toLocaleString('fr-FR')} FCFA</td><td><span class="badge badge-vert">${escHtml(m.categorie)}</span></td><td>${formatDate(m.created_at)}</td><td><div class="action-btns"><button class="btn-action danger" onclick="supprimerMissionAdmin(${m.id})">Supprimer</button></div></td></tr>`).join('');
+    if (nbMissEl) nbMissEl.textContent = missionsList.length + ' offres';
+    tablM.innerHTML = missionsList.map(m => `<tr${m.actif ? '' : ' class="ligne-masquee"'}><td><strong>${escHtml(m.titre)}</strong>${m.actif ? '' : ' <span class="badge" style="background:#FCEBEB;color:#A32D2D;">Masquée</span>'}<div class="user-email-mini">${nbPlaces(m) - placesRestantes(m)}/${nbPlaces(m)} place(s) pourvue(s)</div></td><td>${escHtml(m.entreprise)}</td><td style="color:var(--vert);font-weight:600;">${fcfa(montantParPersonne(m))}<small style="color:var(--texte-3);font-weight:400;"> / pers.</small></td><td><span class="badge badge-vert">${escHtml(m.categorie)}</span></td><td>${formatDate(m.created_at)}</td><td><div class="action-btns"><button class="btn-action" onclick="basculerMissionActive(${m.id}, ${m.actif ? 'false' : 'true'})">${m.actif ? 'Masquer' : 'Réafficher'}</button><button class="btn-action danger" onclick="supprimerMissionAdmin(${m.id})">Supprimer</button></div></td></tr>`).join('');
   }
+}
+
+async function changerTypeUtilisateur(userId, select) {
+  if (!verifierDB() || !estAdmin()) return;
+  const type = select.value;
+  const libelle = labelType(type);
+  if (!confirm(`Passer ce compte en « ${libelle} » ?` + (type === 'admin' ? '\n\n⚠️ Il aura accès à toute l\'administration.' : ''))) {
+    await chargerDonneesAdmin(); return;
+  }
+  const { error } = await db.from('profils').update({ type }).eq('user_id', userId);
+  if (error) { afficherToast('error', 'Erreur : ' + error.message, 'rouge'); await chargerDonneesAdmin(); return; }
+  afficherToast('check', 'Compte passé en ' + libelle, 'vert');
+  await chargerDonneesAdmin();
+}
+
+async function basculerMissionActive(id, actif) {
+  if (!verifierDB() || !estAdmin()) return;
+  const { error } = await db.from('missions').update({ actif }).eq('id', id);
+  if (error) { afficherToast('error', 'Erreur : ' + error.message, 'rouge'); return; }
+  afficherToast(actif ? 'eye' : 'info', actif ? 'Offre de nouveau visible' : 'Offre masquée du public', actif ? 'vert' : '');
+  await chargerDonneesAdmin();
+  await chargerMissions();
 }
 
 async function supprimerMissionAdmin(id) {
@@ -1609,9 +1784,15 @@ function ouvrirAuth(onglet) {
 function fermerAuth() { document.getElementById('modal-auth').classList.remove('visible'); }
 document.getElementById('modal-auth').addEventListener('click', e => { if (e.target === e.currentTarget) fermerAuth(); });
 function basculerAuth(onglet) {
+  const msgAuth = document.getElementById('auth-message');
+  if (msgAuth) msgAuth.style.display = 'none';
   const estCx = onglet === 'connexion';
+  const estOk = onglet === 'inscription-ok';
   document.getElementById('form-connexion').style.display  = estCx ? 'block' : 'none';
-  document.getElementById('form-inscription').style.display = estCx ? 'none' : 'block';
+  document.getElementById('form-inscription').style.display = !estCx && !estOk ? 'block' : 'none';
+  document.getElementById('form-inscription-ok').style.display = estOk ? 'block' : 'none';
+  const oauth = document.getElementById('auth-oauth');
+  if (oauth) oauth.classList.toggle('masque-temporaire', estOk);
   const tabCx  = document.getElementById('tab-connexion');
   const tabIns = document.getElementById('tab-inscription');
   tabCx.style.color = estCx ? 'var(--vert)' : 'var(--texte-3)';
@@ -1699,6 +1880,9 @@ function mettreAJourNavbar() {
   // Rappel : ceci est un confort d'UI, pas une protection — la
   // vraie barrière est la policy RLS côté Supabase.
   if (btnAdmin) btnAdmin.style.display = estAdmin() ? 'inline-flex' : 'none';
+  const dropAdmin = document.getElementById('dropdown-admin');
+  if (dropAdmin) dropAdmin.style.display = estAdmin() ? '' : 'none';
+  majAccesEntreprise();
 }
 
 function toggleAvatarMenu(event) {
@@ -1781,7 +1965,7 @@ function escAttr(str) {
 
 function tradErreur(msg) {
   if (!msg) return 'Erreur inconnue';
-  if (msg.includes('Invalid login')) return 'Email ou mot de passe incorrect.';
+  if (msg.includes('Invalid login')) return 'E-mail ou mot de passe incorrect. Vérifie les majuscules du mot de passe (touche l\'œil pour l\'afficher). Si tu t\'es inscrit avec Google, utilise le bouton Google.';
   if (msg.includes('already registered') || msg.includes('already been registered')) return 'Cet email est déjà utilisé. Connecte-toi !';
   if (msg.includes('Password should be')) return 'Le mot de passe doit faire au moins 6 caractères.';
   if (msg.includes('Unable to validate email')) return 'Adresse email invalide.';
@@ -1791,5 +1975,8 @@ function tradErreur(msg) {
   if (msg.includes('Error sending') || msg.includes('sending confirmation') || msg.includes('sending recovery')) return 'L\'e-mail n\'a pas pu être envoyé. Réessaie plus tard ou utilise Google.';
   if (msg.includes('expired') || msg.includes('otp_expired')) return 'Le lien a expiré. Demande un nouvel e-mail.';
   if (msg.includes('Signups not allowed')) return 'Les inscriptions sont fermées pour le moment.';
+  if (msg.includes('Délai dépassé') || msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('Load failed')) return 'Le serveur ne répond pas. Vérifie ta connexion Internet et réessaie.';
+  if (msg.includes('not authorized') || msg.includes('Email address not authorized')) return 'L\'e-mail de confirmation n\'a pas pu être envoyé à cette adresse. Utilise Google ou contacte TalentCI.';
+  if (msg.includes('User already registered')) return 'Cet email est déjà utilisé. Connecte-toi !';
   return msg;
 }
