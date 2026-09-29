@@ -87,6 +87,28 @@ Le bouton "Continuer avec Google" est déjà dans l'interface, mais il ne foncti
 
 ⚠️ Google ne dit pas si un utilisateur est "étudiant" ou "entreprise" : un compte créé via Google est toujours classé `étudiant` par défaut (modifiable ensuite manuellement via `update profils set type = 'entreprise' where user_id = '...';` si besoin).
 
+## 📧 Connexion par e-mail : réglages Supabase indispensables
+
+Si les utilisateurs ne reçoivent pas l'e-mail de confirmation ou n'arrivent pas à se connecter, vérifie ces 3 réglages :
+
+1. **URL du site** — `Authentication → URL Configuration` :
+   - **Site URL** : `https://amadoutraore-debug.github.io/talentci/`
+   - **Redirect URLs** : ajoute `https://amadoutraore-debug.github.io/talentci/**`
+   Sans ça, les liens des e-mails (confirmation, mot de passe oublié) et le retour de Google/Facebook renvoient vers `localhost`.
+2. **Envoi d'e-mails** — le service d'e-mail intégré de Supabase est limité (quelques e-mails par heure, et parfois uniquement vers les membres de l'équipe du projet). Deux options :
+   - **Simple** : `Authentication → Sign In / Providers → Email` → désactive **Confirm email**. Les comptes sont utilisables immédiatement après l'inscription.
+   - **Recommandé en production** : configure un vrai serveur d'envoi (`Authentication → Emails → SMTP Settings`), par exemple [Brevo](https://www.brevo.com) ou [Resend](https://resend.com), qui ont des offres gratuites.
+3. Le site propose désormais **« Mot de passe oublié ? »** et **« Renvoyer l'e-mail de confirmation »** — ces deux fonctions dépendent aussi du point 2.
+
+## 📘 Activer la connexion Facebook
+
+1. Va sur [developers.facebook.com](https://developers.facebook.com/apps) → **Créer une app** → cas d'usage **« Authentifier et demander des données aux utilisateurs avec Facebook Login »**.
+2. Dans **Facebook Login → Paramètres**, ajoute dans **URI de redirection OAuth valides** : `https://zqjzcuttmocmwjesvwdw.supabase.co/auth/v1/callback`
+3. Dans **Paramètres de l'app → Général**, récupère l'**ID de l'app** et la **Clé secrète**. Renseigne aussi une URL de politique de confidentialité, puis passe l'app en mode **Live** (En ligne).
+4. Dans Supabase → `Authentication → Sign In / Providers → Facebook` : active-le, colle l'ID et la clé secrète, sauvegarde.
+
+Tant que ce n'est pas fait, le bouton « Continuer avec Facebook » affiche « Ce mode de connexion n'est pas encore activé ».
+
 ## 👑 Devenir administrateur
 
 Il n'y a **aucun** moyen de devenir admin depuis le site (le formulaire d'inscription ne propose que "Étudiant" / "Entreprise" — c'est volontaire). Pour promouvoir un compte existant :
