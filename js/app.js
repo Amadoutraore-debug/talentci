@@ -261,6 +261,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     afficherAlerteAccueil();
   }
 
+  afficherErreurRetourAuth();
+
   // Lien direct (#/missions...) ou application rouverte sur une page.
   const pageInitiale = pageDepuisHash();
   if (pageInitiale && pageInitiale !== 'accueil') allerVers(pageInitiale, { historique: false });
@@ -373,6 +375,7 @@ async function demarrerApp() {
   // a besoin de ce même verrou → blocage de l'app (connexion qui "tourne"
   // indéfiniment). On diffère donc le travail avec setTimeout.
   db.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') setTimeout(ouvrirNouveauMotDePasse, 0);
     setTimeout(async () => {
       const etaitConnecte = !!utilisateurConnecte;
       if (session && session.user) {
@@ -454,7 +457,12 @@ async function sInscrire() {
 
   const { data: authData, error: authErr } = await db.auth.signUp({
     email, password: pass,
-    options: { data: { full_name: nom, role: type, universite: type === 'etudiant' ? univ : '' } }
+    options: {
+      data: { full_name: nom, role: type, universite: type === 'etudiant' ? univ : '' },
+      // Le lien de l'e-mail de confirmation ramène sur le site (sinon Supabase
+      // utilise la "Site URL" du projet, souvent restée sur localhost).
+      emailRedirectTo: urlRetourSite()
+    }
   });
 
   if (authErr) {
@@ -495,6 +503,7 @@ async function seConnecter() {
   const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
   if (error) {
     afficherMsgAuth(tradErreur(error.message), 'erreur');
+    if (error.message.includes('Email not confirmed')) afficherActionAuth('Renvoyer l\'e-mail de confirmation', renvoyerConfirmation);
     setBtnLoading('btn-seconnecter', false, 'Se connecter →');
     return;
   }
@@ -520,13 +529,67 @@ async function seConnecter() {
    Nécessite d'avoir activé le provider Google dans Supabase
    (Authentication → Providers → Google) — voir le README.
 ══════════════════════════════════════════ */
-async function connecterAvecGoogle() {
+function urlRetourSite() {
+  return window.location.origin + window.location.pathname;
+}
+
+// provider : 'google' ou 'facebook'. Chaque fournisseur doit être activé
+// dans Supabase (Authentication → Sign In / Providers) — voir le README.
+async function connecterAvecFournisseur(provider) {
   if (!verifierDB()) return;
+  const noms = { google: 'Google', facebook: 'Facebook' };
   const { error } = await db.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.origin + window.location.pathname }
+    provider,
+    options: { redirectTo: urlRetourSite() }
   });
-  if (error) afficherToast('error', 'Erreur Google : ' + error.message, 'rouge');
+  if (error) afficherToast('error', 'Erreur ' + (noms[provider] || provider) + ' : ' + tradErreur(error.message), 'rouge');
+}
+function connecterAvecGoogle() { return connecterAvecFournisseur('google'); }
+
+// Supabase renvoie les erreurs de connexion (Google/Facebook refusé,
+// lien e-mail expiré...) dans l'adresse de retour : on les affiche au
+// lieu de laisser l'utilisateur sans explication.
+function afficherErreurRetourAuth() {
+  const params = new URLSearchParams(location.hash.slice(1) + '&' + location.search.slice(1));
+  const desc = params.get('error_description');
+  if (!desc) return;
+  afficherToast('error', 'Connexion impossible : ' + tradErreur(desc.replace(/\+/g, ' ')), 'rouge');
+  history.replaceState(null, '', location.pathname);
+}
+
+/* ══════════════════════════════════════════
+   MOT DE PASSE OUBLIÉ / E-MAIL DE CONFIRMATION
+══════════════════════════════════════════ */
+async function motDePasseOublie() {
+  if (!verifierDB()) return;
+  const email = document.getElementById('cx-email').value.trim();
+  if (!email) { afficherMsgAuth('Écris ton adresse e-mail ci-dessus, puis clique à nouveau sur « Mot de passe oublié ».', 'erreur'); return; }
+  const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: urlRetourSite() });
+  if (error) { afficherMsgAuth(tradErreur(error.message), 'erreur'); return; }
+  afficherMsgAuth('Si un compte existe pour ' + email + ', un e-mail pour choisir un nouveau mot de passe vient d\'être envoyé. Pense à regarder dans les spams.', 'ok');
+}
+
+async function renvoyerConfirmation() {
+  const email = document.getElementById('cx-email').value.trim();
+  if (!email) return;
+  const { error } = await db.auth.resend({ type: 'signup', email, options: { emailRedirectTo: urlRetourSite() } });
+  if (error) { afficherMsgAuth(tradErreur(error.message), 'erreur'); return; }
+  afficherMsgAuth('E-mail de confirmation renvoyé à ' + email + '. Regarde aussi dans les spams.', 'ok');
+}
+
+// Appelé quand l'utilisateur revient via le lien "nouveau mot de passe".
+function ouvrirNouveauMotDePasse() {
+  document.getElementById('modal-nouveau-mdp').classList.add('visible');
+}
+async function enregistrerNouveauMotDePasse() {
+  const pass = document.getElementById('nouveau-mdp').value;
+  if (pass.length < 6) { afficherToast('warning', 'Au moins 6 caractères', 'rouge'); return; }
+  setBtnLoading('btn-nouveau-mdp', true, 'Enregistrement...');
+  const { error } = await db.auth.updateUser({ password: pass });
+  setBtnLoading('btn-nouveau-mdp', false, 'Enregistrer →');
+  if (error) { afficherToast('error', tradErreur(error.message), 'rouge'); return; }
+  document.getElementById('modal-nouveau-mdp').classList.remove('visible');
+  afficherToast('check', 'Mot de passe modifié, tu es connecté(e) !', 'vert');
 }
 
 /* ══════════════════════════════════════════
@@ -671,7 +734,7 @@ async function chargerMissions() {
     .eq('actif', true)
     .order('created_at', { ascending: false });
   if (error) { console.error('Erreur missions:', error.message); toutesLesMissions = []; }
-  else toutesLesMissions = data || [];
+  else toutesLesMissions = Array.isArray(data) ? data : [];
   await chargerMesCandidaturesIds();
   filtrerMissions();
 }
@@ -1344,6 +1407,18 @@ function basculerAuth(onglet) {
   tabIns.style.color = estCx ? 'var(--texte-3)' : 'var(--vert)';
   tabIns.style.borderBottom = estCx ? '2px solid transparent' : '2px solid var(--vert)';
 }
+// Ajoute un bouton sous le message d'erreur (ex : renvoyer l'e-mail).
+function afficherActionAuth(libelle, action) {
+  const el = document.getElementById('auth-message');
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'auth-message-action';
+  btn.textContent = libelle;
+  btn.onclick = action;
+  el.appendChild(document.createElement('br'));
+  el.appendChild(btn);
+}
+
 function afficherMsgAuth(texte, type) {
   const el = document.getElementById('auth-message');
   el.textContent = texte;
@@ -1499,6 +1574,10 @@ function tradErreur(msg) {
   if (msg.includes('Password should be')) return 'Le mot de passe doit faire au moins 6 caractères.';
   if (msg.includes('Unable to validate email')) return 'Adresse email invalide.';
   if (msg.includes('Email not confirmed')) return 'Confirme ton email avant de te connecter.';
-  if (msg.includes('rate limit')) return 'Trop de tentatives. Réessaie dans quelques minutes.';
+  if (msg.includes('rate limit')) return 'Trop de tentatives ou d\'e-mails envoyés. Réessaie dans une heure.';
+  if (msg.includes('provider is not enabled') || msg.includes('Unsupported provider')) return 'Ce mode de connexion n\'est pas encore activé sur TalentCI.';
+  if (msg.includes('Error sending') || msg.includes('sending confirmation') || msg.includes('sending recovery')) return 'L\'e-mail n\'a pas pu être envoyé. Réessaie plus tard ou utilise Google.';
+  if (msg.includes('expired') || msg.includes('otp_expired')) return 'Le lien a expiré. Demande un nouvel e-mail.';
+  if (msg.includes('Signups not allowed')) return 'Les inscriptions sont fermées pour le moment.';
   return msg;
 }
