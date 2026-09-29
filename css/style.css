@@ -505,6 +505,7 @@ footer strong{color:var(--vert);font-weight:600;}
 .mdp-oeil{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:none;background:none;color:var(--texte-3);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:8px;}
 .mdp-oeil:hover{color:var(--texte);background:var(--bg-2);}
 .mdp-oeil .icon{width:18px;height:18px;}
+.auth-message-detail{display:block;margin-top:6px;font-size:11px;opacity:.75;word-break:break-word;}
 .masque-temporaire{display:none !important;}
 .login-input{font-size:16px;} /* ≥16px : évite le zoom automatique d'iPhone sur les champs */
 

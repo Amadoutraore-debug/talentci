@@ -550,7 +550,7 @@ async function sInscrire() {
   } catch (e) { authErr = e; }
 
   if (authErr) {
-    afficherMsgAuth(tradErreur(authErr.message), 'erreur');
+    afficherMsgAuth(tradErreur(authErr.message), 'erreur', authErr.message);
     setBtnLoading('btn-sinscrire', false, 'Créer mon compte →');
     return;
   }
@@ -611,7 +611,7 @@ async function seConnecter() {
     ({ data, error } = await avecDelai(db.auth.signInWithPassword({ email, password: pass }), 20000));
   } catch (e) { error = e; }
   if (error) {
-    afficherMsgAuth(tradErreur(error.message), 'erreur');
+    afficherMsgAuth(tradErreur(error.message), 'erreur', error.message);
     if (error.message.includes('Email not confirmed')) afficherActionAuth('Renvoyer l\'e-mail de confirmation', () => renvoyerConfirmation());
     else if (error.message.includes('Invalid login')) afficherActionAuth('Mot de passe oublié ? Recevoir un lien', motDePasseOublie);
     setBtnLoading('btn-seconnecter', false, 'Se connecter →');
@@ -1812,9 +1812,17 @@ function afficherActionAuth(libelle, action) {
   el.appendChild(btn);
 }
 
-function afficherMsgAuth(texte, type) {
+function afficherMsgAuth(texte, type, detail) {
   const el = document.getElementById('auth-message');
   el.textContent = texte;
+  // Message technique d'origine (petit, en dessous) : permet de
+  // diagnostiquer un problème à partir d'une simple capture d'écran.
+  if (detail && detail !== texte) {
+    const d = document.createElement('small');
+    d.className = 'auth-message-detail';
+    d.textContent = 'Détail : ' + detail;
+    el.appendChild(d);
+  }
   el.style.display = 'block';
   if (type === 'erreur') { el.style.background='#FCEBEB'; el.style.color='#A32D2D'; el.style.border='1px solid #F09595'; }
   else { el.style.background='var(--vert-clair)'; el.style.color='var(--vert-fonce)'; el.style.border='1px solid var(--vert)'; }
