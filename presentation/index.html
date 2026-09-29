@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amadou Traoré — Présentation</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --ink:#15110E; --ink-2:#231A15; --cocoa:#5B3426; --cocoa-2:#3A2019;
+  --suit:#7B4B3A; --caramel:#C07A52; --gold:#E2BE72; --cream:#F4ECE1;
+  --cream-2:#EADFD0; --sage:#6F8A63;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0b0908;height:100%;overflow:hidden}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;color:var(--cream)}
+
+/* ---------- stage ---------- */
+#wrap{position:relative;flex:1;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1080px;height:1920px;transform-origin:50% 50%;overflow:hidden;background:var(--ink)}
+.render #stage{left:0;top:0;transform:none!important}
+.render #controls{display:none}
+.scene{position:absolute;inset:0;overflow:hidden;visibility:hidden}
+.abs{position:absolute}
+img{display:block;user-select:none;-webkit-user-drag:none}
+.full{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* ---------- type ---------- */
+.anton{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;line-height:.92;letter-spacing:.005em}
+.play{font-family:'Playfair Display',serif;font-style:italic;font-weight:600;line-height:1.05}
+.label{position:absolute;left:72px;top:196px;font:600 26px/1 'Montserrat';letter-spacing:.28em;text-transform:uppercase;display:flex;align-items:center;gap:18px}
+.label::before{content:"";width:56px;height:2px;background:currentColor}
+.line{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.anton .line,.anton.line{padding-top:.2em;margin-top:-.2em}
+.line > span{display:inline-block}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em;margin-bottom:-.1em}
+.w > i{display:inline-block;font-style:inherit}
+.c{display:inline-block}
+
+/* ---------- overlays ---------- */
+#grain{position:absolute;inset:-60px;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background-size:256px 256px;z-index:50}
+#vignette{position:absolute;inset:0;pointer-events:none;z-index:49;background:radial-gradient(ellipse 120% 90% at 50% 45%,transparent 55%,rgba(0,0,0,.45) 100%)}
+#fade{position:absolute;inset:0;background:#000;opacity:0;z-index:60;pointer-events:none}
+
+/* ---------- S1 hook ---------- */
+#s1 .photo{position:absolute;left:-180px;top:0;width:1440px;height:1920px;transform-origin:50% 66%}
+#s1 .grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,17,14,.92) 0%,rgba(21,17,14,.55) 30%,rgba(21,17,14,.15) 52%,rgba(21,17,14,.55) 100%)}
+#s1 .t1{left:72px;top:300px;font:800 96px/1.05 'Montserrat';letter-spacing:-.02em;color:var(--cream)}
+#s1 .t2{left:72px;top:410px;font-size:112px;color:var(--gold)}
+
+/* ---------- S2 / S9b name ---------- */
+.namebg{position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover}
+.nameshade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,17,14,.78) 0%,rgba(21,17,14,.5) 45%,rgba(21,17,14,.35) 100%)}
+.glow{position:absolute;left:90px;top:520px;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(226,190,114,.35) 0%,rgba(192,122,82,.12) 45%,transparent 70%)}
+.hello{left:0;right:0;top:330px;text-align:center;font:500 42px/1 'Montserrat';letter-spacing:.04em;color:var(--cream)}
+.big-first{left:0;right:0;top:440px;text-align:center;font-size:318px;color:var(--cream);white-space:nowrap}
+.cutout2{position:absolute;left:0;top:450px;width:1080px;height:1440px;transform-origin:50% 100%}
+.big-last{left:0;right:0;top:1170px;text-align:center;font-size:250px;color:var(--gold);white-space:nowrap;text-shadow:0 14px 50px rgba(0,0,0,.45)}
+
+/* ---------- S3 roles ---------- */
+#s3{background:var(--cream)}
+#s3 .label{color:var(--caramel)}
+#s3 .disc{left:520px;top:980px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(192,122,82,.28),rgba(192,122,82,.08) 70%)}
+#s3 .ring{left:470px;top:930px;width:720px;height:720px;border-radius:50%;border:2px dashed rgba(91,52,38,.25)}
+#s3 .jesuis{left:72px;top:282px;font-size:66px;color:var(--cocoa)}
+#s3 .roles{left:72px;top:392px;font-size:132px;color:var(--ink)}
+#s3 .roles .alt{color:var(--caramel)}
+#s3 .cut1{position:absolute;left:600px;top:1010px;width:420px;height:auto}
+#s3 .passion{left:72px;top:1112px;width:540px;font:500 44px/1.28 'Montserrat';color:var(--ink-2)}
+#s3 .passion b{font-weight:700;color:var(--ink);background:linear-gradient(var(--gold),var(--gold)) no-repeat 0 88%/calc(var(--hl,0)*100%) .4em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+/* ---------- S4 parcours ---------- */
+#s4{background:var(--ink)}
+#s4 .photo{position:absolute;left:0;top:0;width:1080px;height:1920px;object-fit:cover;opacity:.6;filter:saturate(.75)}
+#s4 .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,17,14,.85) 0%,rgba(21,17,14,.35) 50%,rgba(21,17,14,.9) 100%)}
+#s4 .label{color:var(--gold)}
+#s4 .auto{left:66px;top:282px;font-size:196px;color:var(--cream)}
+#s4 .sub{left:72px;top:500px;font:500 50px/1.2 'Montserrat';color:var(--cream)}
+#s4 .sub2{left:72px;top:566px;font-size:96px;color:var(--gold)}
+#s4 svg{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:visible}
+#s4 .stair{fill:none;stroke:var(--gold);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+#s4 .fillstep{fill:rgba(226,190,114,.07)}
+#s4 .dot{fill:var(--gold)}
+#s4 .halo{fill:rgba(226,190,114,.25)}
+#s4 .step{position:absolute;font:700 46px/1.05 'Montserrat';color:var(--cream)}
+#s4 .step small{display:block;font:500 26px/1.3 'Montserrat';letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+
+/* ---------- S5 skills ---------- */
+#s5{background:linear-gradient(170deg,var(--cocoa) 0%,var(--cocoa-2) 100%)}
+#s5 .label{color:var(--gold)}
+#s5 .t-a{left:72px;top:280px;font-size:150px;color:var(--cream)}
+#s5 .t-b{left:72px;top:420px;font-size:118px;color:var(--gold)}
+#s5 .face{position:absolute;left:728px;top:268px;width:272px;height:272px;border-radius:50%;overflow:hidden;border:6px solid var(--gold)}
+#s5 .face img{width:100%;height:100%;object-fit:cover}
+#s5 .facering{position:absolute;left:706px;top:246px;width:316px;height:316px}
+#s5 .cards{position:absolute;left:72px;top:660px;width:936px}
+#s5 .card{position:relative;height:196px;margin-bottom:28px;border-radius:26px;background:rgba(244,236,225,.06);border:1.5px solid rgba(226,190,114,.28);display:flex;align-items:center;gap:30px;padding:0 36px;overflow:hidden}
+#s5 .card .bar{position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--gold);transform-origin:50% 0}
+#s5 .card .num{font-family:'Anton';font-size:84px;line-height:1;color:var(--gold);width:96px}
+#s5 .card .ico{width:84px;height:84px;flex:none}
+#s5 .card .ico *{fill:none;stroke:var(--cream);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+#s5 .card h3{font:700 42px/1.12 'Montserrat';color:var(--cream)}
+#s5 .card p{font:500 26px/1.3 'Montserrat';letter-spacing:.12em;text-transform:uppercase;color:rgba(226,190,114,.9);margin-top:10px}
+
+/* ---------- S6 accompagnement ---------- */
+#s6{background:var(--cream)}
+#s6 .label{color:var(--caramel)}
+#s6 .acc{left:72px;top:276px;font-size:156px;color:var(--ink)}
+#s6 .chips{position:absolute;left:72px;top:462px;width:960px;display:flex;flex-wrap:wrap;gap:18px 16px}
+#s6 .chip{font:600 38px/1 'Montserrat';color:var(--ink);border:2.5px solid var(--ink);border-radius:60px;padding:20px 32px 19px;background:var(--cream)}
+#s6 .chip.on{background:var(--ink);color:var(--cream)}
+#s6 .phone{position:absolute;left:72px;top:690px;width:470px;height:900px;border-radius:64px;background:var(--ink);padding:18px;box-shadow:0 40px 80px rgba(58,32,25,.35)}
+#s6 .screen{position:relative;width:100%;height:100%;border-radius:48px;overflow:hidden;background:#fff}
+#s6 .notch{position:absolute;left:50%;top:14px;width:120px;height:32px;margin-left:-60px;border-radius:20px;background:var(--ink);z-index:3}
+#s6 .ph-head{position:absolute;left:0;right:0;top:60px;display:flex;align-items:center;gap:14px;padding:0 20px}
+#s6 .ph-av{width:62px;height:62px;border-radius:50%;padding:3px;background:linear-gradient(135deg,var(--gold),var(--caramel))}
+#s6 .ph-av img{width:100%;height:100%;border-radius:50%;border:3px solid #fff;object-fit:cover}
+#s6 .ph-name{font:700 25px/1.2 'Montserrat';color:var(--ink)}
+#s6 .ph-sub{font:500 19px/1.2 'Montserrat';color:#8a817a}
+#s6 .ph-post{position:absolute;left:0;top:140px;width:434px;height:542px;object-fit:cover}
+#s6 .ph-bar{position:absolute;left:20px;right:20px;top:700px;display:flex;gap:22px;align-items:center}
+#s6 .ph-bar svg{width:44px;height:44px}
+#s6 .ph-bar svg *{fill:none;stroke:var(--ink);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#s6 .ph-bar .heart path{fill:#E0533D;stroke:#E0533D}
+#s6 .ph-cap{position:absolute;left:20px;right:20px;top:766px;font:500 21px/1.35 'Montserrat';color:var(--ink)}
+#s6 .ph-cap b{font-weight:700}
+#s6 .hearts{position:absolute;left:40px;top:640px;width:200px;height:300px;overflow:visible}
+#s6 .fh{position:absolute;left:0;top:0;width:54px;height:54px}
+#s6 .fh path{fill:#E0533D}
+#s6 .contenus{left:590px;top:760px;font:600 30px/1.2 'Montserrat';letter-spacing:.2em;text-transform:uppercase;color:var(--caramel)}
+#s6 .adj{left:590px;font-size:72px;color:var(--cocoa)}
+#s6 .adj::before{content:"";position:absolute;left:0;top:-26px;width:60px;height:3px;background:var(--gold)}
+#s6 .online{left:590px;top:1400px;width:440px;font:800 48px/1.08 'Montserrat';letter-spacing:-.01em;color:var(--ink)}
+#s6 .online span{color:var(--caramel)}
+
+/* ---------- S7 objectif ---------- */
+#s7{background:radial-gradient(ellipse 90% 60% at 80% 20%,#2c211b 0%,var(--ink) 70%)}
+#s7 .label{color:var(--gold)}
+#s7 .obj{left:72px;top:272px;font-size:92px;color:var(--gold)}
+#s7 .simple{left:72px;top:380px;font:600 54px/1 'Montserrat';color:var(--cream)}
+#s7 .aider{left:72px;top:492px;width:930px;font:500 44px/1.35 'Montserrat';color:rgba(244,236,225,.72)}
+#s7 .aider b{font-weight:700;color:var(--cream)}
+#s7 .vline{position:absolute;left:72px;top:700px;width:3px;height:820px;background:linear-gradient(var(--gold),rgba(226,190,114,.1));transform-origin:50% 0}
+#s7 .blk{position:absolute;left:112px}
+#s7 .blk .n{font:700 26px/1 'Montserrat';letter-spacing:.2em;color:var(--gold)}
+#s7 .blk .v{font-size:156px;color:var(--cream);margin-top:10px}
+#s7 .blk .s{font-size:54px;color:var(--gold);margin-top:6px}
+
+/* ---------- S8 vision ---------- */
+#s8{background:var(--ink)}
+#s8 .label{color:var(--gold)}
+#s8 .partA{position:absolute;left:72px;top:560px;width:936px}
+#s8 .crois{font:600 58px/1.2 'Montserrat';color:var(--cream)}
+#s8 .pas{font:500 46px/1.3 'Montserrat';color:rgba(244,236,225,.6);margin-top:18px}
+#s8 .publier{font-size:108px;color:rgba(244,236,225,.9);margin-top:22px}
+#s8 .mais{left:72px;top:282px;font:600 44px/1 'Montserrat';letter-spacing:.06em;color:var(--gold)}
+#s8 .vb{position:absolute;left:72px}
+#s8 .vb .v{font-size:140px;color:var(--cream)}
+#s8 .vb .v em{font-style:normal;font-family:'Montserrat';font-weight:700;font-size:64px;color:var(--gold);vertical-align:.45em;margin-right:22px}
+#s8 .vb .s{font-size:62px;color:var(--gold);margin:4px 0 0 64px}
+#s8 .spot{position:absolute;left:-120px;top:-200px;width:1320px;height:2200px;background:
+  radial-gradient(ellipse 34% 26% at 50% 78%,rgba(255,236,196,.42) 0%,rgba(255,236,196,.12) 55%,transparent 75%),
+  conic-gradient(from 168deg at 50% 0%,transparent 0deg,rgba(255,232,190,.2) 10deg,rgba(255,232,190,.2) 14deg,transparent 24deg);
+  mix-blend-mode:screen;transform-origin:50% 0}
+#s8 .cutwrap{position:absolute;left:175px;top:1020px;width:730px;height:973px;transform-origin:50% 100%}
+#s8 .cutwrap img{width:100%;height:100%}
+#s8 .floor{position:absolute;left:140px;top:1780px;width:800px;height:200px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,236,196,.35),transparent 70%)}
+#s8 .dust{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(255,236,196,.9);box-shadow:0 0 12px rgba(255,236,196,.8)}
+
+/* ---------- S9 signature ---------- */
+#s9a{background:linear-gradient(165deg,var(--cocoa) 0%,var(--cocoa-2) 100%)}
+#s9a .sl{position:absolute;left:0;right:0;text-align:center}
+#s9a .sl .v{font-size:182px;color:var(--cream)}
+#s9a .sl .s{font-size:82px;color:var(--gold);margin-top:2px}
+#s9a .rule{position:absolute;left:390px;width:300px;height:3px;background:rgba(226,190,114,.55)}
+#s9b .roles{left:0;right:0;top:300px;text-align:center;font:600 25px/1 'Montserrat';letter-spacing:.14em;white-space:nowrap;text-transform:uppercase;color:var(--gold)}
+#s9b .cta{position:absolute;left:50%;top:1500px;transform:translateX(-50%);white-space:nowrap;font:700 40px/1 'Montserrat';color:var(--ink);background:var(--cream);border-radius:80px;padding:28px 50px 27px;box-shadow:0 20px 60px rgba(0,0,0,.4);display:flex;align-items:center;gap:18px}
+#s9b .cta svg{width:40px;height:40px}
+#s9b .cta svg *{fill:none;stroke:var(--caramel);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- transition wipe ---------- */
+.wipe{position:absolute;inset:0;z-index:40;pointer-events:none}
+
+/* ---------- preview controls ---------- */
+#controls{flex:none;width:100%;max-width:560px;display:flex;align-items:center;gap:14px;padding:14px 16px 18px}
+#controls button{flex:none;width:48px;height:48px;border-radius:50%;border:0;background:var(--gold);color:var(--ink);font:700 18px 'Montserrat';cursor:pointer}
+#controls input{flex:1;accent-color:var(--gold)}
+#controls .time{flex:none;font:600 15px 'Montserrat';color:var(--cream);font-variant-numeric:tabular-nums;min-width:92px;text-align:right}
+</style>
+</head>
+<body>
+<div id="wrap">
+<div id="stage">
+
+  <!-- S1 · Accroche (0:00 – 0:03.5) -->
+  <section class="scene" id="s1">
+    <img class="photo" src="img/photo1.jpg" alt="">
+    <div class="grade"></div>
+    <div class="abs t1" data-split>Et si ton talent</div>
+    <div class="abs t2 play" data-split>méritait d’être vu&nbsp;?</div>
+  </section>
+
+  <!-- S2 · Nom (0:03.5 – 0:08.2) -->
+  <section class="scene" id="s2">
+    <img class="namebg" src="img/photo2-blur.jpg" alt="">
+    <div class="nameshade"></div>
+    <div class="glow"></div>
+    <div class="abs hello" data-split>Bonjour, je m’appelle</div>
+    <div class="abs big-first anton" data-chars>Amadou</div>
+    <img class="cutout2" src="img/cut2.png" alt="">
+    <div class="abs big-last anton" data-chars>Traoré</div>
+  </section>
+
+  <!-- S3 · Qui suis-je (0:08.2 – 0:20) -->
+  <section class="scene" id="s3">
+    <div class="label">01 — Qui suis-je</div>
+    <div class="abs disc"></div>
+    <div class="abs ring"></div>
+    <div class="abs jesuis play" data-split>Je suis</div>
+    <div class="abs roles anton">
+      <span class="line r1"><span>Communicant</span></span>
+      <span class="line r1"><span class="alt">digital</span></span>
+      <span class="line r2"><span>Vidéaste</span></span>
+      <span class="line r3"><span>Community</span></span>
+      <span class="line r3"><span class="alt">manager</span></span>
+    </div>
+    <img class="cut1" src="img/cut1.png" alt="">
+    <div class="abs passion" data-split>Passionné par <b>la communication</b>, <b>la création de contenus</b> et les <b>opportunités du numérique.</b></div>
+  </section>
+
+  <!-- S4 · Parcours (0:20 – 0:32) -->
+  <section class="scene" id="s4">
+    <img class="photo" src="img/photo1-blur.jpg" alt="">
+    <div class="shade"></div>
+    <div class="label">02 — Parcours</div>
+    <div class="abs auto anton" data-chars>Autodidacte</div>
+    <div class="abs sub" data-split>J’ai construit mon expérience</div>
+    <div class="abs sub2 play" data-split>pas à pas.</div>
+    <svg viewBox="0 0 1080 1920">
+      <path class="fillstep" d="M72 1480 H372 V1230 H740 V980 H1008 V1480 Z"/>
+      <path class="stair" id="stairPath" d="M72 1480 H372 V1230 H740 V980 H1008"/>
+      <circle class="halo h1" cx="92" cy="1480" r="26"/><circle class="dot d1" cx="92" cy="1480" r="11"/>
+      <circle class="halo h2" cx="392" cy="1230" r="26"/><circle class="dot d2" cx="392" cy="1230" r="11"/>
+      <circle class="halo h3" cx="760" cy="980" r="26"/><circle class="dot d3" cx="760" cy="980" r="11"/>
+    </svg>
+    <div class="step st1" style="left:78px;top:1336px"><small>Des années de</small>Pratique</div>
+    <div class="step st2" style="left:392px;top:1090px"><small>Avec</small>Engagement</div>
+    <div class="step st3" style="right:72px;top:780px;text-align:right"><small>Dans la</small>Communication<br>digitale</div>
+  </section>
+
+  <!-- S5 · Compétences (0:32 – 0:45) -->
+  <section class="scene" id="s5">
+    <div class="label">03 — Compétences</div>
+    <div class="abs t-a anton" data-chars>Ce que je</div>
+    <div class="abs t-b play" data-split>maîtrise.</div>
+    <svg class="facering" viewBox="0 0 316 316"><circle cx="158" cy="158" r="154" fill="none" stroke="#E2BE72" stroke-width="2" stroke-dasharray="6 12" opacity=".7"/></svg>
+    <div class="face"><img src="img/face.jpg" alt=""></div>
+    <div class="cards">
+      <div class="card k1"><i class="bar"></i><div class="num">01</div>
+        <svg class="ico" viewBox="0 0 64 64"><circle cx="16" cy="32" r="7"/><circle cx="46" cy="14" r="7"/><circle cx="46" cy="50" r="7"/><path d="M22.5 28.5 39.5 17.5M22.5 35.5 39.5 46.5"/></svg>
+        <div><h3>Gestion des réseaux sociaux</h3><p>Community management</p></div></div>
+      <div class="card k2"><i class="bar"></i><div class="num">02</div>
+        <svg class="ico" viewBox="0 0 64 64"><path d="M40 8 56 24 24 56H8V40Z"/><path d="M33 15 49 31"/></svg>
+        <div><h3>Création de contenus</h3><p>Idées · Visuels · Textes</p></div></div>
+      <div class="card k3"><i class="bar"></i><div class="num">03</div>
+        <svg class="ico" viewBox="0 0 64 64"><rect x="6" y="16" width="36" height="32" rx="5"/><path d="M42 28 58 19V45L42 36"/></svg>
+        <div><h3>Production &amp; montage vidéo</h3><p>Tournage · Montage</p></div></div>
+      <div class="card k4"><i class="bar"></i><div class="num">04</div>
+        <svg class="ico" viewBox="0 0 64 64"><rect x="8" y="12" width="48" height="44" rx="6"/><path d="M8 26H56M20 6V16M44 6V16"/><path d="M32 33 34.8 38.6 41 39.5 36.5 43.8 37.6 50 32 47 26.4 50 27.5 43.8 23 39.5 29.2 38.6Z"/></svg>
+        <div><h3>Communication événementielle</h3><p>Couverture d’événements</p></div></div>
+    </div>
+  </section>
+
+  <!-- S6 · Accompagnement (0:45 – 0:59) -->
+  <section class="scene" id="s6">
+    <div class="label">04 — Accompagnement</div>
+    <div class="abs acc anton" data-chars>J’accompagne</div>
+    <div class="chips">
+      <span class="chip c1">Entreprises</span>
+      <span class="chip c2">Organisations</span>
+      <span class="chip c3">Associations</span>
+      <span class="chip c4 on">Porteurs de projets</span>
+    </div>
+    <div class="phone">
+      <div class="screen">
+        <div class="notch"></div>
+        <div class="ph-head">
+          <div class="ph-av"><img src="img/face.jpg" alt=""></div>
+          <div><div class="ph-name">Ton projet</div><div class="ph-sub">Présence en ligne</div></div>
+        </div>
+        <img class="ph-post" src="img/post.jpg" alt="">
+        <div class="ph-bar">
+          <svg class="heart" viewBox="0 0 48 48"><path d="M24 41S6 30 6 17.5A9.5 9.5 0 0 1 24 13a9.5 9.5 0 0 1 18 4.5C42 30 24 41 24 41Z"/></svg>
+          <svg viewBox="0 0 48 48"><path d="M42 22c0 9-8.5 16-19 16-2.6 0-5-.4-7.3-1.2L7 40l2.6-7C7.3 30 6 26.2 6 22 6 13 14.5 6 24 6s18 7 18 16Z"/></svg>
+          <svg viewBox="0 0 48 48"><path d="M43 6 21 28M43 6 29 43l-8-15-15-8Z"/></svg>
+        </div>
+        <div class="ph-cap"><b>Ton projet</b> Un contenu créatif, accessible et adapté à ton public.</div>
+      </div>
+      <div class="hearts"></div>
+    </div>
+    <div class="abs contenus">Des contenus</div>
+    <div class="abs adj play a1" style="top:850px">Créatifs.</div>
+    <div class="abs adj play a2" style="top:1000px">Accessibles.</div>
+    <div class="abs adj play a3" style="top:1150px">Adaptés.</div>
+    <div class="abs online" data-split>pour une vraie <span>présence en ligne.</span></div>
+  </section>
+
+  <!-- S7 · Objectif (0:59 – 1:12) -->
+  <section class="scene" id="s7">
+    <div class="label">05 — Mon objectif</div>
+    <div class="abs obj play" data-split>Mon objectif</div>
+    <div class="abs simple" data-split>est simple&nbsp;:</div>
+    <div class="abs aider" data-split>aider <b>les talents</b>, <b>les projets</b> et <b>les organisations</b> à…</div>
+    <div class="vline"></div>
+    <div class="blk b1" style="top:700px"><div class="n">01</div><div class="v anton line"><span>Communiquer</span></div><div class="s play line"><span>mieux.</span></div></div>
+    <div class="blk b2" style="top:995px"><div class="n">02</div><div class="v anton line"><span>Valoriser</span></div><div class="s play line"><span>leur image.</span></div></div>
+    <div class="blk b3" style="top:1290px"><div class="n">03</div><div class="v anton line"><span>Construire</span></div><div class="s play line"><span>une véritable présence digitale.</span></div></div>
+  </section>
+
+  <!-- S8 · Vision (1:12 – 1:26) -->
+  <section class="scene" id="s8">
+    <div class="spot"></div>
+    <div class="floor"></div>
+    <div class="cutwrap"><img src="img/cut2.png" alt=""></div>
+    <div class="label">06 — Ma vision</div>
+    <div class="partA">
+      <div class="crois" data-split>Je crois que le numérique</div>
+      <div class="pas" data-split>ne doit pas seulement servir à…</div>
+      <div class="publier play" data-split>publier du contenu.</div>
+    </div>
+    <div class="abs mais" data-split>…mais aussi à</div>
+    <div class="vb v1" style="top:356px"><div class="v anton line"><span><em>+</em>Créer</span></div><div class="s play line"><span>des opportunités</span></div></div>
+    <div class="vb v2" style="top:586px"><div class="v anton line"><span><em>+</em>Développer</span></div><div class="s play line"><span>des activités</span></div></div>
+    <div class="vb v3" style="top:816px"><div class="v anton line"><span><em>+</em>Mettre les talents</span></div><div class="s play line"><span>en lumière.</span></div></div>
+  </section>
+
+  <!-- S9a · Slogan (1:26 – 1:33.6) -->
+  <section class="scene" id="s9a">
+    <div class="sl l1" style="top:430px"><div class="v anton line"><span>Communique</span></div><div class="s play line"><span>ton talent.</span></div></div>
+    <div class="rule r1" style="top:752px"></div>
+    <div class="sl l2" style="top:806px"><div class="v anton line"><span>Valorise</span></div><div class="s play line"><span>ton image.</span></div></div>
+    <div class="rule r2" style="top:1128px"></div>
+    <div class="sl l3" style="top:1182px"><div class="v anton line"><span>Construis</span></div><div class="s play line"><span>ta présence en ligne.</span></div></div>
+  </section>
+
+  <!-- S9b · Signature (1:33.6 – 1:40) -->
+  <section class="scene" id="s9b">
+    <img class="namebg" src="img/photo2-blur.jpg" alt="">
+    <div class="nameshade"></div>
+    <div class="glow"></div>
+    <div class="abs roles" data-split>Communicant digital · Vidéaste · Community manager</div>
+    <div class="abs big-first anton" data-chars>Amadou</div>
+    <img class="cutout2" src="img/cut2.png" alt="">
+    <div class="abs big-last anton" data-chars>Traoré</div>
+    <div class="cta">Travaillons ensemble
+      <svg viewBox="0 0 40 40"><path d="M8 20H32M22 10 32 20 22 30"/></svg></div>
+  </section>
+
+  <div class="wipe" id="wipe"></div>
+  <div id="vignette"></div>
+  <div id="grain"></div>
+  <div id="fade"></div>
+</div>
+</div>
+
+<div id="controls">
+  <button id="playBtn" aria-label="Lecture">▶</button>
+  <input id="scrub" type="range" min="0" max="100" step="0.01" value="0" aria-label="Position">
+  <div class="time" id="time">0:00 / 1:40</div>
+</div>
+
+<script src="gsap.min.js"></script>
+<script>
+const DURATION = 100;
+const RENDER = new URLSearchParams(location.search).has('render');
+if (RENDER) document.documentElement.classList.add('render');
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+/* ---- split text into masked words / chars ---- */
+function splitWords(el) {
+  const walk = node => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(part => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+          const w = document.createElement('span'); w.className = 'w';
+          const i = document.createElement('i'); i.textContent = part; w.appendChild(i);
+          frag.appendChild(w);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1) walk(n);
+    });
+  };
+  walk(el);
+}
+function splitChars(el) {
+  const t = el.textContent; el.textContent = '';
+  const line = document.createElement('span'); line.className = 'line';
+  const inner = document.createElement('span');
+  [...t].forEach(ch => { const c = document.createElement('span'); c.className = 'c'; c.textContent = ch === ' ' ? ' ' : ch; inner.appendChild(c); });
+  line.appendChild(inner); el.appendChild(line);
+}
+$$('[data-split]').forEach(splitWords);
+$$('[data-chars]').forEach(splitChars);
+
+/* ---- grain texture (deterministic) ---- */
+(function () {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const x = c.getContext('2d'); const d = x.createImageData(256, 256);
+  let s = 1337; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < d.data.length; i += 4) { const v = rnd() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+  x.putImageData(d, 0, 0); $('#grain').style.backgroundImage = `url(${c.toDataURL()})`;
+})();
+
+/* ---- floating hearts & dust ---- */
+(function () {
+  const h = $('#s6 .hearts');
+  for (let i = 0; i < 7; i++) h.insertAdjacentHTML('beforeend', '<svg class="fh" viewBox="0 0 48 48"><path d="M24 41S6 30 6 17.5A9.5 9.5 0 0 1 24 13a9.5 9.5 0 0 1 18 4.5C42 30 24 41 24 41Z"/></svg>');
+  const s8 = $('#s8');
+  let s = 7; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 26; i++) {
+    const d = document.createElement('i'); d.className = 'dust';
+    d.style.left = (260 + rnd() * 560) + 'px'; d.style.top = (900 + rnd() * 900) + 'px';
+    d.dataset.r = rnd(); s8.insertBefore(d, $('#s8 .cutwrap'));
+  }
+})();
+
+/* ================= TIMELINE ================= */
+const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+const E = 'power4.inOut';
+const words = sel => $$(sel + ' .w > i');
+const chars = sel => $$(sel + ' .c');
+const reveal = (targets, at, stagger = 0.06, dur = 0.8) =>
+  tl.fromTo(targets, { yPercent: 150 }, { yPercent: 0, duration: dur, stagger, ease: 'power4.out' }, at);
+const show = (sel, at) => tl.set(sel, { visibility: 'visible' }, at);
+const hide = (sel, at) => tl.set(sel, { visibility: 'hidden' }, at);
+/* wipe a scene in: clip-path from a side */
+const FROM = { up: 'inset(100% 0% 0% 0%)', down: 'inset(0% 0% 100% 0%)', left: 'inset(0% 0% 0% 100%)', right: 'inset(0% 100% 0% 0%)' };
+function enter(sel, at, dir = 'up', dur = 0.75) {
+  show(sel, at);
+  tl.fromTo(sel, { clipPath: FROM[dir] }, { clipPath: 'inset(0% 0% 0% 0%)', duration: dur, ease: E }, at);
+}
+function leave(sel, at) { hide(sel, at); }
+
+tl.set('#stage', {}, 0).set({}, {}, DURATION);   // lock total length to 100 s
+
+/* ---------- S1 · 0 → 3.5 ---------- */
+show('#s1', 0);
+tl.fromTo('#s1 .photo', { scale: 1.02 }, { scale: 1.16, duration: 4.3, ease: 'none' }, 0);
+tl.fromTo('#s1 .grade', { opacity: 1 }, { opacity: .85, duration: 3.5, ease: 'none' }, 0);
+reveal(words('#s1 .t1'), 0.25, 0.09);
+reveal(words('#s1 .t2'), 1.05, 0.1);
+
+/* ---------- S2 · 3.5 → 8.2 ---------- */
+enter('#s2', 3.35, 'up', 0.7);
+leave('#s1', 4.1);
+tl.fromTo('#s2 .namebg', { scale: 1.12 }, { scale: 1.02, duration: 5, ease: 'none' }, 3.35);
+tl.fromTo('#s2 .cutout2', { y: 160, scale: 1.08, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 1.3, ease: 'power3.out' }, 3.55);
+tl.to('#s2 .cutout2', { scale: 1.035, duration: 3.4, ease: 'none' }, 4.85);
+reveal(words('#s2 .hello'), 3.75, 0.07);
+tl.fromTo(chars('#s2 .big-first'), { yPercent: 150 }, { yPercent: 0, duration: 0.9, stagger: 0.055, ease: 'power4.out' }, 4.55);
+tl.fromTo(chars('#s2 .big-last'), { yPercent: 150 }, { yPercent: 0, duration: 0.9, stagger: 0.055, ease: 'power4.out' }, 5.15);
+tl.fromTo('#s2 .glow', { opacity: 0, scale: .7 }, { opacity: 1, scale: 1, duration: 2.4 }, 4.2);
+tl.to('#s2 .big-first', { letterSpacing: '0.03em', duration: 3.2, ease: 'none' }, 5.0);
+
+/* ---------- S3 · 8.2 → 20 ---------- */
+enter('#s3', 8.05, 'left', 0.75);
+leave('#s2', 8.9);
+tl.fromTo('#s3 .label', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .7 }, 8.5);
+reveal(words('#s3 .jesuis'), 8.55, 0.08);
+reveal($$('#s3 .r1 > span'), 9.0, 0.12, 0.85);
+reveal($$('#s3 .r2 > span'), 10.9, 0.12, 0.85);
+reveal($$('#s3 .r3 > span'), 12.0, 0.12, 0.85);
+tl.fromTo('#s3 .cut1', { x: 140, opacity: 0 }, { x: 0, opacity: 1, duration: 1.2 }, 9.3);
+tl.to('#s3 .cut1', { y: -24, duration: 9, ease: 'none' }, 10.5);
+tl.fromTo('#s3 .disc', { scale: 0 }, { scale: 1, duration: 1.4, ease: 'expo.out' }, 9.2);
+tl.fromTo('#s3 .ring', { rotation: 0, opacity: 0 }, { rotation: 60, opacity: 1, duration: 11, ease: 'none' }, 9.2);
+reveal(words('#s3 .passion'), 13.4, 0.045, 0.7);
+$$('#s3 .passion b').forEach((b, i) => tl.fromTo(b, { '--hl': 0 }, { '--hl': 1, duration: .6, ease: 'power2.inOut' }, [14.6, 16.2, 17.7][i]));
+
+/* ---------- S4 · 20 → 32 ---------- */
+enter('#s4', 19.85, 'up', 0.8);
+leave('#s3', 20.7);
+tl.fromTo('#s4 .photo', { y: 0, scale: 1.12 }, { y: -80, scale: 1.2, duration: 12.3, ease: 'none' }, 19.85);
+tl.fromTo('#s4 .label', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .7 }, 20.3);
+tl.fromTo(chars('#s4 .auto'), { yPercent: 150 }, { yPercent: 0, duration: .8, stagger: .04, ease: 'power4.out' }, 20.25);
+reveal(words('#s4 .sub'), 21.5, 0.07);
+reveal(words('#s4 .sub2'), 22.7, 0.14, 0.9);
+(function () {
+  const p = $('#stairPath'); const L = p.getTotalLength();
+  gsap.set(p, { strokeDasharray: L, strokeDashoffset: L });
+  tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 5.6, ease: 'power1.inOut' }, 24.4);
+  tl.fromTo('#s4 .fillstep', { opacity: 0 }, { opacity: 1, duration: 2 }, 26);
+})();
+[[24.5, 1], [26.6, 2], [28.4, 3]].forEach(([t, n]) => {
+  tl.fromTo(`#s4 .d${n}`, { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: .5, ease: 'back.out(3)' }, t);
+  tl.fromTo(`#s4 .h${n}`, { scale: 0, opacity: 1, transformOrigin: '50% 50%' }, { scale: 2.4, opacity: 0, duration: 1.4, ease: 'power2.out' }, t);
+  tl.fromTo(`#s4 .st${n}`, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .8 }, t + .1);
+});
+
+/* ---------- S5 · 32 → 45 ---------- */
+enter('#s5', 31.85, 'right', 0.8);
+leave('#s4', 32.7);
+tl.fromTo('#s5 .label', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .7 }, 32.3);
+tl.fromTo(chars('#s5 .t-a'), { yPercent: 150 }, { yPercent: 0, duration: .8, stagger: .04, ease: 'power4.out' }, 32.2);
+reveal(words('#s5 .t-b'), 32.75, 0.1, 0.9);
+tl.fromTo('#s5 .face', { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 1, ease: 'back.out(1.6)' }, 32.5);
+tl.fromTo('#s5 .facering', { rotation: 0, scale: .6, opacity: 0 }, { rotation: 140, scale: 1, opacity: 1, duration: 12.5, ease: 'none' }, 32.5);
+[[33.4, 1], [35.7, 2], [37.9, 3], [40.6, 4]].forEach(([t, n]) => {
+  const k = `#s5 .k${n}`;
+  tl.fromTo(k, { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: .8 }, t);
+  tl.fromTo(`${k} .bar`, { scaleY: 0 }, { scaleY: 1, duration: .6, ease: 'power2.inOut' }, t + .2);
+  tl.fromTo(`${k} .ico *`, { strokeDasharray: 200, strokeDashoffset: 200 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.out' }, t + .25);
+  tl.fromTo(`${k} .num`, { scale: 1.5, opacity: 0 }, { scale: 1, opacity: 1, duration: .6 }, t + .1);
+  tl.fromTo(k, { backgroundColor: 'rgba(226,190,114,.22)' }, { backgroundColor: 'rgba(244,236,225,.06)', duration: 1.6, ease: 'power1.out' }, t + .6);
+});
+
+/* ---------- S6 · 45 → 59 ---------- */
+enter('#s6', 44.85, 'down', 0.8);
+leave('#s5', 45.7);
+tl.fromTo('#s6 .label', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .7 }, 45.3);
+tl.fromTo(chars('#s6 .acc'), { yPercent: 150 }, { yPercent: 0, duration: .8, stagger: .035, ease: 'power4.out' }, 45.2);
+[[46.3, 1], [47.2, 2], [48.1, 3], [49.1, 4]].forEach(([t, n]) =>
+  tl.fromTo(`#s6 .c${n}`, { scale: .4, opacity: 0, rotation: n % 2 ? -8 : 8 }, { scale: 1, opacity: 1, rotation: 0, duration: .7, ease: 'back.out(2)' }, t));
+tl.fromTo('#s6 .phone', { y: 260, opacity: 0, rotation: -4 }, { y: 0, opacity: 1, rotation: 0, duration: 1.2, ease: 'power3.out' }, 50.2);
+tl.fromTo('#s6 .ph-post', { scale: 1.15 }, { scale: 1, duration: 6, ease: 'none' }, 50.4);
+tl.fromTo('#s6 .ph-bar .heart', { scale: 1, transformOrigin: '50% 50%' }, { scale: 1.35, duration: .25, yoyo: true, repeat: 5, ease: 'power1.inOut' }, 51.8);
+$$('#s6 .fh').forEach((h, i) => {
+  const t = 51.9 + i * 0.75;
+  tl.fromTo(h, { x: 20 + (i % 3) * 36, y: 70, scale: .4 }, { x: -10 + (i * 47) % 140, y: -300 - (i % 2) * 90, scale: 1, duration: 2.6, ease: 'power1.out' }, t);
+  tl.fromTo(h, { opacity: 0 }, { opacity: 1, duration: .3, ease: 'none' }, t);
+  tl.to(h, { opacity: 0, duration: .9, ease: 'none' }, t + 1.7);
+});
+tl.fromTo('#s6 .contenus', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6 }, 53.1);
+[[53.6, 1], [54.7, 2], [55.9, 3]].forEach(([t, n]) =>
+  tl.fromTo(`#s6 .a${n}`, { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: .8 }, t));
+reveal(words('#s6 .online'), 57.0, 0.08);
+
+/* ---------- S7 · 59 → 72 ---------- */
+enter('#s7', 58.85, 'left', 0.8);
+leave('#s6', 59.7);
+tl.fromTo('#s7 .label', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .7 }, 59.3);
+reveal(words('#s7 .obj'), 59.25, 0.1, 0.9);
+reveal(words('#s7 .simple'), 59.9, 0.1);
+reveal(words('#s7 .aider'), 61.0, 0.07, 0.7);
+$$('#s7 .aider b').forEach((b, i) => tl.fromTo(b, { color: 'rgba(244,236,225,.72)' }, { color: '#E2BE72', duration: .4 }, [61.3, 62.3, 63.3][i]));
+tl.fromTo('#s7 .vline', { scaleY: 0 }, { scaleY: 1, duration: 7, ease: 'power1.inOut' }, 64.2);
+[[64.4, 1], [66.4, 2], [68.4, 3]].forEach(([t, n]) => {
+  const b = `#s7 .b${n}`;
+  tl.fromTo(`${b} .n`, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: .5 }, t);
+  reveal($$(`${b} .v > span`), t + .05, 0, .9);
+  reveal($$(`${b} .s > span`), t + .45, 0, .8);
+  if (n > 1) tl.to(`#s7 .b${n - 1} .v`, { color: 'rgba(244,236,225,.4)', duration: .6 }, t);
+});
+tl.to('#s7 .b3 .v', { color: '#E2BE72', duration: .8 }, 70.2);
+
+/* ---------- S8 · 72 → 86 ---------- */
+enter('#s8', 71.85, 'up', 0.8);
+leave('#s7', 72.7);
+tl.fromTo('#s8 .label', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .7 }, 72.3);
+reveal(words('#s8 .crois'), 72.3, 0.07);
+reveal(words('#s8 .pas'), 73.5, 0.06);
+reveal(words('#s8 .publier'), 74.7, 0.1, 0.9);
+tl.to('#s8 .partA', { y: -80, opacity: 0, duration: .7, ease: 'power2.in' }, 76.4);
+reveal(words('#s8 .mais'), 76.9, 0.08);
+[[77.4, 1], [79.3, 2], [81.2, 3]].forEach(([t, n]) => {
+  reveal($$(`#s8 .v${n} .v > span`), t, 0, .9);
+  reveal($$(`#s8 .v${n} .s > span`), t + .4, 0, .8);
+});
+tl.fromTo('#s8 .cutwrap', { opacity: 0, y: 60, filter: 'brightness(0.12) contrast(1.1)' }, { opacity: 1, y: 0, filter: 'brightness(0.18) contrast(1.1)', duration: 1.5, ease: 'power2.out' }, 77.2);
+tl.fromTo('#s8 .spot', { opacity: 0, scaleY: .6 }, { opacity: 1, scaleY: 1, duration: 1.6, ease: 'power2.out' }, 82.0);
+tl.to('#s8 .cutwrap', { filter: 'brightness(1) contrast(1)', duration: 1.8, ease: 'power2.out' }, 82.1);
+tl.fromTo('#s8 .floor', { opacity: 0 }, { opacity: 1, duration: 1.6 }, 82.3);
+tl.to('#s8 .cutwrap', { scale: 1.04, duration: 4, ease: 'none' }, 82.1);
+tl.to('#s8 .v3 .s', { color: '#FFF1D2', textShadow: '0 0 40px rgba(255,220,150,.8)', duration: 1.2 }, 82.2);
+$$('#s8 .dust').forEach((d, i) => {
+  const r = +d.dataset.r, t = 82.3 + (i % 9) * 0.18;
+  gsap.set(d, { opacity: 0 });
+  tl.fromTo(d, { y: 0, x: 0 }, { y: -160 - r * 220, x: (r - .5) * 90, duration: 3.6, ease: 'none' }, t);
+  tl.fromTo(d, { opacity: 0 }, { opacity: .9, duration: .6, ease: 'none' }, t);
+  tl.to(d, { opacity: 0, duration: 1, ease: 'none' }, t + 2.6);
+});
+
+/* ---------- S9a · 86 → 93.6 ---------- */
+enter('#s9a', 85.8, 'down', 0.8);
+leave('#s8', 86.6);
+[[86.2, 1], [88.5, 2], [90.8, 3]].forEach(([t, n]) => {
+  reveal($$(`#s9a .l${n} .v > span`), t, 0, 1.0);
+  reveal($$(`#s9a .l${n} .s > span`), t + .45, 0, .9);
+  if (n < 3) tl.fromTo(`#s9a .r${n}`, { scaleX: 0 }, { scaleX: 1, duration: .8, ease: 'power2.inOut' }, t + .9);
+});
+tl.fromTo('#s9a .sl', { scale: 1 }, { scale: 1.04, duration: 7.6, ease: 'none' }, 86);
+
+/* ---------- S9b · 93.6 → 100 ---------- */
+enter('#s9b', 93.4, 'up', 0.8);
+leave('#s9a', 94.3);
+tl.fromTo('#s9b .namebg', { scale: 1.1 }, { scale: 1.0, duration: 6.6, ease: 'none' }, 93.4);
+tl.fromTo('#s9b .cutout2', { y: 140, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2 }, 93.6);
+tl.to('#s9b .cutout2', { scale: 1.03, duration: 5, ease: 'none' }, 94.8);
+tl.fromTo('#s9b .glow', { opacity: 0, scale: .7 }, { opacity: 1, scale: 1, duration: 2 }, 93.8);
+tl.fromTo(chars('#s9b .big-first'), { yPercent: 150 }, { yPercent: 0, duration: .85, stagger: .05, ease: 'power4.out' }, 94.0);
+tl.fromTo(chars('#s9b .big-last'), { yPercent: 150 }, { yPercent: 0, duration: .85, stagger: .05, ease: 'power4.out' }, 94.5);
+reveal(words('#s9b .roles'), 95.1, 0.05, 0.7);
+tl.fromTo('#s9b .cta', { y: 40, opacity: 0, xPercent: -50, x: 0 }, { y: 0, opacity: 1, duration: .8, ease: 'back.out(1.8)' }, 95.9);
+tl.fromTo('#s9b .cta svg', { x: 0 }, { x: 10, duration: .5, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 96.8);
+tl.to('#fade', { opacity: 1, duration: .7, ease: 'power1.in' }, 99.3);
+
+/* ---- grain jitter: one position per frame (30 fps) ---- */
+const grain = $('#grain');
+function grainAt(t) { const f = Math.floor(t * 30); grain.style.transform = `translate(${(f * 71) % 60 - 30}px,${(f * 37) % 60 - 30}px)`; }
+
+/* ---- seek API used by the renderer ---- */
+window.seek = t => { tl.seek(t, false); grainAt(t); };
+window.DURATION = DURATION;
+window.ready = Promise.all([
+  document.fonts.ready,
+  ...["400 100px Anton", "800 100px Montserrat", "500 100px Montserrat", "700 100px Montserrat", "600 100px Montserrat", "italic 600 100px 'Playfair Display'"].map(f => document.fonts.load(f, 'AÉéàç')),
+  ...$$('img').map(i => i.complete ? Promise.resolve() : new Promise(r => { i.onload = i.onerror = r; }))
+]).then(() => document.fonts.ready);
+
+/* ---- preview player ---- */
+const stage = $('#stage');
+function fit() {
+  if (RENDER) return;
+  const w = $('#wrap'); const s = Math.min(w.clientWidth / 1080, w.clientHeight / 1920);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize', fit); fit();
+const btn = $('#playBtn'), scrub = $('#scrub'), time = $('#time');
+const fmt = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+let playing = false, t0 = 0, start = 0;
+function frame(now) {
+  if (!playing) return;
+  let t = t0 + (now - start) / 1000;
+  if (t >= DURATION) { t = DURATION; playing = false; btn.textContent = '↺'; }
+  window.seek(t); scrub.value = t; time.textContent = `${fmt(t)} / 1:40`;
+  if (playing) requestAnimationFrame(frame);
+}
+btn.onclick = () => {
+  if (playing) { playing = false; btn.textContent = '▶'; return; }
+  t0 = +scrub.value >= DURATION ? 0 : +scrub.value; start = performance.now(); playing = true;
+  btn.textContent = '❚❚'; requestAnimationFrame(frame);
+};
+scrub.oninput = () => { playing = false; btn.textContent = '▶'; window.seek(+scrub.value); time.textContent = `${fmt(+scrub.value)} / 1:40`; };
+window.seek(0);
+</script>
+</body>
+</html>
