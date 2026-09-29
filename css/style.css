@@ -378,6 +378,8 @@ footer strong{color:var(--vert);font-weight:600;}
 
 /* ═══ TOAST ═══ */
 .toast{position:fixed;bottom:28px;right:28px;background:var(--texte);color:#fff;padding:13px 20px;border-radius:var(--radius-md);font-size:14px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:9999;transform:translateY(80px);opacity:0;transition:transform .3s ease,opacity .3s ease;display:flex;align-items:center;gap:10px;max-width:340px;}
+/* Même invisible, le toast occupe sa place : il ne doit jamais bloquer les clics dessous. */
+.toast{pointer-events:none;}
 .toast.visible{transform:translateY(0);opacity:1;}
 .toast.vert{background:var(--vert);}.toast.rouge{background:#E24B4A;}
 
@@ -395,6 +397,40 @@ footer strong{color:var(--vert);font-weight:600;}
 
 /* ═══ ÉDITION PROFIL ═══ */
 .edit-profil-liste-comp{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+
+/* ═══ FENÊTRES : défilement si le contenu dépasse l'écran (petits téléphones) ═══ */
+.login-modal{max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;}
+.admin-overlay{padding:16px;}
+
+/* ═══ CANDIDATURE DÉJÀ ENVOYÉE ═══ */
+.btn-postuler-large.deja-postule{background:var(--vert-clair);color:var(--vert-fonce);cursor:default;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-postuler-large.deja-postule:hover{opacity:1;}
+
+/* ═══ CANDIDATURES REÇUES (entreprise) ═══ */
+.candidat-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--bordure);}
+.candidat-item:last-child{border-bottom:none;}
+.candidat-avatar{width:44px;height:44px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;flex-shrink:0;}
+.candidat-info{flex:1;min-width:0;}
+.candidat-nom{font-weight:600;display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+.candidat-meta{font-size:12px;color:var(--texte-3);margin-top:3px;}
+.candidat-comps{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.candidat-actions{display:flex;gap:8px;margin-top:10px;}
+.candidat-actions .btn{padding:7px 14px;font-size:13px;}
+
+/* ═══ INSTALLATION DE L'APPLICATION ═══ */
+.banniere-installation{display:flex;align-items:center;gap:14px;background:var(--bg);border:1.5px solid var(--vert);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:20px;box-shadow:var(--ombre);}
+.banniere-installation-icone{width:44px;height:44px;border-radius:10px;flex-shrink:0;}
+.banniere-installation-texte{flex:1;font-size:13px;color:var(--texte-2);line-height:1.5;}
+.banniere-installation-texte strong{color:var(--texte);}
+.banniere-installation .btn{flex-shrink:0;}
+.banniere-installation-fermer{background:none;border:none;font-size:22px;line-height:1;color:var(--texte-3);cursor:pointer;padding:0 4px;flex-shrink:0;}
+.install-etapes{display:flex;flex-direction:column;gap:14px;margin-bottom:8px;}
+.install-bloc{background:var(--bg-2);border-radius:var(--radius-md);padding:14px 16px;}
+.install-bloc-titre{font-weight:600;font-size:14px;margin-bottom:8px;}
+.install-bloc ol{padding-left:20px;font-size:13px;color:var(--texte-2);line-height:1.7;}
+
+/* ═══ BARRE DE NAVIGATION DU BAS (mobile) ═══ */
+.bottom-nav{display:none;}
 
 /* ═══ RESPONSIVE ═══ */
 /* Le menu hamburger couvre aussi les tablettes : à cette largeur, la
@@ -445,6 +481,36 @@ footer strong{color:var(--vert);font-weight:600;}
   .login-modal{padding:28px 20px;}
   .hero-boutons{flex-direction:column;align-items:stretch;}
   .hero-boutons .btn{justify-content:center;}
+}
+
+/* Sur téléphone : barre d'onglets en bas, comme une application native.
+   Le menu hamburger reste disponible pour les liens secondaires (Admin...). */
+@media(max-width:700px){
+  .bottom-nav{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:200;
+    background:var(--bg);border-top:1px solid var(--bordure);
+    box-shadow:0 -4px 16px rgba(0,0,0,.06);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .bottom-nav-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    padding:8px 2px 7px;background:none;border:none;cursor:pointer;
+    font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--texte-3);
+    position:relative;-webkit-tap-highlight-color:transparent;
+  }
+  .bottom-nav-item .icon{width:22px;height:22px;}
+  .bottom-nav-item.actif{color:var(--vert);}
+  .bottom-nav-item.a-des-alertes::after{content:'';position:absolute;top:6px;left:calc(50% + 6px);width:9px;height:9px;border-radius:50%;background:#E24B4A;border:2px solid var(--bg);}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom));}
+  .toast{bottom:calc(76px + env(safe-area-inset-bottom));}
+  .banniere-installation{flex-wrap:wrap;}
+  .banniere-installation-texte{flex-basis:calc(100% - 90px);}
+  .banniere-installation .btn{flex:1;justify-content:center;}
+}
+
+/* Application installée : pas besoin du pied de page "site web". */
+@media(display-mode:standalone) and (max-width:700px){
+  footer{display:none;}
 }
 
 @media(max-width:420px){

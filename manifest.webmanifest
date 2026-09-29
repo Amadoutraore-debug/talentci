@@ -1,0 +1,25 @@
+{
+  "name": "TalentCI — Missions pour étudiants",
+  "short_name": "TalentCI",
+  "description": "Trouve des missions rémunérées auprès des PME et startups de Côte d'Ivoire.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F0F2EF",
+  "theme_color": "#1D9E75",
+  "lang": "fr",
+  "dir": "ltr",
+  "categories": ["education", "business", "productivity"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Voir les missions", "short_name": "Missions", "url": "./#/missions", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Mes notifications", "short_name": "Alertes", "url": "./#/notifications", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Mon profil", "short_name": "Profil", "url": "./#/profil", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

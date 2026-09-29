@@ -76,12 +76,16 @@ const ICONS = {
 };
 function icon(name) { return ICONS[name] || ''; }
 
-const { createClient } = supabase;
+// La bibliothèque supabase-js vient d'un CDN : si le réseau est mauvais
+// (ou hors-ligne) elle peut ne pas être chargée. On ne doit pas planter
+// tout le script pour autant — la navigation doit continuer à marcher.
+const createClient = window.supabase?.createClient;
 let db = null;
 let dbPret = false;
 
 function initSupabase(url, key) {
   if (!url || !key) return false;
+  if (!createClient) { console.error('supabase-js non chargé (problème réseau ?)'); return false; }
   try {
     db = createClient(url, key);
     dbPret = true;
@@ -243,7 +247,9 @@ function estAdmin() {
 document.addEventListener('DOMContentLoaded', async () => {
   const { url, key } = chargerConfig();
 
-  if (url && key) {
+  if (url && key && !createClient) {
+    afficherAlerteReseau();
+  } else if (url && key) {
     const ok = initSupabase(url, key);
     if (!ok) {
       montrerAlertDB();
@@ -254,7 +260,82 @@ document.addEventListener('DOMContentLoaded', async () => {
     montrerAlertDB();
     afficherAlerteAccueil();
   }
+
+  // Lien direct (#/missions...) ou application rouverte sur une page.
+  const pageInitiale = pageDepuisHash();
+  if (pageInitiale && pageInitiale !== 'accueil') allerVers(pageInitiale, { historique: false });
 });
+
+/* ══════════════════════════════════════════
+   APPLICATION INSTALLABLE (PWA)
+   ─────────────────────────────────────────
+   manifest.webmanifest + sw.js permettent d'installer TalentCI sur
+   l'écran d'accueil du téléphone comme une vraie application (icône,
+   plein écran, démarrage rapide, page hors-ligne).
+   - Android / Chrome / Edge : le navigateur émet `beforeinstallprompt`,
+     qu'on garde pour déclencher l'installation depuis notre bouton.
+   - iPhone / iPad (Safari) : pas d'API d'installation → on affiche
+     les instructions "Partager → Sur l'écran d'accueil".
+══════════════════════════════════════════ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => console.warn('Service worker non enregistré :', err));
+  });
+}
+
+let invitationInstallation = null;
+
+function estAppInstallee() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function estIOS() {
+  return /iphone|ipad|ipod/i.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function mettreAJourBoutonsInstallation() {
+  const visible = !estAppInstallee() && (invitationInstallation || estIOS());
+  document.querySelectorAll('.btn-installer').forEach(b => { b.style.display = visible ? '' : 'none'; });
+  const banniere = document.getElementById('banniere-installation');
+  let masquee = false;
+  try { masquee = localStorage.getItem('talentci_install_masquee') === '1'; } catch {}
+  if (banniere) banniere.style.display = visible && !masquee ? 'flex' : 'none';
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  invitationInstallation = e;
+  mettreAJourBoutonsInstallation();
+});
+
+window.addEventListener('appinstalled', () => {
+  invitationInstallation = null;
+  mettreAJourBoutonsInstallation();
+  afficherToast('party', 'TalentCI est installée sur ton téléphone !', 'vert');
+});
+
+document.addEventListener('DOMContentLoaded', mettreAJourBoutonsInstallation);
+
+async function installerApplication() {
+  if (invitationInstallation) {
+    invitationInstallation.prompt();
+    const { outcome } = await invitationInstallation.userChoice;
+    invitationInstallation = null;
+    mettreAJourBoutonsInstallation();
+    if (outcome === 'accepted') afficherToast('check', 'Installation en cours...', 'vert');
+    return;
+  }
+  document.getElementById('modal-installation').classList.add('visible');
+}
+
+function fermerInstallation() {
+  document.getElementById('modal-installation').classList.remove('visible');
+}
+
+function masquerBanniereInstallation() {
+  try { localStorage.setItem('talentci_install_masquee', '1'); } catch {}
+  mettreAJourBoutonsInstallation();
+}
 
 function montrerAlertDB() {
   document.getElementById('config-banner').style.display = 'flex';
@@ -272,19 +353,44 @@ function afficherAlerteAccueil() {
   }
 }
 
+function afficherAlerteReseau() {
+  const el = document.getElementById('alerte-db-accueil');
+  if (el) {
+    el.innerHTML = `<div class="db-alerte">
+      <div class="db-alerte-icone">${icon('warning')}</div>
+      <div class="db-alerte-texte"><strong>Connexion impossible</strong><br>
+      Vérifie ta connexion Internet puis réessaie.</div>
+      <button class="db-alerte-btn" onclick="location.reload()">Réessayer</button>
+    </div>`;
+  }
+}
+
 async function demarrerApp() {
   if (!dbPret || !db) return;
 
-  db.auth.onAuthStateChange(async (event, session) => {
-    if (session && session.user) {
-      utilisateurConnecte = session.user;
-      profilConnecte = await chargerProfil(session.user.id);
-    } else {
-      utilisateurConnecte = null;
-      profilConnecte = null;
-    }
-    mettreAJourNavbar();
-    mettreAJourProfil();
+  // ⚠️ Le callback ne doit PAS attendre (await) d'autres appels Supabase :
+  // supabase-js garde un verrou pendant son exécution, et chargerProfil()
+  // a besoin de ce même verrou → blocage de l'app (connexion qui "tourne"
+  // indéfiniment). On diffère donc le travail avec setTimeout.
+  db.auth.onAuthStateChange((event, session) => {
+    setTimeout(async () => {
+      const etaitConnecte = !!utilisateurConnecte;
+      if (session && session.user) {
+        utilisateurConnecte = session.user;
+        profilConnecte = await chargerProfil(session.user.id);
+      } else {
+        utilisateurConnecte = null;
+        profilConnecte = null;
+      }
+      mettreAJourNavbar();
+      mettreAJourProfil();
+      // Retour de Google OAuth ou connexion dans un autre onglet :
+      // recharger ce qui dépend de l'utilisateur.
+      if (etaitConnecte !== !!utilisateurConnecte) {
+        chargerNotifications();
+        chargerMissions();
+      }
+    }, 0);
   });
 
   const { data: { session } } = await db.auth.getSession();
@@ -308,6 +414,7 @@ async function demarrerApp() {
 ══════════════════════════════════════════ */
 function verifierDB(action) {
   if (!dbPret || !db) {
+    if (!createClient) { afficherToast('warning', 'Pas de connexion Internet — réessaie plus tard', 'rouge'); return false; }
     afficherToast('settings', 'Configure d\'abord la base de données !', 'rouge');
     ouvrirConfigDB();
     return false;
@@ -393,6 +500,10 @@ async function seConnecter() {
   }
   setBtnLoading('btn-seconnecter', false, 'Se connecter →');
   fermerAuth();
+  utilisateurConnecte = data.user;
+  profilConnecte = await chargerProfil(data.user.id);
+  mettreAJourNavbar();
+  mettreAJourProfil();
   const nom = profilConnecte?.nom || data.user.email.split('@')[0];
   afficherToast('login', 'Bienvenue ' + nom + ' !', 'vert');
   await chargerMissions();
@@ -425,7 +536,9 @@ async function seDeconnecter() {
   if (!verifierDB()) return;
   await db.auth.signOut();
   utilisateurConnecte = null; profilConnecte = null;
+  mesCandidaturesIds = new Set();
   mettreAJourNavbar();
+  filtrerMissions();
   allerVers('accueil');
   afficherToast('logout', 'Tu es déconnecté(e)', '');
 }
@@ -559,7 +672,18 @@ async function chargerMissions() {
     .order('created_at', { ascending: false });
   if (error) { console.error('Erreur missions:', error.message); toutesLesMissions = []; }
   else toutesLesMissions = data || [];
+  await chargerMesCandidaturesIds();
   filtrerMissions();
+}
+
+// Missions auxquelles l'étudiant connecté a déjà postulé : permet
+// d'afficher "Candidature envoyée" au lieu de "Postuler" sur la carte.
+let mesCandidaturesIds = new Set();
+async function chargerMesCandidaturesIds() {
+  mesCandidaturesIds = new Set();
+  if (!dbPret || !db || !utilisateurConnecte) return;
+  const { data } = await db.from('candidatures').select('mission_id').eq('user_id', utilisateurConnecte.id);
+  (data || []).forEach(c => mesCandidaturesIds.add(c.mission_id));
 }
 
 /* ══════════════════════════════════════════
@@ -568,7 +692,10 @@ async function chargerMissions() {
 async function publierMission() {
   if (!verifierDB()) return;
   if (!utilisateurConnecte) { afficherToast('lock', 'Connecte-toi pour publier', 'rouge'); ouvrirAuth('connexion'); return; }
-  const titre       = document.getElementById('champ-titre').value.trim();
+  if (profilConnecte?.type !== 'entreprise' && !estAdmin()) {
+    afficherToast('warning', 'Seuls les comptes Entreprise peuvent publier des missions', 'rouge'); return;
+  }
+  const titre      = document.getElementById('champ-titre').value.trim();
   const categorie   = document.getElementById('champ-categorie').value;
   const description = document.getElementById('champ-description').value.trim();
   const budget      = parseInt(document.getElementById('champ-budget').value);
@@ -614,6 +741,8 @@ async function postuler(missionId) {
     statut: 'en_attente', created_at: new Date().toISOString()
   });
   if (error) { afficherToast('error','Erreur : ' + error.message,'rouge'); return; }
+  mesCandidaturesIds.add(missionId);
+  filtrerMissions();
   await ajouterNotification({
     user_id: utilisateurConnecte.id, type: 'candidature',
     icone:'check', icone_bg:'#E1F5EE', icone_color:'#0F6E56',
@@ -661,6 +790,7 @@ async function chargerNotifications() {
   if (elBadge) elBadge.textContent = nbNonLues > 0 ? `(${nbNonLues} non lues)` : '(tout lu)';
   const btnNotifNav = document.getElementById('btn-notif-nav');
   if (btnNotifNav) btnNotifNav.classList.toggle('notif-badge-nav', nbNonLues > 0);
+  document.getElementById('bottom-nav-notif')?.classList.toggle('a-des-alertes', nbNonLues > 0);
   if (notifs.length === 0) {
     liste.innerHTML = `<div style="text-align:center;padding:48px;color:var(--texte-3);"><div style="font-size:40px;margin-bottom:12px;">${icon('bell')}</div><p>Aucune notification pour l'instant.</p></div>`;
     return;
@@ -752,7 +882,9 @@ function rendreCarte(m) {
         <div class="mission-info-item">${icon('bars')}<span>${escHtml(m.niveau)}</span></div>
       </div>
       <div class="mission-salaire-grande">${m.salaire.toLocaleString('fr-FR')} FCFA</div>
-      <button class="btn-postuler-large" onclick="postuler(${m.id})">Postuler →</button>
+      ${mesCandidaturesIds.has(m.id)
+        ? `<button class="btn-postuler-large deja-postule" disabled>${icon('check')} Candidature envoyée</button>`
+        : `<button class="btn-postuler-large" onclick="postuler(${m.id})">Postuler →</button>`}
       <div class="mission-editeur">
         <div class="mission-editeur-logo" style="background:${bg};color:${txt}">${escHtml(m.initiales||'?')}</div>
         <span>Publié par ${escHtml(m.entreprise)}</span>
@@ -769,8 +901,11 @@ function filtrerMissions() {
   if (!grille) return;
   const recherche = input ? input.value.toLowerCase() : '';
   const tri       = triSelect ? triSelect.value : 'recent';
+  const favoris   = lireFavoris();
+  toutesLesMissions.forEach(m => { m.fav = favoris.has(m.id); });
   let resultats = toutesLesMissions.filter(m => {
-    const matchCat  = filtreCourant === 'Tous' || m.categorie === filtreCourant;
+    const matchCat  = filtreCourant === 'Tous'
+      || (filtreCourant === 'Favoris' ? m.fav : m.categorie === filtreCourant);
     const matchRech = (m.titre + m.entreprise + m.categorie + m.description).toLowerCase().includes(recherche);
     return matchCat && matchRech;
   });
@@ -780,6 +915,8 @@ function filtrerMissions() {
   if (resultats.length === 0) {
     grille.innerHTML = toutesLesMissions.length === 0
       ? `<div class="aucun-resultat"><div style="font-size:48px">${icon('clipboard')}</div><p>Aucune mission disponible pour l'instant.<br><span style="font-size:13px">Sois le premier à publier une mission !</span></p></div>`
+      : filtreCourant === 'Favoris' && !recherche
+      ? `<div class="aucun-resultat"><div style="font-size:48px">${icon('starOutline')}</div><p>Aucun favori pour l'instant.<br><span style="font-size:13px">Touche l'étoile d'une mission pour la retrouver ici.</span></p></div>`
       : `<div class="aucun-resultat"><div style="font-size:48px">${icon('search')}</div><p>Aucune mission trouvée pour cette recherche.</p></div>`;
   } else {
     grille.innerHTML = resultats.map(rendreCarte).join('');
@@ -802,13 +939,23 @@ function allerVersCategorie(cat) {
   filtrerMissions();
 }
 
+// Favoris gardés dans le navigateur (localStorage) pour survivre au
+// rechargement de la page / à la fermeture de l'application.
+function lireFavoris() {
+  try { return new Set(JSON.parse(localStorage.getItem('talentci_favoris') || '[]')); }
+  catch { return new Set(); }
+}
+function ecrireFavoris(set) {
+  try { localStorage.setItem('talentci_favoris', JSON.stringify([...set])); } catch {}
+}
+
 function toggleFav(id) {
-  const m = toutesLesMissions.find(x => x.id === id);
-  if (m) {
-    m.fav = !m.fav;
-    afficherToast(m.fav ? 'starFilled' : 'starOutline', m.fav ? 'Mission sauvegardée !' : 'Retirée des favoris', m.fav ? 'vert' : '');
-    filtrerMissions();
-  }
+  const favoris = lireFavoris();
+  const estFav = !favoris.has(id);
+  if (estFav) favoris.add(id); else favoris.delete(id);
+  ecrireFavoris(favoris);
+  afficherToast(estFav ? 'starFilled' : 'starOutline', estFav ? 'Mission sauvegardée !' : 'Retirée des favoris', estFav ? 'vert' : '');
+  filtrerMissions();
 }
 
 /* ══════════════════════════════════════════
@@ -915,15 +1062,96 @@ async function chargerMissionsEntreprise() {
       </div>
       <div class="pub-actions">
         <div class="pub-montant">${m.salaire.toLocaleString('fr-FR')} FCFA</div>
-        <button class="btn-mini" onclick="afficherToast('users','${nb} candidature(s) pour cette mission','')">Candidatures</button>
+        <button class="btn-mini" onclick="voirCandidatures(${m.id})">Candidatures (${nb})</button>
         <button class="btn-mini" style="color:#A32D2D;" onclick="supprimerMission(${m.id})">Supprimer</button>
       </div>
     </div>`;
   }).join('');
 }
 
-async function supprimerMission(id) {
+/* ══════════════════════════════════════════
+   CANDIDATURES REÇUES (côté entreprise)
+   ─────────────────────────────────────────
+   Lecture autorisée par la policy "candidatures_lecture" (propriétaire
+   de la mission) ; le changement de statut par
+   "candidatures_maj_par_entreprise_ou_admin". L'étudiant est notifié
+   par le trigger notifier_statut_candidature (voir sql/).
+══════════════════════════════════════════ */
+let missionCandidaturesOuverte = null;
+
+async function voirCandidatures(missionId) {
+  if (!verifierDB() || !utilisateurConnecte) return;
+  missionCandidaturesOuverte = missionId;
+  const modal = document.getElementById('modal-candidatures');
+  const liste = document.getElementById('candidatures-recues-liste');
+  liste.innerHTML = '<div style="text-align:center;padding:24px;color:var(--texte-3);">Chargement...</div>';
+  modal.classList.add('visible');
+
+  const { data: mission } = await db.from('missions').select('titre').eq('id', missionId).maybeSingle();
+  setText('candidatures-mission-titre', mission?.titre || '');
+
+  const { data: cands, error } = await db
+    .from('candidatures')
+    .select('id, user_id, statut, created_at')
+    .eq('mission_id', missionId)
+    .order('created_at', { ascending: false });
+  if (error) { liste.innerHTML = '<div style="text-align:center;padding:24px;color:var(--texte-3);">Impossible de charger les candidatures.</div>'; return; }
+  if (!cands || cands.length === 0) {
+    liste.innerHTML = `<div style="text-align:center;padding:32px;color:var(--texte-3);"><div style="font-size:36px;margin-bottom:8px;">${icon('inbox')}</div>Aucune candidature pour l'instant.</div>`;
+    return;
+  }
+
+  const ids = cands.map(c => c.user_id);
+  const { data: profils } = await db.from('profils')
+    .select('user_id, nom, universite, competences, avatar_url')
+    .in('user_id', ids);
+  const parUser = Object.fromEntries((profils || []).map(p => [p.user_id, p]));
+
+  liste.innerHTML = cands.map(c => {
+    const p = parUser[c.user_id] || {};
+    const nom = p.nom || 'Étudiant';
+    const ini = nom.split(' ').map(x => x[0]).join('').substring(0,2).toUpperCase();
+    const comps = Array.isArray(p.competences) ? p.competences : [];
+    const statut = c.statut === 'acceptee'
+      ? '<span class="badge badge-vert">Acceptée</span>'
+      : c.statut === 'refusee'
+      ? '<span class="badge" style="background:#FCEBEB;color:#A32D2D;">Refusée</span>'
+      : '<span class="badge badge-amber">En attente</span>';
+    const avatarStyle = p.avatar_url
+      ? `background-image:url('${cssUrl(p.avatar_url)}');background-size:cover;background-position:center;`
+      : '';
+    return `<div class="candidat-item">
+      <div class="candidat-avatar" style="${avatarStyle}">${p.avatar_url ? '' : escHtml(ini)}</div>
+      <div class="candidat-info">
+        <div class="candidat-nom">${escHtml(nom)} ${statut}</div>
+        <div class="candidat-meta">${escHtml(p.universite || '')}${p.universite ? ' · ' : ''}Postulé le ${formatDate(c.created_at)}</div>
+        ${comps.length ? `<div class="candidat-comps">${comps.map(x => `<span class="comp-pill">${escHtml(x)}</span>`).join('')}</div>` : ''}
+        ${c.statut === 'en_attente' ? `<div class="candidat-actions">
+          <button class="btn btn-vert" onclick="changerStatutCandidature(${c.id}, 'acceptee')">Accepter</button>
+          <button class="btn btn-blanc" style="color:#A32D2D;" onclick="changerStatutCandidature(${c.id}, 'refusee')">Refuser</button>
+        </div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function fermerCandidatures() {
+  document.getElementById('modal-candidatures').classList.remove('visible');
+  missionCandidaturesOuverte = null;
+}
+
+async function changerStatutCandidature(candidatureId, statut) {
   if (!verifierDB()) return;
+  if (statut === 'refusee' && !confirm('Refuser cette candidature ? L\'étudiant sera prévenu.')) return;
+  const { error } = await db.from('candidatures').update({ statut }).eq('id', candidatureId);
+  if (error) { afficherToast('error', 'Erreur : ' + error.message, 'rouge'); return; }
+  afficherToast(statut === 'acceptee' ? 'check' : 'info',
+    statut === 'acceptee' ? 'Candidature acceptée — l\'étudiant est prévenu' : 'Candidature refusée', statut === 'acceptee' ? 'vert' : '');
+  if (missionCandidaturesOuverte) await voirCandidatures(missionCandidaturesOuverte);
+}
+
+async function supprimerMission(id) {
+  if (!verifierDB() || !utilisateurConnecte) return;
   if (!confirm('Supprimer cette mission ? Cette action est irréversible.')) return;
   const { error } = await db.from('missions').delete().eq('id', id).eq('user_id', utilisateurConnecte.id);
   if (!error) { afficherToast('trash','Mission supprimée','rouge'); await chargerMissions(); await chargerMissionsEntreprise(); }
@@ -1049,12 +1277,36 @@ function reinitialiserFormulaire() {
 ══════════════════════════════════════════ */
 const PAGES = ['accueil','missions','profil','entreprise','notifications','admin'];
 
-function allerVers(nomPage) {
+// Chaque page a son adresse (#/missions, #/profil...) : le bouton
+// "Retour" du téléphone revient à la page précédente au lieu de
+// quitter l'application, et on peut partager/ouvrir un lien direct.
+function pageDepuisHash() {
+  const m = location.hash.match(/^#\/([a-z]+)/);
+  return m && PAGES.includes(m[1]) ? m[1] : null;
+}
+window.addEventListener('popstate', () => {
+  fermerModalesOuvertes();
+  allerVers(pageDepuisHash() || 'accueil', { historique: false });
+});
+
+function fermerModalesOuvertes() {
+  document.querySelectorAll('.admin-overlay.visible, .modal-overlay.visible')
+    .forEach(el => el.classList.remove('visible'));
+}
+
+function allerVers(nomPage, options = {}) {
   fermerMobileMenu();
   if (nomPage === 'admin' && !estAdmin()) {
     afficherToast('error','Accès réservé aux administrateurs','rouge');
     nomPage = 'accueil';
   }
+  if (options.historique !== false && pageDepuisHash() !== nomPage
+      && !(nomPage === 'accueil' && !location.hash)) {
+    history.pushState(null, '', '#/' + nomPage);
+  }
+  document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+    btn.classList.toggle('actif', btn.getAttribute('data-page') === nomPage);
+  });
   PAGES.forEach(p => { const el = document.getElementById('page-' + p); if (el) el.classList.remove('active'); });
   const cible = document.getElementById('page-' + nomPage);
   if (cible) cible.classList.add('active');
@@ -1124,7 +1376,7 @@ function filtrerNotifs(btn) {
 function appliquerAvatarVisuel(el, url, initiales) {
   if (!el) return;
   if (url) {
-    el.style.backgroundImage = `url('${url}')`;
+    el.style.backgroundImage = `url('${cssUrl(url)}')`;
     el.style.backgroundSize = 'cover';
     el.style.backgroundPosition = 'center';
     el.textContent = '';
@@ -1170,6 +1422,11 @@ function fermerAvatarMenu() {
   document.getElementById('avatar-dropdown')?.classList.remove('visible');
 }
 document.addEventListener('click', fermerAvatarMenu);
+
+// Fermer les fenêtres en touchant le fond sombre.
+['modal-candidatures', 'modal-installation'].forEach(id => {
+  document.getElementById(id)?.addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible'); });
+});
 
 function toggleMobileMenu(event) {
   if (event) event.stopPropagation();
@@ -1222,6 +1479,13 @@ function formatDate(iso) {
 function escHtml(str) {
   if (!str) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+// Rend une URL sûre à placer dans url('...') en CSS (évite qu'une URL
+// piégée ne ferme la chaîne et injecte du style/HTML).
+function cssUrl(url) {
+  if (!url) return '';
+  return String(url).replace(/["'()\\\s<>]/g,
+    c => '%' + c.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0'));
 }
 function escAttr(str) {
   if (!str) return '';
