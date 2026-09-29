@@ -9,7 +9,7 @@ const FF = process.env.FFMPEG, FPS = 30;
   const br = await chromium.launch();
   const p = await br.newPage({ viewport: { width: 1080, height: 1920 } });
   p.on('pageerror', e => console.log('pageerror:', e.message));
-  await p.goto('file://' + __dirname + '/index.html?render');
+  await p.goto('file://' + __dirname + '/index.html?render', { waitUntil: 'domcontentloaded' });
   await p.evaluate(() => window.ready);
   const t0 = Date.now();
   for (let f = a; f < b; f++) {
