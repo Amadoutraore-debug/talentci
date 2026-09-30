@@ -344,10 +344,15 @@
               <div class="profil-nom" id="profil-nom-affiche">—</div>
               <div class="profil-titre" id="profil-type-affiche">—</div>
               <div class="profil-univ" id="profil-univ-affiche"></div>
+              <div class="profil-verif" id="profil-verif"></div>
               <div class="dispo-badge">Disponible</div>
               <hr class="profil-divider"/>
-              <button class="btn-editer" onclick="ouvrirEditProfil()"><svg class="icon"><use href="#i-pencil"/></svg> Modifier mon profil</button>
+              <button class="btn-editer" onclick="ouvrirEditProfil()"><svg class="icon"><use href="#i-pencil"/></svg> Modifier mon CV</button>
               <button class="btn-editer" style="margin-top:8px;color:#A32D2D;" onclick="seDeconnecter()"><svg class="icon"><use href="#i-logout"/></svg> Se déconnecter</button>
+            </div>
+            <div class="carte-bloc" id="profil-cv-bloc">
+              <div class="bloc-titre">Mon mini-CV</div>
+              <div id="profil-cv"></div>
             </div>
             <div class="carte-bloc">
               <div class="bloc-titre">Compétences</div>
@@ -521,6 +526,7 @@
           </div>
           <button class="admin-menu-item actif" onclick="changerPanneau('dashboard',this)"><span class="admin-menu-icone"><svg class="icon"><use href="#i-chart"/></svg></span> Tableau de bord</button>
           <button class="admin-menu-item" onclick="changerPanneau('utilisateurs',this)"><span class="admin-menu-icone"><svg class="icon"><use href="#i-users"/></svg></span> Utilisateurs</button>
+          <button class="admin-menu-item" onclick="changerPanneau('verifications',this);chargerVerifications()"><span class="admin-menu-icone"><svg class="icon"><use href="#i-check"/></svg></span> Vérifications <span class="admin-compteur" id="admin-nb-attente"></span></button>
           <button class="admin-menu-item" onclick="changerPanneau('missions-admin',this)"><span class="admin-menu-icone"><svg class="icon"><use href="#i-target"/></svg></span> Missions</button>
           <button class="admin-menu-item" onclick="ouvrirConfigDB()" style="color:rgba(255,200,0,.8);"><span class="admin-menu-icone"><svg class="icon"><use href="#i-database"/></svg></span> Config Base de données</button>
           <div class="admin-deconnexion">
@@ -551,6 +557,10 @@
                 <tbody id="table-users"></tbody>
               </table>
             </div>
+          </div>
+          <div class="admin-panneau" id="admin-verifications">
+            <div class="admin-section-titre"><span>Vérification des pièces d'identité</span></div>
+            <div id="liste-verifications"><div style="text-align:center;padding:24px;color:var(--texte-3);">Chargement...</div></div>
           </div>
           <div class="admin-panneau" id="admin-missions-admin">
             <div class="admin-section-titre"><span>Toutes les missions</span><span id="admin-nb-missions" style="font-size:13px;font-weight:400;color:var(--texte-3);"></span></div>
@@ -650,40 +660,100 @@
      MODAL ÉDITION PROFIL
 ════════════════════════════════ -->
 <div class="admin-overlay" id="modal-edit-profil" style="z-index:600;">
-  <div class="login-modal" style="max-width:440px;">
-    <div class="login-logo-admin" style="margin-bottom:16px;">
-      <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);"><svg class="icon"><use href="#i-pencil"/></svg></div>
-      <div class="login-titre">Modifier mon profil</div>
-      <div class="login-sous-titre">Ces informations sont visibles par les autres utilisateurs</div>
+  <div class="login-modal cv-modal">
+    <div class="login-logo-admin" style="margin-bottom:12px;">
+      <div class="login-logo-icone" style="background:var(--vert-clair);color:var(--vert-fonce);"><svg class="icon"><use href="#i-filetext"/></svg></div>
+      <div class="login-titre" id="edit-titre">Mon mini-CV</div>
+      <div class="login-sous-titre" id="edit-sous-titre">Ces informations sont vues par les entreprises</div>
     </div>
+    <div class="cv-obligatoire" id="edit-obligatoire" style="display:none;">
+      <strong>Complète ton profil pour continuer.</strong> Les champs marqués <span class="requis">*</span> sont obligatoires : ils permettent aux entreprises de savoir qui tu es avant de te recruter.
+    </div>
+
+    <!-- 1. Identité -->
+    <div class="cv-section-titre">1. Identité</div>
     <div class="login-champ" style="text-align:center;">
       <img id="edit-avatar-preview" src="" alt="" style="display:none;width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 10px;border:3px solid var(--vert);"/>
       <div id="edit-avatar-placeholder" style="width:88px;height:88px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-family:'Syne',sans-serif;font-size:24px;font-weight:700;">?</div>
       <label class="btn btn-blanc" style="cursor:pointer;">
-        <svg class="icon"><use href="#i-camera"/></svg> Changer la photo
+        <svg class="icon"><use href="#i-camera"/></svg> Photo de profil
         <input type="file" id="edit-avatar-input" accept="image/*" style="display:none;" onchange="previewAvatarProfil(event)"/>
       </label>
-      <div class="form-hint">JPG ou PNG, 3 Mo maximum</div>
+      <div class="form-hint">Recommandée — JPG ou PNG, 3 Mo maximum</div>
     </div>
-    <div class="login-champ"><label class="login-label">Nom complet</label><input class="login-input" id="edit-nom" type="text"/></div>
+    <div class="login-champ"><label class="login-label" id="lbl-nom">Nom complet <span class="requis">*</span></label><input class="login-input" id="edit-nom" type="text" autocomplete="name"/></div>
     <div class="login-champ" id="edit-type-wrap">
       <label class="login-label">Type de compte</label>
-      <select class="login-input" id="edit-type" onchange="document.getElementById('edit-univ-wrap').style.display=this.value==='etudiant'?'block':'none'">
+      <select class="login-input" id="edit-type" onchange="majLibellesProfil(this.value)">
         <option value="etudiant">Étudiant(e) — je cherche des missions</option>
         <option value="entreprise">Entreprise — je publie des offres</option>
       </select>
     </div>
+    <div class="login-champ"><label class="login-label">Ville <span class="requis">*</span></label><input class="login-input" id="edit-ville" type="text" placeholder="Abidjan, Bouaké, Yamoussoukro..." autocomplete="address-level2"/></div>
+
+    <!-- 2. Mini-CV -->
+    <div class="cv-section-titre">2. <span id="lbl-section-cv">Mon profil professionnel</span></div>
+    <div class="login-champ"><label class="login-label"><span id="lbl-specialite">Spécialité / domaine</span> <span class="requis">*</span></label><input class="login-input" id="edit-specialite" type="text" placeholder="ex : Design graphique, Développement web, Comptabilité..."/></div>
     <div class="login-champ" id="edit-univ-wrap"><label class="login-label">Université / École</label><input class="login-input" id="edit-univ" type="text" placeholder="INPHB, UFHB, PIGIER..."/></div>
     <div class="login-champ">
-      <label class="login-label">Compétences</label>
+      <label class="login-label"><span id="lbl-bio">Présente-toi</span> <span class="requis">*</span></label>
+      <textarea class="login-input cv-textarea" id="edit-bio" rows="4" maxlength="800" oninput="majCompteur('edit-bio','compteur-bio',40)" placeholder="Qui es-tu, ce que tu sais faire, ce que tu recherches... (40 caractères minimum)"></textarea>
+      <div class="form-hint" id="compteur-bio">0 / 40 caractères minimum</div>
+    </div>
+    <div class="login-champ" id="edit-parcours-wrap">
+      <label class="login-label">Formation et expériences <span class="requis" id="requis-parcours">*</span></label>
+      <textarea class="login-input cv-textarea" id="edit-parcours" rows="4" maxlength="1500" placeholder="ex : Licence 3 Marketing — UFHB (2024)&#10;Stage community manager — Agence X (3 mois)&#10;Projet : site web pour une boutique..."></textarea>
+    </div>
+    <div class="login-champ" id="edit-competences-wrap">
+      <label class="login-label">Compétences <span class="requis" id="requis-competences">*</span></label>
       <div style="display:flex;gap:8px;">
         <input class="login-input" id="edit-competence-input" type="text" placeholder="ex: Figma" onkeydown="ajouterCompetenceProfil(event)" style="flex:1;"/>
         <button type="button" class="btn btn-blanc" style="flex-shrink:0;" onclick="ajouterCompetenceProfilDepuisInput()">+ Ajouter</button>
       </div>
       <div class="edit-profil-liste-comp" id="edit-chips-competences"></div>
     </div>
-    <button class="btn-login-admin" id="btn-enregistrer-profil" style="background:var(--vert);" onclick="enregistrerProfil()">Enregistrer →</button>
-    <button class="login-annuler" onclick="fermerEditProfil()">Annuler</button>
+    <div class="login-champ"><label class="login-label">Lien (portfolio, LinkedIn, site...)</label><input class="login-input" id="edit-lien" type="url" inputmode="url" autocapitalize="none" placeholder="https://..."/></div>
+
+    <!-- 3. Contact et vérification (privé) -->
+    <div class="cv-section-titre">3. Contact et vérification <span class="cv-prive"><svg class="icon"><use href="#i-lock"/></svg> privé</span></div>
+    <div class="cv-note-privee">Ton numéro n'est visible que par les entreprises auprès desquelles tu postules. Ta pièce n'est visible que par l'équipe TalentCI, pour vérifier ton identité et t'attribuer le badge <strong>Vérifié</strong>.</div>
+    <div class="login-champ"><label class="login-label">Téléphone (WhatsApp de préférence) <span class="requis">*</span></label><input class="login-input" id="edit-telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="07 00 00 00 00"/></div>
+    <div class="login-champ">
+      <label class="login-label">Type de pièce <span class="requis">*</span></label>
+      <select class="login-input" id="edit-piece-type">
+        <option value="">-- Choisir --</option>
+        <option>Carte nationale d'identité (CNI)</option>
+        <option>Passeport</option>
+        <option>Attestation d'identité</option>
+        <option>Carte consulaire</option>
+        <option>Permis de conduire</option>
+        <option>Carte d'étudiant</option>
+        <option>Registre du commerce (RCCM)</option>
+      </select>
+    </div>
+    <div class="login-champ"><label class="login-label">Numéro de la pièce <span class="requis">*</span></label><input class="login-input" id="edit-piece-numero" type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="ex : C 0012 3456 78"/></div>
+    <div class="login-champ">
+      <label class="login-label">Photo de la pièce <span class="requis">*</span></label>
+      <label class="couverture-choix">
+        <img id="edit-piece-apercu" alt="" style="display:none;"/>
+        <span id="edit-piece-texte"><svg class="icon"><use href="#i-camera"/></svg> Prendre ou choisir une photo (5 Mo max)</span>
+        <input type="file" id="edit-piece-fichier" accept="image/*" style="display:none;" onchange="choisirPhotoPiece(event)"/>
+      </label>
+      <div class="form-hint" id="edit-piece-statut"></div>
+    </div>
+
+    <button class="btn-login-admin" id="btn-enregistrer-profil" style="background:var(--vert);" onclick="enregistrerProfil()">Enregistrer mon profil →</button>
+    <button class="login-annuler" id="btn-annuler-profil" onclick="fermerEditProfil()">Annuler</button>
+    <button class="login-annuler" id="btn-deconnexion-profil" style="display:none;" onclick="fermerEditProfil(true);seDeconnecter()">Se déconnecter</button>
+  </div>
+</div>
+
+<!-- Aperçu d'une pièce d'identité (admin) -->
+<div class="admin-overlay" id="modal-piece" style="z-index:700;">
+  <div class="login-modal" style="max-width:640px;">
+    <div class="login-titre" style="margin-bottom:10px;" id="piece-titre">Pièce d'identité</div>
+    <img id="piece-image" alt="Pièce d'identité" style="width:100%;border-radius:10px;background:var(--bg-2);min-height:120px;"/>
+    <button class="login-annuler" onclick="document.getElementById('modal-piece').classList.remove('visible')">Fermer</button>
   </div>
 </div>
 

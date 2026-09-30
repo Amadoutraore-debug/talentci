@@ -77,7 +77,8 @@ Dans Supabase → **SQL Editor** (vérifie que le menu en haut indique **Databas
 Ce script :
 - crée ou met à jour les tables `profils`, `missions`, `candidatures`, `notifications` et leurs **règles de sécurité (RLS)** ;
 - installe les automatismes : création du profil à l'inscription, compteur de places, notifications de candidature, interdiction de s'auto-promouvoir admin ;
-- crée les espaces de stockage des photos (profil, couverture d'offre) ;
+- crée les espaces de stockage des photos (profil, couverture d'offre) et l'espace **privé** des pièces d'identité ;
+- installe le mini-CV obligatoire, le téléphone et la pièce d'identité (tables privées) ;
 - répare les comptes existants (confirmation, profils manquants).
 
 Il fonctionne sur une base neuve **comme** sur une base existante, et peut être relancé sans risque.
@@ -159,6 +160,12 @@ Une fois installée : icône dédiée, plein écran, barre d'onglets en bas, bou
 
 ## 🧭 Fonctionnalités
 
+**Mini-CV obligatoire (tous les comptes)**
+- À la première connexion, une fenêtre impossible à fermer demande : ville, spécialité (ou secteur d'activité), présentation, formation et expériences + compétences (étudiants), téléphone, pièce d'identité (type, numéro, photo).
+- La même règle est appliquée par la base de données (`profil_est_complet`) : un profil incomplet ne peut ni postuler ni publier d'offre.
+- Confidentialité : le CV est visible par les entreprises ; le **téléphone** seulement par les entreprises auprès desquelles la personne a postulé ; la **pièce d'identité** seulement par les administrateurs (bucket de stockage **privé**, affichage par lien temporaire de 5 minutes).
+- L'admin vérifie les pièces (**Administration → Vérifications**) ; un profil validé affiche le badge **Vérifié ✓**. Si l'utilisateur change sa pièce, elle repasse en vérification.
+
 **Étudiants**
 - Accueil façon place de marché : bandeau des offres à la une, recherche, catégories, rangées « À la une » / « Nouvelles offres »
 - Fiche détaillée d'une offre : montant par personne, places restantes, compétences
@@ -172,6 +179,7 @@ Une fois installée : icône dédiée, plein écran, barre d'onglets en bas, bou
 
 **Administration**
 - Statistiques, gestion des rôles, modération des offres (masquer / supprimer)
+- Vérification des pièces d'identité (voir, valider, refuser avec un motif)
 
 **Sécurité**
 - Toutes les protections sont côté base de données (RLS + triggers) : le JavaScript ne fait qu'afficher ou masquer des boutons.

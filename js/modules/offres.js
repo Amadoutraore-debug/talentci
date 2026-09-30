@@ -42,6 +42,11 @@ async function publierMission() {
   if (profilConnecte?.type !== 'entreprise' && !estAdmin()) {
     afficherToast('warning', 'Seuls les comptes Entreprise peuvent publier des missions', 'rouge'); return;
   }
+  await chargerDonneesPrivees();
+  if (!profilEstComplet()) {
+    afficherToast('warning', 'Complète le profil de ton entreprise avant de publier', 'rouge');
+    ouvrirEditProfil({ obligatoire: true }); return;
+  }
   const titre      = document.getElementById('champ-titre').value.trim();
   const categorie   = document.getElementById('champ-categorie').value;
   const description = document.getElementById('champ-description').value.trim();
@@ -86,6 +91,7 @@ async function publierMission() {
   setBtnLoading('btn-publier', false, 'Publier l\'offre →');
   if (error) {
     // Colonnes absentes = la migration SQL des places n'a pas été exécutée.
+    if (/row-level security/i.test(error.message)) { afficherToast('warning', 'Complète le profil de ton entreprise avant de publier', 'rouge'); ouvrirEditProfil({ obligatoire: true }); return; }
     const msg = /nb_places|montant_par_personne|image_url|column/i.test(error.message)
       ? 'La base doit être mise à jour : exécute sql/installation.sql dans Supabase.'
       : 'Erreur : ' + error.message;
