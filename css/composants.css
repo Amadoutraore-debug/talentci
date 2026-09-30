@@ -57,3 +57,38 @@
 
 /* ═══ BARRE DE NAVIGATION DU BAS (mobile) ═══ */
 .bottom-nav{display:none;}
+
+/* ═══ MINI-CV ═══ */
+.login-modal.cv-modal{max-width:520px;}
+.cv-section-titre{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--vert-fonce);margin:18px 0 10px;padding-top:14px;border-top:1px solid var(--bordure);display:flex;align-items:center;gap:8px;}
+.cv-prive{display:inline-flex;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;color:var(--texte-3);background:var(--bg-2);padding:2px 8px;border-radius:20px;}
+.cv-prive .icon{width:11px;height:11px;}
+.cv-note-privee{font-size:12px;color:var(--texte-2);background:var(--bg-2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;line-height:1.5;}
+.cv-obligatoire{background:var(--amber-clair);color:#7A4A0A;border:1px solid rgba(186,117,23,.35);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;line-height:1.5;margin-bottom:6px;}
+.requis{color:#C0392B;}
+.cv-textarea{resize:vertical;min-height:90px;font-family:'DM Sans',sans-serif;line-height:1.5;}
+.cv-ligne{margin-bottom:12px;font-size:14px;}
+.cv-ligne small{display:block;font-size:11px;font-weight:600;color:var(--texte-3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px;}
+.cv-ligne p{font-size:13.5px;white-space:pre-line;}
+.cv-ligne a{color:var(--vert);word-break:break-all;}
+.badge-verifie{display:inline-flex;align-items:center;gap:4px;background:var(--vert);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;vertical-align:middle;}
+.badge-verifie .icon{width:12px;height:12px;}
+.badge-verifie.petit{padding:1px 6px;font-size:10px;}
+.profil-verif{margin:6px 0;}
+
+/* Fiche candidat (entreprise) */
+.candidat-bloc{margin-top:8px;}
+.candidat-bloc small{display:block;font-size:10.5px;font-weight:600;color:var(--texte-3);text-transform:uppercase;letter-spacing:.3px;}
+.candidat-bloc p{font-size:13px;white-space:pre-line;}
+.candidat-contacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.candidat-contacts .btn{padding:7px 12px;font-size:13px;}
+.btn-whatsapp{background:#25D366;color:#fff;}
+
+/* Vérifications (admin) */
+.verif-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:10px;}
+.verif-piece{font-size:13px;margin-top:6px;}
+.verif-piece code{background:var(--bg-2);padding:1px 6px;border-radius:4px;}
+.verif-actions{flex-wrap:wrap;justify-content:flex-end;}
+.admin-compteur{margin-left:auto;background:#E24B4A;color:#fff;border-radius:20px;font-size:10px;padding:1px 7px;}
+.admin-compteur:empty{display:none;}
+@media(max-width:700px){ .verif-item{flex-direction:column;} .verif-actions{justify-content:flex-start;} }

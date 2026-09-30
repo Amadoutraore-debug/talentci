@@ -20,7 +20,8 @@ window.addEventListener('popstate', () => {
 
 function fermerModalesOuvertes() {
   document.querySelectorAll('.admin-overlay.visible, .modal-overlay.visible')
-    .forEach(el => el.classList.remove('visible'));
+    // Le CV obligatoire ne se ferme pas avec le bouton Retour.
+    .forEach(el => { if (!(el.id === 'modal-edit-profil' && cvObligatoireOuvert)) el.classList.remove('visible'); });
 }
 
 function allerVers(nomPage, options = {}) {
@@ -108,7 +109,7 @@ function fermerAvatarMenu() {
 document.addEventListener('click', fermerAvatarMenu);
 
 // Fermer les fenêtres en touchant le fond sombre.
-['modal-candidatures', 'modal-installation', 'modal-offre'].forEach(id => {
+['modal-candidatures', 'modal-installation', 'modal-offre', 'modal-piece'].forEach(id => {
   document.getElementById(id)?.addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible'); });
 });
 

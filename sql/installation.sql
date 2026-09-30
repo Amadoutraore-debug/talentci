@@ -19,8 +19,9 @@
 --    4. Table candidatures (+ places, notifications automatiques)
 --    5. Table notifications
 --    6. Stockage (photos de profil, couvertures d'offres)
---    7. Réparation des comptes existants
---    8. Devenir administrateur (à faire à la main)
+--    7. Mini-CV obligatoire, téléphone et pièce d'identité (privés)
+--    8. Réparation des comptes existants
+--    9. Devenir administrateur (à faire à la main)
 -- ══════════════════════════════════════════════════════════════
 
 
@@ -55,6 +56,13 @@ create table if not exists profils (
   unique (user_id)
 );
 alter table profils add column if not exists avatar_url text;
+-- Mini-CV (public : visible par les entreprises)
+alter table profils add column if not exists specialite text default '';  -- niche / domaine (étudiant) ou secteur (entreprise)
+alter table profils add column if not exists ville      text default '';
+alter table profils add column if not exists bio        text default '';  -- présentation
+alter table profils add column if not exists parcours   text default '';  -- formation, expériences
+alter table profils add column if not exists lien       text default '';  -- portfolio, LinkedIn, site...
+alter table profils add column if not exists verifie    boolean not null default false; -- pièce d'identité vérifiée par un admin
 
 -- L'utilisateur courant est-il admin ? (définie après la table, qu'elle lit) SECURITY DEFINER : s'exécute avec
 -- les droits du propriétaire (contourne RLS), ce qui évite une récursion
@@ -83,7 +91,7 @@ create policy "profils_lecture_publique" on profils
 -- On ne peut créer que SON profil, et jamais en admin.
 drop policy if exists "profils_creation_soi_meme" on profils;
 create policy "profils_creation_soi_meme" on profils
-  for insert with check (auth.uid() = user_id and type in ('etudiant', 'entreprise'));
+  for insert with check (auth.uid() = user_id and type in ('etudiant', 'entreprise') and verifie = false);
 
 drop policy if exists "profils_modification_soi_meme" on profils;
 create policy "profils_modification_soi_meme" on profils
@@ -111,6 +119,14 @@ begin
   end if;
   if new.user_id is distinct from old.user_id then
     raise exception 'Modification de user_id non autorisée';
+  end if;
+  -- Le badge "vérifié" ne peut être posé que par un admin (ou par les
+  -- automatismes de la section 7, qui lèvent le drapeau ci-dessous).
+  if new.verifie is distinct from old.verifie
+     and auth.uid() is not null
+     and not is_admin()
+     and coalesce(current_setting('talentci.maj_systeme', true), '') <> '1' then
+    new.verifie := old.verifie;
   end if;
   return new;
 end;
@@ -203,13 +219,8 @@ drop policy if exists "missions_lecture" on missions;
 create policy "missions_lecture" on missions
   for select using (actif = true or auth.uid() = user_id or is_admin());
 
--- Publication réservée aux comptes Entreprise (et admins).
-drop policy if exists "missions_creation_proprietaire" on missions;
-create policy "missions_creation_proprietaire" on missions
-  for insert with check (
-    auth.uid() = user_id
-    and exists (select 1 from profils p where p.user_id = auth.uid() and p.type in ('entreprise','admin'))
-  );
+-- Publication : policy "missions_creation_proprietaire" définie en section 7
+-- (elle exige un profil complet).
 
 drop policy if exists "missions_modification_proprietaire_ou_admin" on missions;
 create policy "missions_modification_proprietaire_ou_admin" on missions
@@ -246,9 +257,8 @@ create policy "candidatures_lecture" on candidatures
     or is_admin()
   );
 
-drop policy if exists "candidatures_creation_soi_meme" on candidatures;
-create policy "candidatures_creation_soi_meme" on candidatures
-  for insert with check (auth.uid() = user_id);
+-- Postuler : policy "candidatures_creation_soi_meme" définie en section 7
+-- (elle exige un profil complet).
 
 -- Seule l'entreprise propriétaire de l'offre (ou l'admin) accepte / refuse.
 drop policy if exists "candidatures_maj_par_entreprise_ou_admin" on candidatures;
@@ -462,7 +472,166 @@ create policy "missions_images_suppression" on storage.objects
 
 
 -- ══════════════════════════════════════════
--- 7. RÉPARATION DES COMPTES EXISTANTS
+-- 7. MINI-CV OBLIGATOIRE, TÉLÉPHONE ET PIÈCE D'IDENTITÉ
+-- ══════════════════════════════════════════
+-- Le CV public est dans `profils` (section 2). Les données sensibles
+-- sont dans des tables séparées, car RLS filtre des LIGNES, pas des
+-- colonnes : `profils` étant lisible par tous, y mettre un téléphone
+-- ou un numéro de pièce les rendrait publics.
+
+-- Téléphone : visible par soi-même, l'admin, et les entreprises auprès
+-- desquelles la personne a postulé (pour pouvoir la contacter).
+create table if not exists coordonnees (
+  user_id     uuid primary key references auth.users(id) on delete cascade,
+  telephone   text not null check (length(regexp_replace(telephone, '\D', '', 'g')) >= 8),
+  updated_at  timestamptz not null default now()
+);
+alter table coordonnees enable row level security;
+
+drop policy if exists "coordonnees_lecture" on coordonnees;
+create policy "coordonnees_lecture" on coordonnees
+  for select using (
+    auth.uid() = user_id
+    or is_admin()
+    or exists (
+      select 1 from candidatures c join missions m on m.id = c.mission_id
+      where c.user_id = coordonnees.user_id and m.user_id = auth.uid()
+    )
+  );
+drop policy if exists "coordonnees_creation_soi_meme" on coordonnees;
+create policy "coordonnees_creation_soi_meme" on coordonnees
+  for insert with check (auth.uid() = user_id);
+drop policy if exists "coordonnees_maj_soi_meme" on coordonnees;
+create policy "coordonnees_maj_soi_meme" on coordonnees
+  for update using (auth.uid() = user_id);
+
+-- Pièce d'identité : visible UNIQUEMENT par soi-même et l'admin.
+create table if not exists pieces_identite (
+  user_id      uuid primary key references auth.users(id) on delete cascade,
+  type_piece   text not null,
+  numero       text not null check (length(trim(numero)) >= 4),
+  chemin       text not null,   -- fichier dans le bucket privé "pieces"
+  statut       text not null default 'en_attente' check (statut in ('en_attente','verifiee','refusee')),
+  motif_refus  text,
+  updated_at   timestamptz not null default now()
+);
+alter table pieces_identite enable row level security;
+
+drop policy if exists "pieces_lecture_soi_meme_ou_admin" on pieces_identite;
+create policy "pieces_lecture_soi_meme_ou_admin" on pieces_identite
+  for select using (auth.uid() = user_id or is_admin());
+drop policy if exists "pieces_creation_soi_meme" on pieces_identite;
+create policy "pieces_creation_soi_meme" on pieces_identite
+  for insert with check (auth.uid() = user_id and statut = 'en_attente');
+drop policy if exists "pieces_maj_soi_meme_ou_admin" on pieces_identite;
+create policy "pieces_maj_soi_meme_ou_admin" on pieces_identite
+  for update using (auth.uid() = user_id or is_admin());
+
+-- Toute modification par l'utilisateur remet la pièce "en attente" de
+-- vérification ; seul un admin peut la déclarer vérifiée ou refusée.
+create or replace function public.proteger_piece()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  new.updated_at := now();
+  if auth.uid() is not null and not is_admin() then
+    new.statut := 'en_attente';
+    new.motif_refus := null;
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists proteger_piece on pieces_identite;
+create trigger proteger_piece
+  before insert or update on pieces_identite
+  for each row execute function public.proteger_piece();
+
+-- Le badge "vérifié" du profil suit le statut de la pièce.
+create or replace function public.synchroniser_badge_verifie()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  perform set_config('talentci.maj_systeme', '1', true);
+  update profils set verifie = (new.statut = 'verifiee') where user_id = new.user_id;
+  perform set_config('talentci.maj_systeme', '', true);
+  return new;
+end;
+$$;
+drop trigger if exists synchroniser_badge_verifie on pieces_identite;
+create trigger synchroniser_badge_verifie
+  after insert or update on pieces_identite
+  for each row execute function public.synchroniser_badge_verifie();
+
+-- Profil complet ? (règle unique, utilisée par les policies ci-dessous)
+--   tous : nom, spécialité, ville, présentation (40 car. min.),
+--          téléphone, pièce d'identité (numéro + photo)
+--   étudiant en plus : parcours et au moins une compétence
+create or replace function public.profil_est_complet(uid uuid)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from profils p
+    where p.user_id = uid
+      and length(trim(coalesce(p.nom, ''))) >= 2
+      and length(trim(coalesce(p.specialite, ''))) >= 2
+      and length(trim(coalesce(p.ville, ''))) >= 2
+      and length(trim(coalesce(p.bio, ''))) >= 40
+      and (p.type <> 'etudiant' or (
+            length(trim(coalesce(p.parcours, ''))) >= 10
+            and coalesce(cardinality(p.competences), 0) >= 1))
+  )
+  and exists (select 1 from coordonnees c where c.user_id = uid)
+  and exists (select 1 from pieces_identite pi where pi.user_id = uid);
+$$;
+
+-- Postuler exige un profil complet.
+drop policy if exists "candidatures_creation_soi_meme" on candidatures;
+create policy "candidatures_creation_soi_meme" on candidatures
+  for insert with check (auth.uid() = user_id and profil_est_complet(auth.uid()));
+
+-- Publier une offre exige un compte Entreprise au profil complet (ou admin).
+drop policy if exists "missions_creation_proprietaire" on missions;
+create policy "missions_creation_proprietaire" on missions
+  for insert with check (
+    auth.uid() = user_id
+    and (
+      is_admin()
+      or (exists (select 1 from profils p where p.user_id = auth.uid() and p.type = 'entreprise')
+          and profil_est_complet(auth.uid()))
+    )
+  );
+
+-- Bucket PRIVÉ des pièces d'identité : chacun dépose dans son dossier,
+-- seuls le propriétaire et l'admin peuvent lire (via lien temporaire).
+insert into storage.buckets (id, name, public) values ('pieces', 'pieces', false)
+on conflict (id) do update set public = false;
+
+drop policy if exists "pieces_fichiers_lecture" on storage.objects;
+create policy "pieces_fichiers_lecture" on storage.objects
+  for select using (bucket_id = 'pieces' and ((storage.foldername(name))[1] = auth.uid()::text or is_admin()));
+drop policy if exists "pieces_fichiers_upload" on storage.objects;
+create policy "pieces_fichiers_upload" on storage.objects
+  for insert with check (bucket_id = 'pieces' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists "pieces_fichiers_maj" on storage.objects;
+create policy "pieces_fichiers_maj" on storage.objects
+  for update using (bucket_id = 'pieces' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists "pieces_fichiers_suppression" on storage.objects;
+create policy "pieces_fichiers_suppression" on storage.objects
+  for delete using (bucket_id = 'pieces' and ((storage.foldername(name))[1] = auth.uid()::text or is_admin()));
+
+
+-- ══════════════════════════════════════════
+-- 8. RÉPARATION DES COMPTES EXISTANTS
 -- ══════════════════════════════════════════
 -- Comptes jamais confirmés par e-mail → confirmés (ils restaient bloqués).
 update auth.users set email_confirmed_at = now() where email_confirmed_at is null;
@@ -482,7 +651,7 @@ on conflict (user_id) do nothing;
 
 
 -- ══════════════════════════════════════════
--- 8. DEVENIR ADMINISTRATEUR
+-- 9. DEVENIR ADMINISTRATEUR
 -- ══════════════════════════════════════════
 -- Aucun moyen de devenir admin depuis le site (volontaire). Remplace
 -- l'adresse par celle de TON compte, puis exécute cette requête seule :

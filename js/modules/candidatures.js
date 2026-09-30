@@ -8,6 +8,11 @@ async function postuler(missionId) {
   if (!verifierDB()) return;
   if (!utilisateurConnecte) { afficherToast('lock','Connecte-toi pour postuler','rouge'); ouvrirAuth('connexion'); return; }
   if (profilConnecte?.type !== 'etudiant') { afficherToast('warning','Seuls les étudiants peuvent postuler',''); return; }
+  await chargerDonneesPrivees();
+  if (!profilEstComplet()) {
+    afficherToast('warning', 'Complète ton CV avant de postuler', 'rouge');
+    ouvrirEditProfil({ obligatoire: true }); return;
+  }
   const cible = toutesLesMissions.find(m => m.id === missionId);
   if (cible && placesRestantes(cible) === 0) { afficherToast('info','Toutes les places de cette offre sont prises',''); return; }
   const { data: existant } = await db.from('candidatures').select('id').eq('mission_id', missionId).eq('user_id', utilisateurConnecte.id).maybeSingle();
@@ -17,7 +22,11 @@ async function postuler(missionId) {
     mission_id: missionId, user_id: utilisateurConnecte.id,
     statut: 'en_attente', created_at: new Date().toISOString()
   });
-  if (error) { afficherToast('error','Erreur : ' + error.message,'rouge'); return; }
+  if (error) {
+    // Refus RLS = profil incomplet côté serveur (profil_est_complet)
+    if (/row-level security/i.test(error.message)) { afficherToast('warning', 'Complète ton CV avant de postuler', 'rouge'); ouvrirEditProfil({ obligatoire: true }); return; }
+    afficherToast('error','Erreur : ' + error.message,'rouge'); return;
+  }
   mesCandidaturesIds.add(missionId);
   filtrerMissions();
   rendreAccueil();
@@ -65,10 +74,13 @@ async function voirCandidatures(missionId) {
   }
 
   const ids = cands.map(c => c.user_id);
-  const { data: profils } = await db.from('profils')
-    .select('user_id, nom, universite, competences, avatar_url')
-    .in('user_id', ids);
+  const [{ data: profils }, { data: tels }] = await Promise.all([
+    db.from('profils').select('*').in('user_id', ids),
+    // Autorisé par la policy "coordonnees_lecture" : le candidat a postulé à MON offre
+    db.from('coordonnees').select('user_id, telephone').in('user_id', ids)
+  ]);
   const parUser = Object.fromEntries((profils || []).map(p => [p.user_id, p]));
+  const telParUser = Object.fromEntries((tels || []).map(t => [t.user_id, t.telephone]));
 
   liste.innerHTML = cands.map(c => {
     const p = parUser[c.user_id] || {};
@@ -86,9 +98,16 @@ async function voirCandidatures(missionId) {
     return `<div class="candidat-item">
       <div class="candidat-avatar" style="${avatarStyle}">${p.avatar_url ? '' : escHtml(ini)}</div>
       <div class="candidat-info">
-        <div class="candidat-nom">${escHtml(nom)} ${statut}</div>
-        <div class="candidat-meta">${escHtml(p.universite || '')}${p.universite ? ' · ' : ''}Postulé le ${formatDate(c.created_at)}</div>
+        <div class="candidat-nom">${escHtml(nom)} ${p.verifie ? `<span class="badge-verifie">${icon('check')} Vérifié</span>` : ''} ${statut}</div>
+        <div class="candidat-meta">${[p.specialite, p.ville, p.universite].filter(Boolean).map(escHtml).join(' · ')}${p.specialite || p.ville || p.universite ? '<br>' : ''}Postulé le ${formatDate(c.created_at)}</div>
+        ${p.bio ? `<div class="candidat-bloc"><small>Présentation</small><p>${escHtml(p.bio)}</p></div>` : ''}
+        ${p.parcours ? `<div class="candidat-bloc"><small>Formation et expériences</small><p>${escHtml(p.parcours)}</p></div>` : ''}
         ${comps.length ? `<div class="candidat-comps">${comps.map(x => `<span class="comp-pill">${escHtml(x)}</span>`).join('')}</div>` : ''}
+        <div class="candidat-contacts">
+          ${telParUser[c.user_id] ? `<a class="btn btn-blanc" href="tel:${escAttr(chiffresTel(telParUser[c.user_id]))}">${icon('smartphone')} ${escHtml(telParUser[c.user_id])}</a>
+          <a class="btn btn-whatsapp" href="https://wa.me/${escAttr(numeroWhatsApp(telParUser[c.user_id]))}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
+          ${p.lien ? `<a class="btn btn-blanc" href="${escAttr(p.lien)}" target="_blank" rel="noopener">${icon('globe')} Portfolio</a>` : ''}
+        </div>
         ${c.statut === 'en_attente' ? `<div class="candidat-actions">
           <button class="btn btn-vert" onclick="changerStatutCandidature(${c.id}, 'acceptee')">Accepter</button>
           <button class="btn btn-blanc" style="color:#A32D2D;" onclick="changerStatutCandidature(${c.id}, 'refusee')">Refuser</button>
@@ -96,6 +115,16 @@ async function voirCandidatures(missionId) {
       </div>
     </div>`;
   }).join('');
+}
+
+// Numéro pour tel: (garde le + initial) et pour WhatsApp (indicatif
+// international sans +). Numéros ivoiriens à 10 chiffres → +225.
+function chiffresTel(t) { const s = String(t || '').trim(); return (s.startsWith('+') ? '+' : '') + s.replace(/\D/g, ''); }
+function numeroWhatsApp(t) {
+  let d = String(t || '').replace(/\D/g, '');
+  if (d.startsWith('00')) d = d.slice(2);
+  if (d.length === 10 && d.startsWith('0')) d = '225' + d;
+  return d;
 }
 
 function fermerCandidatures() {
