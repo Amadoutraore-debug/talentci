@@ -1,0 +1,101 @@
+/* TalentCI — responsive.css
+   Adaptations tablette / téléphone. Doit rester chargé EN DERNIER (il surcharge les autres fichiers). */
+
+/* ═══ RESPONSIVE ═══ */
+/* Le menu hamburger couvre aussi les tablettes : à cette largeur, la
+   navbar desktop devient trop à l'étroit (ex: "Mon profil" qui casse
+   sur deux lignes) bien avant qu'on ait besoin d'empiler le reste. */
+@media(max-width:900px){
+  .navbar-liens{display:none;}
+  .mobile-menu-btn{display:flex;}
+  .navbar.mobile-ouvert .navbar-liens{
+    display:flex;flex-direction:column;gap:2px;
+    position:fixed;top:64px;left:0;right:0;
+    background:var(--bg);border-bottom:1px solid var(--bordure);box-shadow:var(--ombre);
+    padding:10px;z-index:90;max-height:calc(100vh - 64px);overflow-y:auto;
+  }
+  .navbar.mobile-ouvert .navbar-liens .nav-lien{width:100%;text-align:left;padding:14px 16px;justify-content:flex-start;}
+}
+
+/* Les cartes KPI admin (icône + badge "Live") ont besoin de plus de
+   place que les KPI du profil — 4 colonnes débordent dès la tablette. */
+@media(max-width:960px){
+  .rangee-cartes{grid-auto-columns:calc((100% - 32px) / 3);}
+  .admin-kpi-grille{grid-template-columns:repeat(2,1fr);}
+}
+
+@media(max-width:700px){
+  .navbar{padding:0 16px;}
+  .main-content{padding:20px 14px;}
+
+  .stats-grille{grid-template-columns:1fr;}
+
+  .temoignages-grille{grid-template-columns:1fr;}
+  .cta-banniere{flex-direction:column;text-align:center;padding:32px 24px;}
+  .missions-top{flex-direction:column;align-items:stretch;}
+  .missions-grille{grid-template-columns:1fr;}
+  .filtres-cat-ligne{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;}
+  .filtre-cat-btn{flex-shrink:0;}
+  .profil-layout{flex-direction:column;}.profil-sidebar{width:100%;}
+  .kpi-grille{grid-template-columns:repeat(2,1fr);}
+  .entreprise-layout{flex-direction:column;}.entreprise-sidebar{width:100%;}
+  .form-rangee{grid-template-columns:1fr;}
+  .notif-layout{grid-template-columns:1fr;}.notif-resume{display:none;}
+  .toast{left:16px;right:16px;bottom:16px;}
+  .admin-layout{grid-template-columns:1fr;}.admin-kpi-grille{grid-template-columns:repeat(2,1fr);}
+  .admin-sidebar{position:static;}
+  .config-modal{max-height:90vh;overflow-y:auto;}
+  footer{flex-direction:column;gap:6px;text-align:center;padding:16px;}
+  .config-banner{flex-direction:column;text-align:center;}
+  .login-modal{padding:28px 20px;}
+  .hero-boutons{flex-direction:column;align-items:stretch;}
+  .hero-boutons .btn{justify-content:center;}
+}
+
+/* Sur téléphone : barre d'onglets en bas, comme une application native.
+   Le menu hamburger reste disponible pour les liens secondaires (Admin...). */
+@media(max-width:700px){
+  .carrousel-slide{min-height:260px;padding:28px 22px 48px;}
+  .carrousel-slide h1{font-size:28px;}.carrousel-slide h2{font-size:23px;}
+  .carrousel-deco{display:none;}
+  .rangee-cartes{grid-auto-columns:72%;}
+  .accueil-recherche .btn{padding:10px 14px;}
+  .offre-chiffres strong{font-size:14px;}
+  .offre-modal-corps{padding:18px 18px 20px;}
+  .missions-grille{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .missions-grille .offre-corps{padding:10px 10px 12px;}
+  .missions-grille .offre-titre{font-size:13.5px;}
+  .missions-grille .offre-prix strong{font-size:14px;}
+  .missions-grille .offre-pied{flex-direction:column;align-items:flex-start;gap:6px;}
+  .bottom-nav{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:200;
+    background:var(--bg);border-top:1px solid var(--bordure);
+    box-shadow:0 -4px 16px rgba(0,0,0,.06);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .bottom-nav-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    padding:8px 2px 7px;background:none;border:none;cursor:pointer;
+    font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--texte-3);
+    position:relative;-webkit-tap-highlight-color:transparent;
+  }
+  .bottom-nav-item .icon{width:22px;height:22px;}
+  .bottom-nav-item.actif{color:var(--vert);}
+  .bottom-nav-item.a-des-alertes::after{content:'';position:absolute;top:6px;left:calc(50% + 6px);width:9px;height:9px;border-radius:50%;background:#E24B4A;border:2px solid var(--bg);}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom));}
+  .toast{bottom:calc(76px + env(safe-area-inset-bottom));}
+  .banniere-installation{flex-wrap:wrap;}
+  .banniere-installation-texte{flex-basis:calc(100% - 90px);}
+  .banniere-installation .btn{flex:1;justify-content:center;}
+}
+
+/* Application installée : pas besoin du pied de page "site web". */
+@media(display-mode:standalone) and (max-width:700px){
+  footer{display:none;}
+}
+
+@media(max-width:420px){
+
+  .kpi-grille{grid-template-columns:1fr;}
+  .admin-kpi-grille{grid-template-columns:1fr;}
+}

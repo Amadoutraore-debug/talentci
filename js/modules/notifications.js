@@ -1,0 +1,70 @@
+/* TalentCI — modules/notifications.js
+   Notifications de l'utilisateur connecté. */
+
+/* ══════════════════════════════════════════
+   NOTIFICATIONS
+══════════════════════════════════════════ */
+async function ajouterNotification(notif) {
+  if (!verifierDB()) return;
+  if (!utilisateurConnecte && !notif.user_id) return;
+  await db.from('notifications').insert({
+    ...notif, user_id: notif.user_id || utilisateurConnecte?.id || null,
+    created_at: new Date().toISOString()
+  });
+  await chargerNotifications();
+}
+
+async function chargerNotifications() {
+  const liste = document.getElementById('notif-liste');
+  if (!liste) return;
+  if (!dbPret || !db) {
+    liste.innerHTML = `<div style="text-align:center;padding:48px;color:var(--texte-3);"><div style="font-size:40px;margin-bottom:12px;">${icon('database')}</div><p>Configure la base de données pour voir tes notifications.</p><button class="btn btn-vert" style="margin-top:12px;" onclick="ouvrirConfigDB()">Configurer →</button></div>`;
+    return;
+  }
+  if (!utilisateurConnecte) {
+    liste.innerHTML = `<div style="text-align:center;padding:48px;color:var(--texte-3);"><div style="font-size:40px;margin-bottom:12px;">${icon('lock')}</div><p>Connecte-toi pour voir tes notifications.</p></div>`;
+    return;
+  }
+  let query = db.from('notifications')
+    .select('id, user_id, type, icone, icone_bg, icone_color, texte, montant, lue, created_at')
+    .eq('user_id', utilisateurConnecte.id)
+    .order('created_at', { ascending: false }).limit(30);
+  if (filtreCourantNotif !== 'tous') query = query.eq('type', filtreCourantNotif);
+  const { data, error } = await query;
+  if (error) { liste.innerHTML = '<div style="text-align:center;padding:32px;color:var(--texte-3);">Impossible de charger les notifications.</div>'; return; }
+  const notifs = data || [];
+  const nbNonLues = notifs.filter(n => !n.lue).length;
+  const elBadge = document.getElementById('nb-non-lues');
+  if (elBadge) elBadge.textContent = nbNonLues > 0 ? `(${nbNonLues} non lues)` : '(tout lu)';
+  const btnNotifNav = document.getElementById('btn-notif-nav');
+  if (btnNotifNav) btnNotifNav.classList.toggle('notif-badge-nav', nbNonLues > 0);
+  document.getElementById('bottom-nav-notif')?.classList.toggle('a-des-alertes', nbNonLues > 0);
+  if (notifs.length === 0) {
+    liste.innerHTML = `<div style="text-align:center;padding:48px;color:var(--texte-3);"><div style="font-size:40px;margin-bottom:12px;">${icon('bell')}</div><p>Aucune notification pour l'instant.</p></div>`;
+    return;
+  }
+  liste.innerHTML = notifs.map(n => `
+    <div class="notif-item${n.lue ? '' : ' non-lue'}" onclick="marquerLu(${n.id})">
+      <div class="notif-point ${n.lue ? 'invisible' : ''}"></div>
+      <div class="notif-icone-rond" style="background:${escAttr(n.icone_bg)};color:${escAttr(n.icone_color)}">${icon(n.icone) || escHtml(n.icone||'')}</div>
+      <div class="notif-corps">
+        <div class="notif-texte">${n.texte}</div>
+        <div class="notif-temps">${formatDate(n.created_at)}</div>
+      </div>
+      ${n.montant ? `<div class="notif-badge-montant">${escHtml(n.montant)}</div>` : ''}
+    </div>`).join('');
+}
+
+async function marquerLu(id) {
+  if (!verifierDB()) return;
+  await db.from('notifications').update({ lue: true }).eq('id', id);
+  await chargerNotifications();
+}
+
+async function toutMarquerLu() {
+  if (!verifierDB()) return;
+  if (!utilisateurConnecte) return;
+  await db.from('notifications').update({ lue: true }).eq('user_id', utilisateurConnecte.id).eq('lue', false);
+  await chargerNotifications();
+  afficherToast('check','Toutes les notifications sont lues !','vert');
+}

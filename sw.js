@@ -13,20 +13,37 @@
    ⚠️ Changer VERSION à chaque modification de ce fichier ou de la
    liste APP_SHELL pour forcer le renouvellement du cache.
 ══════════════════════════════════════════════════════════════ */
-const VERSION = 'talentci-v5';
+const VERSION = 'talentci-v6';
 const APP_SHELL = [
   './',
   'index.html',
-  'css/style.css',
-  'js/app.js',
+  'css/base.css',
+  'css/pages.css',
+  'css/offres.css',
+  'css/composants.css',
+  'css/responsive.css',
   'js/vendor/supabase.min.js',
+  'js/config.js',
+  'js/core/icones.js',
+  'js/core/supabase.js',
+  'js/core/etat.js',
+  'js/core/utils.js',
+  'js/modules/auth.js',
+  'js/modules/profil.js',
+  'js/modules/offres.js',
+  'js/modules/candidatures.js',
+  'js/modules/notifications.js',
+  'js/modules/entreprise.js',
+  'js/modules/admin.js',
+  'js/modules/navigation.js',
+  'js/modules/pwa.js',
+  'js/main.js',
   'manifest.webmanifest',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/apple-touch-icon.png'
 ];
 const HOTES_EXTERNES_CACHABLES = [
-  'cdn.jsdelivr.net',
   'fonts.googleapis.com',
   'fonts.gstatic.com'
 ];

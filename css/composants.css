@@ -1,0 +1,59 @@
+/* TalentCI — composants.css
+   Composants transverses : connexion, accès entreprise, fenêtres, candidatures reçues, installation de l'application, barre du bas. */
+
+/* ═══ CONNEXION : mot de passe visible, états ═══ */
+.mdp-wrap{position:relative;}
+.mdp-wrap .login-input{padding-right:46px;}
+.mdp-oeil{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:none;background:none;color:var(--texte-3);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:8px;}
+.mdp-oeil:hover{color:var(--texte);background:var(--bg-2);}
+.mdp-oeil .icon{width:18px;height:18px;}
+.auth-message-detail{display:block;margin-top:6px;font-size:11px;opacity:.75;word-break:break-word;}
+.masque-temporaire{display:none !important;}
+.login-input{font-size:16px;} /* ≥16px : évite le zoom automatique d'iPhone sur les champs */
+
+/* ═══ PAGE ENTREPRISE : accès réservé ═══ */
+.entreprise-acces{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-lg);padding:32px 24px;text-align:center;box-shadow:var(--ombre);margin-bottom:20px;}
+.entreprise-acces .acces-icone{width:56px;height:56px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.entreprise-acces .acces-icone .icon{width:26px;height:26px;}
+.entreprise-acces h3{margin-bottom:8px;}
+.entreprise-acces p{max-width:440px;margin:0 auto 18px;font-size:14px;}
+.acces-boutons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+/* ═══ ADMIN ═══ */
+.admin-select-type{padding:6px 8px;border:1px solid var(--bordure-2);border-radius:6px;background:var(--bg);font-size:12px;font-family:'DM Sans',sans-serif;}
+.ligne-masquee{opacity:.6;}
+.admin-table-wrap{overflow-x:auto;}
+
+/* ═══ FENÊTRES : défilement si le contenu dépasse l'écran (petits téléphones) ═══ */
+.login-modal{max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;}
+.admin-overlay{padding:16px;}
+
+/* ═══ CANDIDATURE DÉJÀ ENVOYÉE ═══ */
+.btn-postuler-large.deja-postule{background:var(--vert-clair);color:var(--vert-fonce);cursor:default;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-postuler-large.deja-postule:hover{opacity:1;}
+
+/* ═══ CANDIDATURES REÇUES (entreprise) ═══ */
+.candidat-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--bordure);}
+.candidat-item:last-child{border-bottom:none;}
+.candidat-avatar{width:44px;height:44px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;flex-shrink:0;}
+.candidat-info{flex:1;min-width:0;}
+.candidat-nom{font-weight:600;display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+.candidat-meta{font-size:12px;color:var(--texte-3);margin-top:3px;}
+.candidat-comps{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.candidat-actions{display:flex;gap:8px;margin-top:10px;}
+.candidat-actions .btn{padding:7px 14px;font-size:13px;}
+
+/* ═══ INSTALLATION DE L'APPLICATION ═══ */
+.banniere-installation{display:flex;align-items:center;gap:14px;background:var(--bg);border:1.5px solid var(--vert);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:20px;box-shadow:var(--ombre);}
+.banniere-installation-icone{width:44px;height:44px;border-radius:10px;flex-shrink:0;}
+.banniere-installation-texte{flex:1;font-size:13px;color:var(--texte-2);line-height:1.5;}
+.banniere-installation-texte strong{color:var(--texte);}
+.banniere-installation .btn{flex-shrink:0;}
+.banniere-installation-fermer{background:none;border:none;font-size:22px;line-height:1;color:var(--texte-3);cursor:pointer;padding:0 4px;flex-shrink:0;}
+.install-etapes{display:flex;flex-direction:column;gap:14px;margin-bottom:8px;}
+.install-bloc{background:var(--bg-2);border-radius:var(--radius-md);padding:14px 16px;}
+.install-bloc-titre{font-weight:600;font-size:14px;margin-bottom:8px;}
+.install-bloc ol{padding-left:20px;font-size:13px;color:var(--texte-2);line-height:1.7;}
+
+/* ═══ BARRE DE NAVIGATION DU BAS (mobile) ═══ */
+.bottom-nav{display:none;}
