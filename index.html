@@ -15,7 +15,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
   <meta name="apple-mobile-web-app-title" content="TalentCI"/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/style.css"/>
+  <!-- Styles : l'ordre compte, responsive.css doit rester en dernier -->
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/pages.css"/>
+  <link rel="stylesheet" href="css/offres.css"/>
+  <link rel="stylesheet" href="css/composants.css"/>
+  <link rel="stylesheet" href="css/responsive.css"/>
   <!-- supabase-js 2.117.2 hébergé avec le site : ne dépend plus d'un CDN externe (réseaux mobiles) -->
   <script src="js/vendor/supabase.min.js"></script>
 </head>
@@ -102,7 +107,7 @@
           <div class="config-step-num">2</div>
           <div class="config-step-content">
             <div class="config-step-title">Exécute le script SQL fourni</div>
-            <div class="config-step-desc">Dans ton projet : <strong>SQL Editor</strong>. Colle le contenu de <code>sql/schema.sql</code> et exécute-le pour créer les tables et les règles de sécurité.</div>
+            <div class="config-step-desc">Dans ton projet : <strong>SQL Editor</strong>. Colle le contenu de <code>sql/installation.sql</code> et exécute-le pour créer les tables et les règles de sécurité.</div>
           </div>
         </div>
 
@@ -758,6 +763,21 @@
 
 <div class="toast" id="toast"><span id="toast-icone"><svg class="icon"><use href="#i-check"/></svg></span><span id="toast-texte">Action réalisée !</span></div>
 
-<script src="js/app.js"></script>
+<!-- Scripts : noyau, puis modules, puis main.js (démarrage) en dernier -->
+<script src="js/config.js"></script>
+<script src="js/core/icones.js"></script>
+<script src="js/core/supabase.js"></script>
+<script src="js/core/etat.js"></script>
+<script src="js/core/utils.js"></script>
+<script src="js/modules/auth.js"></script>
+<script src="js/modules/profil.js"></script>
+<script src="js/modules/offres.js"></script>
+<script src="js/modules/candidatures.js"></script>
+<script src="js/modules/notifications.js"></script>
+<script src="js/modules/entreprise.js"></script>
+<script src="js/modules/admin.js"></script>
+<script src="js/modules/navigation.js"></script>
+<script src="js/modules/pwa.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
