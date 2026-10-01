@@ -12,7 +12,7 @@ La méthode pour transformer vos discussions WhatsApp en ventes. Par Amadou Trao
 | `bonus/Tableau-de-suivi_C-est-combien.xlsx` | Bonus 3 : commandes, relances, bilan hebdo, clients fidèles, objections |
 | `bonus/Kit-imprimable_C-est-combien.pdf` | Bonus 4 : checklists, grilles, calendrier et plan de 30 jours |
 | `Strategie-commerciale_C-est-combien.md` | Prix, positionnement, page de vente, publications, scripts publicitaires, plan de lancement |
-| `Rapport-qualite_et_A-faire.md` | Contrôle qualité et liste de ce qu'il reste à faire avant de vendre |
+| `Rapport-qualite_et_A-faire.md` | Contrôle qualité de la version finale |
 | `Cahier-des-illustrations.md` | Charte visuelle, schémas, prompts d'images, modèles Canva à créer |
 
 ## Modifier et régénérer

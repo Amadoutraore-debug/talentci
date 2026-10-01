@@ -2,7 +2,7 @@
 
 *Étape 10 du projet. Document de travail pour Amadou Traoré / DÉO-CI.*
 
-Rappel des règles suivies dans ce document : aucun témoignage, aucun chiffre de résultat et aucune statistique n'ont été inventés. Les emplacements prévus pour de vrais avis sont signalés par **[AVIS RÉEL À INSÉRER]** : n'y mettez que des retours authentiques, avec l'accord écrit de leurs auteurs.
+Règle suivie dans ce document : aucun témoignage, aucun chiffre de résultat et aucune statistique n'ont été inventés.
 
 ---
 
@@ -135,13 +135,7 @@ Dès le premier chapitre, un autodiagnostic de 20 minutes vous montre **votre** 
 
 #### L'auteur
 
-Amadou Traoré est un professionnel autodidacte de la communication digitale. Il travaille dans le community management, la création de contenus, la vidéo et la formation, et il accompagne des entrepreneurs et de petites organisations dans leur communication numérique. [À COMPLÉTER : 1 ou 2 réalisations vérifiables.]
-
----
-
-#### Ils l'ont lu
-
-[AVIS RÉEL À INSÉRER : 2 ou 3 retours de vos lecteurs bêta, avec leur accord écrit. Prénom, activité, ville. Ne jamais inventer.]
+Amadou Traoré est un professionnel autodidacte de la communication digitale. Il travaille dans le community management, la création de contenus, la vidéo et la formation, et il accompagne des entrepreneurs et de petites organisations dans leur communication numérique.
 
 ---
 
@@ -238,8 +232,6 @@ Le prochain « c'est combien ? » que vous recevrez n'est pas une simple questio
 > Avant de payer une publicité, relisez vos 10 dernières conversations. Où s'arrêtent-elles ?
 >
 > J'en ai fait la méthode d'un livre, que je publie bientôt. #communicationdigitale #entrepreneuriat #CôteDIvoire
->
-> *[Si vous parlez de votre accompagnement, ne citez que des situations réelles.]*
 
 **2. Le parcours en 5 étapes**
 > Un client passe par 5 étapes avant d'acheter sur WhatsApp :
@@ -270,7 +262,7 @@ Le prochain « c'est combien ? » que vous recevrez n'est pas une simple questio
 >
 > Je propose « C'est combien ? » en licence de groupe, et un atelier pratique d'une demi-journée : configuration de WhatsApp Business, réponses au prix, relances, paiement sécurisé.
 >
-> Écrivez-moi pour en parler. [Conditions et tarifs à définir.]
+> Écrivez-moi pour en parler.
 
 ### 5 idées de vidéos TikTok / Reels
 

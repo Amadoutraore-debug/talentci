@@ -12,13 +12,11 @@ Amadou Traoré
 
 © 2026 Amadou Traoré — DÉO-CI. Tous droits réservés.
 
-Première édition : <span class="todo">[mois] 2026</span>, Abidjan, Côte d'Ivoire.
+Première édition : 2026, Abidjan, Côte d'Ivoire.
 
 Ce livre numérique est vendu pour l'usage personnel de son acheteur. Toute reproduction, diffusion, revente ou partage, total ou partiel, par quelque moyen que ce soit (copie, transfert du fichier, groupe WhatsApp, impression pour revente), est interdit sans l'autorisation écrite de l'auteur.
 
 Les scripts, modèles et checklists peuvent être librement utilisés et adaptés par l'acheteur dans le cadre de sa propre activité commerciale.
-
-Contact : <span class="todo">[adresse e-mail]</span> · <span class="todo">[numéro WhatsApp DÉO-CI]</span>
 
 Conception, rédaction et mise en page : DÉO-CI.
 
@@ -32,7 +30,7 @@ Conception, rédaction et mise en page : DÉO-CI.
 
 **Sur les marques citées.** WhatsApp et WhatsApp Business sont des marques de Meta Platforms. Canva, ChatGPT, Claude, Gemini, Wave, Orange Money, MTN MoMo et Moov Money sont des marques de leurs propriétaires respectifs. Elles sont citées à titre d'information. Ce livre n'est ni affilié à ces entreprises, ni approuvé ou sponsorisé par elles.
 
-**Sur les fonctionnalités.** Les applications évoluent souvent. Les fonctions, menus et règles décrits ici ont été vérifiés sur les pages d'aide officielles en <span class="todo">[mois] 2026</span>. Ils peuvent avoir changé depuis. En cas de doute, l'aide officielle de l'application fait foi.
+**Sur les fonctionnalités.** Les applications évoluent souvent. Les fonctions, menus et règles décrits ici ont été vérifiés sur les pages d'aide officielles en 2026. Ils peuvent avoir changé depuis. En cas de doute, l'aide officielle de l'application fait foi.
 
 **Sur les exemples.** Awa, Koffi, Mariam et Serge, ainsi que leurs conversations, sont des **personnages et des situations fictifs**, créés pour illustrer la méthode. Toute ressemblance avec des personnes réelles serait fortuite. Les montants entre crochets sont des exemples, à remplacer par vos propres chiffres.
 
@@ -54,8 +52,6 @@ Conception, rédaction et mise en page : DÉO-CI.
 Je n'ai pas appris la communication digitale sur les bancs d'une école. Je l'ai apprise en faisant : en créant des contenus, en gérant des pages, en filmant, en montant, en me trompant, puis en recommençant. Aujourd'hui, j'accompagne des entrepreneurs et de petites organisations dans leur communication numérique, je forme, et j'utilise chaque jour l'intelligence artificielle dans mon travail.
 
 Dans cet accompagnement, une scène revient sans cesse. Un commerçant me montre son téléphone : des dizaines de conversations, des « c'est combien ? » à la pelle, et très peu de ventes. Il pense qu'il lui faut plus de visibilité, un boost, une nouvelle page. Quand on relit ensemble ses conversations, on découvre presque toujours autre chose : les clients étaient là, ils étaient intéressés, et ils sont partis en chemin.
-
-<span class="todo">[À VALIDER OU À REMPLACER : racontez ici, en 4 à 6 lignes, une situation réelle que vous avez vécue avec un commerçant ou un entrepreneur, sans le nommer. Ce paragraphe est le plus important du livre pour la confiance du lecteur.]</span>
 
 J'ai écrit ce livre pour ces commerçants-là. Pas pour leur promettre des miracles, mais pour leur donner ce que j'aurais aimé trouver quand j'ai commencé : une méthode simple, des mots prêts à l'emploi, et des outils qu'on peut utiliser le soir même, sur son téléphone, sans budget.
 

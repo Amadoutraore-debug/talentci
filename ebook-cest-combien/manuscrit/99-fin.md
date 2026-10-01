@@ -136,7 +136,7 @@ Tous les outils du livre, au même endroit. Les scripts et les prompts sont auss
 <h1 class="front">Sources à consulter</h1>
 <p class="mk">QQsourcesQQ</p>
 
-Les informations sur le fonctionnement de WhatsApp proviennent des pages d'aide et des documents officiels ci-dessous, consultés en <span class="todo">[mois] 2026</span>. Les fonctions évoluent : en cas de doute, la version la plus récente de ces pages fait foi.
+Les informations sur le fonctionnement de WhatsApp proviennent des pages d'aide et des documents officiels ci-dessous, consultés en 2026. Les fonctions évoluent : en cas de doute, la version la plus récente de ces pages fait foi.
 
 **Centre d'aide WhatsApp (faq.whatsapp.com)**
 
@@ -179,8 +179,6 @@ Dans ce livre, les encadrés « Mon avis » et « Le conseil du pro », la règl
 
 Son approche est simple : transformer l'expérience du terrain en méthodes concrètes et accessibles, que chacun peut appliquer avec les outils qu'il a déjà en poche.
 
-<span class="todo">[À COMPLÉTER : photo professionnelle, 2 ou 3 réalisations vérifiables (types de clients accompagnés, formations données), liens vers vos réseaux.]</span>
-
 ### DÉO-CI
 
 **DÉO-CI** est la marque sous laquelle Amadou Traoré propose ses services et ses produits numériques à destination des entrepreneurs, commerçants, créateurs et petites organisations francophones :
@@ -191,25 +189,23 @@ Son approche est simple : transformer l'expérience du terrain en méthodes conc
 - accompagnement des petites structures dans leur communication numérique ;
 - guides pratiques et outils prêts à l'emploi, comme ce livre.
 
-<span class="todo">[À COMPLÉTER : coordonnées de DÉO-CI — WhatsApp, e-mail, réseaux sociaux, site.]</span>
-
 ### Et maintenant ?
 
 <div class="cards c2" markdown="1">
 <div class="card trust" markdown="1">
 **📲 Suivez DÉO-CI**
 
-Conseils, nouveaux scripts et mises à jour du livre quand WhatsApp change ses fonctions. <span class="todo">[lien de la Chaîne ou du compte]</span>
+Conseils, nouveaux scripts et mises à jour du livre quand WhatsApp change ses fonctions. Retrouvez DÉO-CI sur WhatsApp et sur les réseaux sociaux.
 </div>
 <div class="card sell" markdown="1">
 **🛠️ Faites-vous accompagner**
 
-Configuration complète de votre WhatsApp Business, audit de vos conversations, formation de votre équipe. <span class="todo">[offre et tarif à définir]</span>
+Configuration complète de votre WhatsApp Business, audit de vos conversations, formation de votre équipe. Écrivez-nous sur le numéro WhatsApp qui vous a envoyé ce livre.
 </div>
 <div class="card link" markdown="1">
 **💬 Partagez vos résultats**
 
-Vous avez appliqué la méthode ? Racontez-nous ce qui a changé. Avec votre accord, votre retour pourra aider d'autres commerçants. <span class="todo">[numéro WhatsApp]</span>
+Vous avez appliqué la méthode ? Racontez-nous ce qui a changé. Avec votre accord, votre retour pourra aider d'autres commerçants. Le même numéro WhatsApp vous attend.
 </div>
 <div class="card" markdown="1">
 **🤝 Recommandez ce livre**
