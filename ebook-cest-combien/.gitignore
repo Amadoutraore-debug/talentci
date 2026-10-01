@@ -1,0 +1,4 @@
+build/tmp/
+build/book.html
+build/kit.html
+__pycache__/

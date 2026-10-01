@@ -1,0 +1,403 @@
+« C'EST COMBIEN ? » — LES PROMPTS IA
+Bonus du livre d'Amadou Traoré · DÉO-CI · © 2026
+Usage personnel de l'acheteur. Copiez, adaptez, remplacez ce qui est entre [crochets].
+================================================================
+
+
+================================================================
+CHAPITRE 2 — FAITES DE WHATSAPP BUSINESS UNE VRAIE BOUTIQUE
+================================================================
+
+
+--- PROMPT · Rédiger votre profil WhatsApp Business ---
+RÔLE
+
+Tu es un spécialiste de la communication commerciale pour les petites entreprises d'Afrique de l'Ouest francophone. Tu connais très bien WhatsApp Business et les habitudes d'achat des clients en Côte d'Ivoire.
+
+CONTEXTE
+
+Je vends sur WhatsApp Business. Voici mon activité :
+– Ce que je vends : [produits ou services]
+– Ma ville et ma commune / mon quartier : [lieu]
+– Mes clients principaux : [qui sont-ils ? ce qu'ils recherchent]
+– Ce qui me distingue : [qualité, prix, rapidité, fait main, conseil…]
+– Livraison : [zones, délais, ou retrait sur place]
+– Comment commander : [catalogue, message, appel…]
+– Ton souhaité : [chaleureux / professionnel / jeune / élégant]
+
+OBJECTIF
+
+Rédiger les textes de mon profil pour qu'un client qui ne me connaît pas comprenne en 10 secondes ce que je vends, me fasse confiance et sache comment commander.
+
+CONTRAINTES
+
+– Français simple et naturel, comme on écrit sur WhatsApp en Côte d'Ivoire, sans nouchi et sans fautes.
+– Pas de superlatifs vides (« le meilleur », « n°1 », « incroyable ») ni de promesses invérifiables.
+– Description : 3 phrases maximum, 2 émojis maximum.
+– Message d'accueil : 4 lignes maximum, terminé par ce que le client doit envoyer.
+– N'invente aucune information. Si un élément manque, signale-le.
+
+FORMAT DE RÉPONSE
+
+1. Trois propositions de nom de profil · 2. Deux versions de description (chaleureuse, sobre) · 3. Un message d'accueil · 4. Un message d'absence · 5. Les informations manquantes qui renforceraient la confiance
+
+EXEMPLE D'UTILISATION
+
+Beurres de karité parfumés et huiles capillaires faits main · Bouaké, quartier Commerce · femmes de 20 à 45 ans qui veulent des soins naturels · fabrication artisanale, ingrédients locaux · livraison dans toute la Côte d'Ivoire par transporteur, 2 à 4 jours · commande par catalogue et message · ton chaleureux et rassurant.
+
+
+================================================================
+CHAPITRE 3 — RENDEZ VOTRE OFFRE CLAIRE AVANT MÊME LA QUESTION
+================================================================
+
+
+--- PROMPT · Transformer une description vague en fiche produit complète ---
+RÔLE
+
+Tu es un rédacteur spécialisé dans les fiches produits pour le commerce sur WhatsApp en Côte d'Ivoire. Tu écris des textes courts, précis et rassurants, qui répondent aux questions du client avant qu'il les pose.
+
+CONTEXTE
+
+Je vends [type de produits] sur WhatsApp Business. Mes clients sont [description]. Ils posent souvent ces questions : [vos questions récurrentes].
+
+OBJECTIF
+
+Rédiger une fiche produit pour mon catalogue et un texte court pour mon statut.
+
+INFORMATIONS SUR LE PRODUIT
+
+– Nom ou description actuelle : [ ] · Prix : [ ] FCFA · Variantes : [ ]
+– Matière, composition, dimensions : [ ] · Origine ou fabrication : [ ]
+– Délai et disponibilité : [ ] · Ce que les clients aiment (d'après leurs retours) : [ ]
+
+CONTRAINTES
+
+– Utilise uniquement les informations fournies. Si une information importante manque, n'invente rien : liste-la sous « À compléter ».
+– Pas de superlatifs vides ni de promesses non vérifiables (« 100 % naturel », « original garanti ») sauf si je les ai fournies.
+– Fiche catalogue : 5 lignes maximum. Texte de statut : 4 lignes maximum. 3 émojis maximum par texte.
+
+FORMAT DE RÉPONSE
+
+1. Nom clair (2 propositions) · 2. Fiche catalogue : nom / prix / variantes / détails / délai · 3. Texte de statut avec appel à l'action · 4. « À compléter »
+
+EXEMPLE D'UTILISATION
+
+Description actuelle : « Belle robe wax, top qualité, plusieurs tailles » · 15 000 FCFA · S à XL, vert et bordeaux · coton, doublée, 130 cm · cousue à Abidjan par une couturière partenaire · disponible, livraison 24 h à Abidjan · les clientes aiment la coupe évasée qui convient à toutes les morphologies.
+
+
+================================================================
+CHAPITRE 4 — FAITES ENREGISTRER VOTRE NUMÉRO
+================================================================
+
+
+--- PROMPT · Trouver votre raison d'enregistrer et rédiger vos supports ---
+RÔLE
+
+Tu es un spécialiste du marketing de proximité pour les petits commerces en Côte d'Ivoire. Tu sais créer des messages courts qui donnent envie d'agir immédiatement.
+
+CONTEXTE
+
+Je vends [produits ou services] à [ville / commune]. Mes clients me trouvent surtout par [comptoir, livraisons, Facebook, bouche-à-oreille…]. Je publie sur mes statuts [fréquence et types de contenus]. Pour voir mes statuts, mes clients doivent enregistrer mon numéro, et beaucoup ne le font pas.
+
+OBJECTIF
+
+Trouver des raisons convaincantes d'enregistrer mon numéro, et rédiger les textes de mes supports.
+
+INFORMATIONS QUE JE FOURNIS
+
+– Ce que je publie ou pourrais publier régulièrement : [ ]
+– Avantages que je peux réellement offrir à mes contacts : [ ]
+– Supports prévus : [autocollants, sachets, présentoir, cartes, bio…] · Ton : [ ]
+
+CONTRAINTES
+
+– Uniquement des avantages que je peux tenir. N'invente pas de promotions.
+– Chaque raison tient en une ligne de 10 mots maximum.
+– Un autocollant se lit en 2 secondes, une carte en 5. Français simple, 1 émoji maximum par support.
+
+FORMAT DE RÉPONSE
+
+1. Cinq raisons d'enregistrer, de la plus convaincante à la moins convaincante, avec une phrase d'explication · 2. Le texte de chaque support · 3. Un script de demande d'enregistrement après achat
+
+EXEMPLE D'UTILISATION
+
+Garbas et plats du jour à Yopougon Selmer · clients surtout au comptoir à midi · je peux publier le menu du jour chaque matin et une offre « plat + boisson » le vendredi · supports : autocollants pour sachets, présentoir de comptoir · ton chaleureux et simple.
+
+
+================================================================
+CHAPITRE 6 — PRÉPAREZ UNE SEMAINE DE STATUTS EN UNE HEURE, AVEC L'IA ET CANVA
+================================================================
+
+
+--- FICHE DE CONTEXTE · à remplir une fois, à coller au début de chaque prompt ---
+FICHE DE CONTEXTE : [NOM DE L'ACTIVITÉ]
+
+Activité : [ce que je vends, en une phrase]
+Lieu : [ville, commune] · Livraison : [zones et délais]
+Produits ou services phares et prix : [produit 1] : [prix] FCFA · [produit 2] : [prix] FCFA · [produit 3] : [prix] FCFA
+Mes clients : [qui ils sont, ce qu'ils cherchent, ce qui les fait hésiter]
+Ce qui me distingue : [2 ou 3 éléments réels et vérifiables]
+Mon ton : [ex. chaleureux, direct, comme une grande sœur qui conseille]
+Mots et expressions que j'utilise : [ex. « c'est propre », « on livre partout »]
+Mots que je n'utilise jamais : [ex. « incroyable », « exceptionnel », « n'hésitez pas »]
+Émojis : [ex. 2 maximum par texte, de préférence 🌿 💛 ✅]
+Ma semaine type : [lun. nouveauté · mar. preuve · mer. conseil · jeu. coulisses · ven. offre · sam. preuve · dim. question]
+Règles absolues : ne jamais inventer de prix, de promotion, d'avis client ni de caractéristique de produit. Si une information manque, la demander.
+
+
+--- PROMPT N° 1 · Ma semaine de statuts ---
+RÔLE
+
+Tu es mon assistant de création de contenu. Tu rédiges des statuts WhatsApp pour une petite activité commerciale en Côte d'Ivoire, en respectant strictement ma fiche de contexte.
+
+CONTEXTE
+
+Cette semaine, voici ce que j'ai à montrer :
+– Nouveautés ou produits à mettre en avant : [ ]
+– Photos et vidéos disponibles : [ex. 5 photos de robes portées, 1 vidéo de préparation de colis, 2 avis clients autorisés]
+– Offre de la semaine (s'il y en a une) : [ ] · Durée : [ ]
+– Contexte particulier : [fin du mois, rentrée scolaire, fête, pluie…]
+
+OBJECTIF
+
+Rédiger les textes de mes statuts pour les 7 prochains jours, en suivant ma semaine type et la règle des trois tiers (vendre, rassurer, créer du lien).
+
+CONTRAINTES
+
+– 2 textes par jour, soit 14 au total, de 3 lignes maximum chacun.
+– Les textes « produit » reprennent nom, prix et variantes, et se terminent par « Répondez à ce statut pour commander » ou une variante naturelle.
+– Les textes « question » posent une question à laquelle on répond en un mot ou un émoji.
+– Uniquement les produits, prix et offres que je t'ai donnés.
+– Ne commence jamais deux textes de la même façon. Respecte mon ton, mes mots, mes interdits et ma règle sur les émojis.
+
+FORMAT DE RÉPONSE
+
+Un tableau : Jour · Type de statut · Texte · Visuel à utiliser (quelle photo ou vidéo de ma réserve). À la fin, les informations qui m'auraient permis de faire de meilleurs textes.
+
+EXEMPLE D'UTILISATION
+
+Nouveautés : 2 beurres parfumés (vanille, citronnelle), 3 500 FCFA le pot de 200 g · Réserve : 4 photos produits, 1 vidéo de fabrication, 1 avis d'une cliente d'Abidjan (autorisé) · Offre : 3 pots achetés = livraison offerte, du vendredi au dimanche · Contexte : fin du mois.
+
+
+--- PROMPT N° 2 · Un script de vidéo courte (coulisses ou visage) ---
+RÔLE
+
+Tu es un scénariste spécialisé dans les vidéos courtes tournées au smartphone par des commerçants et des artisans qui ne sont pas des professionnels de la caméra.
+
+CONTEXTE
+
+Je veux tourner une vidéo pour mon statut. Type : [coulisses / je parle face caméra / démonstration]. Sujet : [ex. comment je prépare un colis, qui je suis]. Lieu : [atelier, cuisine, boutique]. Je suis [à l'aise / pas du tout à l'aise] devant la caméra.
+
+OBJECTIF
+
+Un script simple que je peux tourner seul(e), en une ou deux prises, sans matériel particulier.
+
+CONTRAINTES
+
+– 20 à 30 secondes au total.
+– Si je parle : phrases très courtes, faciles à dire naturellement, 60 mots maximum.
+– La première seconde montre quelque chose d'intéressant (un geste, un produit, une question), pas « Bonjour à tous ».
+– Un appel à l'action simple à la fin. Faisable avec un seul téléphone, tenu ou posé.
+
+FORMAT DE RÉPONSE
+
+Un tableau : Seconde · Ce qu'on voit · Ce que je dis (ou « musique seule ») · Texte à l'écran. Puis 3 conseils de tournage adaptés à mon lieu.
+
+EXEMPLE D'UTILISATION
+
+Coulisses, sans parler · je change l'écran d'un téléphone · petit atelier à Abobo, un bureau et une lampe · pas à l'aise devant la caméra, je préfère montrer mes mains.
+
+
+--- PROMPT N° 3 · Transformer un vrai avis client en statut de preuve ---
+RÔLE
+
+Tu es un spécialiste de la communication de confiance pour les petites entreprises. Tu sais mettre en valeur un témoignage sans le déformer.
+
+CONTEXTE
+
+Un client m'a envoyé ce message et m'a autorisé à l'utiliser publiquement : « [message exact, sans nom ni numéro] ». Produit concerné : [ ]. Ville ou commune du client (s'il est d'accord) : [ ].
+
+OBJECTIF
+
+Créer un statut de preuve authentique à partir de ce message.
+
+CONTRAINTES
+
+– Ne modifie jamais le sens ni les mots importants. Tu peux corriger l'orthographe et raccourcir en coupant (avec « […] »), sans reformuler.
+– N'ajoute aucun compliment ni détail absent du message.
+– Prénom ou initiale seulement, et uniquement avec l'accord du client.
+– Introduction ou conclusion : une ligne maximum, sobre.
+
+FORMAT DE RÉPONSE
+
+1. L'extrait à afficher (2 ou 3 lignes) · 2. Une ligne d'accompagnement · 3. Deux idées de mise en forme dans mon modèle « Preuve »
+
+EXEMPLE D'UTILISATION
+
+« Bonsoir Awa, j'ai porté la robe au mariage de ma cousine samedi, tout le monde m'a demandé où je l'ai eue. La taille était parfaite, merci beaucoup !! » · robe longue wax · Marcory (accord donné).
+
+
+--- PROMPT N° 4 · Une offre promotionnelle qui ne brade pas vos prix ---
+RÔLE
+
+Tu es un conseiller commercial pour les petits commerces d'Afrique de l'Ouest. Tu crées des offres attractives qui protègent la marge et la valeur perçue des produits.
+
+CONTEXTE
+
+– Ce que je veux obtenir : [vider un stock, faire découvrir un produit, augmenter le panier moyen, faire revenir d'anciens clients]
+– Produits concernés et prix normaux : [ ]
+– Ce qu'ils me coûtent réellement, approximativement : [achat ou fabrication, livraison]
+– Ce que je peux offrir au maximum : [ex. 1 500 FCFA par commande] · Période : [dates]
+
+OBJECTIF
+
+Proposer des idées d'offres, puis rédiger l'annonce de l'offre choisie pour mes statuts.
+
+CONTRAINTES
+
+– Privilégie les offres qui ne baissent pas le prix affiché : produit offert, livraison offerte, lot, cadeau, avant-première.
+– Chaque offre est limitée dans le temps et se comprend en 3 secondes.
+– Calcule pour chaque offre son coût sur une commande, à partir de mes chiffres. Écarte celles qui dépassent mon maximum.
+– Pas de fausse urgence (« dernières pièces ! ») sauf si je confirme que c'est vrai.
+
+FORMAT DE RÉPONSE
+
+1. Un tableau de 4 offres : Offre · Coût pour moi par commande · Avantage · Risque · 2. Ta recommandation en 2 phrases · 3. Pour l'offre recommandée : 3 statuts (annonce, rappel, dernier jour)
+
+EXEMPLE D'UTILISATION
+
+Augmenter le panier moyen · beurres parfumés à 3 500 FCFA, huile capillaire à 4 000 FCFA · fabrication : environ [X] FCFA par pot · livraison à Abidjan : je paie [X] FCFA · maximum 1 500 FCFA par commande · du vendredi au dimanche.
+
+
+--- PROMPT N° 5 · Humaniser un texte trop « IA » ---
+RÔLE
+
+Tu es un éditeur qui réécrit des textes commerciaux pour qu'ils sonnent comme une vraie personne qui parle à ses clients sur WhatsApp, en Côte d'Ivoire.
+
+CONTEXTE
+
+Voici un texte que je trouve trop artificiel : « [texte] »
+
+OBJECTIF
+
+Le réécrire pour qu'il ressemble à ce que je dirais réellement à une cliente, en respectant ma fiche de contexte.
+
+CONTRAINTES
+
+– Supprime les formules toutes faites et l'enthousiasme forcé. Phrases courtes, une idée par phrase.
+– Garde exactement les mêmes informations (prix, produit, conditions). N'en ajoute aucune.
+– Respecte ma règle sur les émojis. Pas de nouchi forcé ni de caricature.
+
+FORMAT DE RÉPONSE
+
+1. Deux versions (une chaleureuse, une sobre) · 2. Les expressions supprimées, et pourquoi
+
+EXEMPLE D'UTILISATION
+
+« ✨🔥 Découvrez notre INCROYABLE nouvelle collection qui va sublimer votre style ! 💃✨ N'hésitez pas à nous contacter pour plus d'informations ! Qu'attendez-vous ? 🛍️🔥 »
+
+
+================================================================
+CHAPITRE 7 — RÉPONDEZ À « C'EST COMBIEN ? »
+================================================================
+
+
+--- PROMPT · Créer vos réponses à « C'est combien ? » ---
+RÔLE
+
+Tu es un formateur en vente conversationnelle, spécialisé dans le commerce sur WhatsApp en Afrique de l'Ouest francophone. Tu aides les commerçants à transformer les demandes de prix en commandes, sans jamais mettre de pression sur le client.
+
+CONTEXTE
+
+[Collez votre fiche de contexte du chapitre 6.] Mes clients me demandent souvent le prix de :
+– [Produit 1] : [prix] FCFA · Variantes : [ ] · Ce qui fait hésiter : [ ]
+– [Produit 2] : [prix] FCFA · Variantes : [ ] · Ce qui fait hésiter : [ ]
+– [Produit 3] : [prix] FCFA · Variantes : [ ] · Ce qui fait hésiter : [ ]
+Livraison : [ ]
+
+OBJECTIF
+
+Pour chaque produit, une réponse type à « C'est combien ? » à enregistrer en réponse rapide.
+
+CONTRAINTES
+
+– Structure stricte : 1) le prix, en premier ; 2) un ou deux détails de valeur qui répondent au doute principal ; 3) une question à laquelle on répond en un mot.
+– 3 phrases et 2 émojis maximum. Aucune pression, aucune fausse urgence, aucune promesse non fournie.
+– N'invente aucune caractéristique : si un détail manque, demande-le.
+
+FORMAT DE RÉPONSE
+
+Pour chaque produit : 1. La réponse type · 2. Un raccourci (ex. /prix-robe) · 3. Une variante si le client a déjà donné sa taille ou sa commune · 4. La question de conclusion
+
+EXEMPLE D'UTILISATION
+
+Robe longue wax, 15 000 FCFA · S à XL, vert et bordeaux · ce qui fait hésiter : la taille et la qualité du tissu · livraison de 1 000 à 2 500 FCFA selon la commune à Abidjan, 24 h.
+
+
+================================================================
+CHAPITRE 8 — LES OBJECTIONS : « C'EST CHER », « JE VAIS RÉFLÉCHIR »…
+================================================================
+
+
+--- PROMPT · Répondre à une objection avec la méthode ACRA ---
+RÔLE
+
+Tu es un formateur en vente conversationnelle sur WhatsApp, spécialisé dans les petits commerces et les services en Afrique de l'Ouest francophone. Ta méthode repose sur le respect du client, jamais sur la pression.
+
+CONTEXTE
+
+[Collez votre fiche de contexte.] Voici une objection que je reçois souvent : « [objection exacte, comme le client l'écrit] ». Ce qui se passe généralement ensuite : [je baisse le prix, je ne sais pas quoi répondre, le client disparaît]. Ce que je peux réellement proposer : [preuves, options moins chères, garanties, règle de paiement, règle de négociation].
+
+OBJECTIF
+
+Obtenir des réponses qui suivent la méthode ACRA : Accueillir, Clarifier, Répondre, Avancer.
+
+CONTRAINTES
+
+– Ne propose jamais de baisser le prix, sauf si je t'ai indiqué une marge de négociation.
+– Ne dénigre aucun concurrent. N'invente aucune preuve, garantie ou caractéristique.
+– Pas de fausse urgence. 3 à 4 phrases maximum par réponse, avec une question à la fin.
+
+FORMAT DE RÉPONSE
+
+1. Ce que cette objection cache probablement (2 ou 3 hypothèses) · 2. Trois versions : courte, avec preuve, avec option alternative · 3. La phrase de sortie respectueuse si le client confirme qu'il n'est pas intéressé · 4. L'amélioration de mon offre qui pourrait éviter cette objection
+
+EXEMPLE D'UTILISATION
+
+« Votre réparation est chère, au marché ils changent l'écran à moins que ça. » · ensuite le client part · je peux proposer : pièces testées, garantie de [X] jours, diagnostic gratuit, deux qualités d'écran à deux prix · pas de négociation.
+
+
+================================================================
+CHAPITRE 11 — DU CLIENT UNIQUE AU CLIENT QUI REVIENT ET RECOMMANDE
+================================================================
+
+
+--- PROMPT · Concevoir un programme de fidélité et de parrainage rentable ---
+RÔLE
+
+Tu es un conseiller commercial pour les petites entreprises en Côte d'Ivoire. Tu conçois des programmes de fidélité simples, faciles à suivre sans logiciel, et rentables pour le commerçant.
+
+CONTEXTE
+
+[Collez votre fiche de contexte.]
+– Prix moyen d'une commande : [ ] FCFA · Ce qu'une commande me rapporte après mes coûts : [ ] FCFA
+– Fréquence d'achat d'un bon client : [ ] · Suivi des clients : [cahier, étiquettes, tableau]
+– Avantages que je peux offrir sans difficulté : [livraison offerte, petit produit, avant-première…]
+
+OBJECTIF
+
+Un programme de fidélité et un système de parrainage à lancer dès cette semaine.
+
+CONTRAINTES
+
+– Chaque programme tient en une phrase et se suit avec un cahier ou mes étiquettes.
+– Pour chaque proposition, calcule son coût par client récompensé et compare-le à ce que rapportent les commandes nécessaires pour l'obtenir. Écarte toute proposition qui me fait perdre de l'argent.
+– Au moins une option gratuite (avant-première, service). N'invente aucun chiffre : utilise mes données et signale ce qui manque.
+
+FORMAT DE RÉPONSE
+
+1. Un tableau de 3 programmes : Programme · Coût par client récompensé · Ce qu'il rapporte avant récompense · Avantage · Risque · 2. Une proposition de parrainage avec son coût · 3. Ta recommandation en 2 phrases · 4. L'annonce du programme recommandé pour un statut (3 lignes)
+
+EXEMPLE D'UTILISATION
+
+Commande moyenne : 3 000 FCFA (garba + boisson) · ce qu'elle me rapporte après coûts : environ [X] FCFA · les bons clients viennent 2 à 3 fois par semaine · suivi dans un cahier · avantages possibles : plat offert, boisson offerte, livraison offerte.
