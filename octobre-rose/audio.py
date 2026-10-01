@@ -1,4 +1,4 @@
-"""Music bed + synced sound effects for the 1:00 Octobre Rose video.
+"""Music bed + synced sound effects for the 1:00 Octobre Rose video (DEO-CI, 16:9).
 
 Original afro-house groove at 120 BPM (1 bar = 2 s, 30 bars = 60 s), synthesized
 from scratch with numpy/scipy. Scene changes in the animation sit on bar lines;
