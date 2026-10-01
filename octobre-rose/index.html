@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Octobre Rose — Amadou Traoré</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --bg:#FFFFFF; --pink:#E0457B; --pink-d:#B8285C; --pink-l:#F9D3E1; --pink-xl:#FDEFF4;
+  --ink:#121110; --ink-2:#4A4541; --muted:#9E949A; --soft:#F7F3F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#efe7ea;height:100%;overflow:hidden}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;color:var(--ink)}
+
+/* ---------- stage ---------- */
+#wrap{position:relative;flex:1;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1080px;height:1920px;transform-origin:50% 50%;overflow:hidden;background:var(--bg)}
+.render #stage{left:0;top:0;transform:none!important}
+.render #controls{display:none}
+.scene{position:absolute;inset:0;overflow:hidden;visibility:hidden;background:var(--bg)}
+.scene.pinkbg{background:var(--pink)}
+.dots::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,#F3E4EA 2px,transparent 2.5px);background-size:44px 44px}
+.abs{position:absolute}
+img{display:block;user-select:none;-webkit-user-drag:none}
+.shadow{filter:drop-shadow(0 34px 44px rgba(90,30,50,.18))}
+.blob{position:absolute;border-radius:50%;background:var(--pink-xl)}
+
+/* ---------- type ---------- */
+.label{position:absolute;left:72px;top:196px;font:600 24px/1 'Poppins';letter-spacing:.26em;text-transform:uppercase;color:var(--pink);display:flex;align-items:center;gap:18px}
+.label::before{content:"";width:52px;height:3px;border-radius:2px;background:currentColor}
+.line{display:block;overflow:hidden;padding:.22em 0 .08em;margin:-.22em 0 -.08em}
+.line > span{display:inline-block}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding:.2em 0 .1em;margin:-.2em 0 -.1em}
+.w > i{display:inline-block;font-style:normal}
+.c{display:inline-block}
+.pk{color:var(--pink)}
+
+/* ---------- ribbon ---------- */
+.ribbon path{fill:none;stroke-width:30;stroke-linecap:butt;stroke-linejoin:round}
+.ribbon .back{stroke:var(--pink-d)}
+.ribbon .front{stroke:var(--pink)}
+.ribbon.white .back{stroke:rgba(255,255,255,.7)}
+.ribbon.white .front{stroke:#fff}
+
+/* ---------- transition panels ---------- */
+.panel{position:absolute;inset:0;z-index:40;pointer-events:none;visibility:hidden}
+#pA{background:var(--pink-l)}
+#pB{background:var(--pink)}
+#fade{position:absolute;inset:0;background:#fff;opacity:0;z-index:60;pointer-events:none}
+
+/* ---------- S1 hook ---------- */
+#s1 .rib{position:absolute;left:390px;top:300px;width:300px;height:450px}
+#s1 .oct{left:0;right:0;top:820px;text-align:center;font:900 180px/1 'Poppins';letter-spacing:-.02em;color:var(--pink);white-space:nowrap}
+#s1 .sub{left:0;right:0;top:1060px;text-align:center;font:600 64px/1.1 'Poppins';color:var(--ink)}
+#s1 .tag{left:0;right:0;top:1190px;text-align:center;font:600 30px/1 'Poppins';letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- S2 mobilisation (pink) ---------- */
+#s2 .t1{left:72px;top:300px;font:600 50px/1 'Poppins';color:#fff}
+#s2 .t2{left:68px;top:380px;width:960px;font:800 108px/1.04 'Poppins';letter-spacing:-.03em;color:#fff}
+#s2 .t3{left:72px;top:640px;font:500 46px/1 'Poppins';color:rgba(255,255,255,.88)}
+#s2 .t4{left:68px;top:712px;font:900 118px/1 'Poppins';letter-spacing:-.03em;color:#fff;white-space:nowrap}
+#s2 .uline{position:absolute;left:72px;top:868px;width:500px;height:10px;border-radius:5px;background:#fff;transform-origin:0 50%}
+#s2 .grid{position:absolute;left:0;top:1010px;width:1080px;height:700px}
+#s2 .mini{position:absolute;width:110px;height:165px}
+
+/* ---------- S3 chiffres ---------- */
+#s3 .first{left:66px;top:262px;font:900 210px/1 'Poppins';letter-spacing:-.04em;color:var(--pink)}
+#s3 .first sup{font-size:.42em;vertical-align:.95em;letter-spacing:0}
+#s3 .ft{left:300px;font:800 70px/1 'Poppins';letter-spacing:-.02em;color:var(--ink)}
+#s3 .rule{position:absolute;left:72px;top:560px;width:936px;height:3px;background:var(--pink-l);transform-origin:0 50%}
+#s3 .num{left:62px;top:590px;font:900 250px/1 'Poppins';letter-spacing:-.05em;color:var(--pink);font-variant-numeric:tabular-nums}
+#s3 .mil{left:436px;top:706px;font:800 92px/1 'Poppins';letter-spacing:-.03em;color:var(--ink)}
+#s3 .desc{left:72px;top:900px;width:930px;font:500 42px/1.35 'Poppins';color:var(--ink-2)}
+#s3 .box{position:absolute;left:72px;top:1080px;width:936px;height:290px;border-radius:36px;background:var(--pink-xl);overflow:hidden}
+#s3 .box .bar{position:absolute;left:0;top:0;bottom:0;width:12px;background:var(--pink)}
+#s3 .box .rib{position:absolute;left:62px;top:62px;width:110px;height:165px}
+#s3 .box .tx{position:absolute;left:220px;top:64px;font:800 70px/1.12 'Poppins';letter-spacing:-.02em;color:var(--ink)}
+#s3 .src{left:72px;top:1410px;font:500 26px/1.3 'Poppins';color:var(--muted)}
+
+/* ---------- S4 réflexes ---------- */
+#s4 .title{left:66px;top:270px;font:800 150px/1 'Poppins';letter-spacing:-.04em;color:var(--ink)}
+#s4 .cards{position:absolute;left:72px;top:490px;width:936px}
+#s4 .card{position:relative;height:210px;margin-bottom:28px;border-radius:30px;background:var(--soft);display:flex;align-items:center;gap:30px;padding:0 36px;overflow:hidden}
+#s4 .card .bar{position:absolute;left:0;top:0;bottom:0;width:10px;background:var(--pink);transform-origin:50% 0}
+#s4 .card .num{font:800 72px/1 'Poppins';color:var(--pink);width:100px;letter-spacing:-.02em}
+#s4 .card .ico{width:84px;height:84px;flex:none}
+#s4 .card .ico *{fill:none;stroke:var(--pink-d);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+#s4 .card h3{font:700 42px/1.12 'Poppins';color:var(--ink)}
+#s4 .card p{font:500 27px/1.3 'Poppins';color:var(--muted);margin-top:8px}
+#s4 .final{left:72px;top:1270px;width:936px;font:800 76px/1.1 'Poppins';letter-spacing:-.03em;color:var(--ink)}
+
+/* ---------- S5 et toi (pink) ---------- */
+#s5 .glow{position:absolute;left:90px;top:960px;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55) 0%,rgba(255,255,255,.18) 45%,transparent 70%)}
+#s5 .etoi{left:66px;top:250px;font:900 200px/1 'Poppins';letter-spacing:-.04em;color:#fff}
+#s5 .q1{left:72px;top:500px;font:600 54px/1 'Poppins';color:rgba(255,255,255,.92)}
+#s5 .q2{left:68px;top:570px;font:900 100px/1 'Poppins';letter-spacing:-.03em;color:#fff;white-space:nowrap}
+#s5 .chips{position:absolute;left:72px;top:740px;width:960px;display:flex;flex-wrap:wrap;gap:18px 16px}
+#s5 .chip{font:600 36px/1 'Poppins';color:var(--pink-d);background:#fff;border-radius:60px;padding:20px 32px 19px}
+#s5 .cut{position:absolute;left:160px;top:907px;width:760px;height:1013px;transform-origin:50% 100%}
+
+/* ---------- S6 services ---------- */
+#s6 .title{left:66px;top:270px;font:800 100px/1 'Poppins';letter-spacing:-.04em;color:var(--ink);white-space:nowrap}
+#s6 .for{left:72px;top:392px;font:600 46px/1 'Poppins';color:var(--pink)}
+#s6 .cards{position:absolute;left:72px;top:500px;width:936px}
+#s6 .card{position:relative;height:196px;margin-bottom:26px;border-radius:28px;background:var(--soft);display:flex;align-items:center;gap:28px;padding:0 36px;overflow:hidden}
+#s6 .card .bar{position:absolute;left:0;top:0;bottom:0;width:10px;background:var(--pink);transform-origin:50% 0}
+#s6 .card .num{font:800 72px/1 'Poppins';color:var(--pink);width:100px;letter-spacing:-.02em}
+#s6 .card .ico{width:80px;height:80px;flex:none}
+#s6 .card .ico *{fill:none;stroke:var(--pink-d);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+#s6 .card h3{font:700 40px/1.12 'Poppins';color:var(--ink)}
+#s6 .card p{font:500 26px/1.3 'Poppins';color:var(--muted);margin-top:8px}
+#s6 .final{left:72px;top:1420px;width:936px;font:700 50px/1.2 'Poppins';letter-spacing:-.01em;color:var(--ink)}
+
+/* ---------- S7 signature ---------- */
+.namedisc{left:140px;top:520px;width:800px;height:800px;border-radius:50%;background:var(--pink-xl)}
+#s7 .hash{left:0;right:0;top:250px;text-align:center;font:700 34px/1 'Poppins';color:var(--pink)}
+#s7 .roles{left:0;right:0;top:310px;text-align:center;font:600 25px/1 'Poppins';letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.big-first{left:0;right:0;top:488px;text-align:center;font:900 200px/1 'Poppins';letter-spacing:-.03em;color:var(--ink);white-space:nowrap}
+.cutout2{position:absolute;left:-67px;top:300px;width:1215px;height:1620px;transform-origin:50% 100%}
+.band{position:absolute;left:0;top:1170px;width:1080px;height:200px;background:var(--pink);transform-origin:0 50%}
+.big-last{left:0;right:0;top:1170px;height:200px;display:flex;align-items:center;justify-content:center;font:900 150px/1 'Poppins';letter-spacing:.04em;color:#fff;white-space:nowrap}
+#s7 .cta{position:absolute;left:50%;top:1452px;transform:translateX(-50%);white-space:nowrap;font:600 40px/1 'Poppins';color:var(--ink);background:#fff;border-radius:80px;padding:28px 50px 27px;box-shadow:0 20px 50px rgba(90,30,50,.25);display:flex;align-items:center;gap:18px}
+#s7 .cta svg{width:40px;height:40px}
+#s7 .cta svg *{fill:none;stroke:var(--pink);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+#s7 .rib{position:absolute;left:513px;top:150px;width:54px;height:81px}
+
+/* ---------- preview controls ---------- */
+#controls{flex:none;width:100%;max-width:560px;display:flex;align-items:center;gap:14px;padding:14px 16px 18px}
+#controls button{flex:none;width:48px;height:48px;border-radius:50%;border:0;background:var(--pink);color:#fff;font:700 18px 'Poppins';cursor:pointer}
+#controls input{flex:1;accent-color:var(--pink)}
+#controls .time{flex:none;font:600 15px 'Poppins';color:var(--ink);font-variant-numeric:tabular-nums;min-width:92px;text-align:right}
+</style>
+</head>
+<body>
+<div id="wrap">
+<div id="stage">
+
+  <!-- S1 · Accroche (0:00 – 0:04) -->
+  <section class="scene dots" id="s1">
+    <div class="blob" style="left:-260px;top:1180px;width:900px;height:900px"></div>
+    <div class="blob" style="left:640px;top:-120px;width:620px;height:620px"></div>
+    <svg class="rib ribbon" viewBox="0 0 200 300"><path class="back" d="M45 285 L120 152 C148 100 142 32 100 32"/><path class="front" d="M100 32 C58 32 52 100 80 152 L155 285"/></svg>
+    <div class="abs oct" data-chars>OCTOBRE</div>
+    <div class="abs sub" data-split>c’est le mois <span class="pk">rose.</span></div>
+    <div class="abs tag" data-split>#OctobreRose</div>
+  </section>
+
+  <!-- S2 · Mobilisation (0:04 – 0:12) -->
+  <section class="scene pinkbg" id="s2">
+    <div class="abs t1" data-split>Chaque année,</div>
+    <div class="abs t2" data-split>le monde se mobilise</div>
+    <div class="abs t3" data-split>pour sensibiliser au</div>
+    <div class="abs t4" data-split>cancer du sein.</div>
+    <div class="uline"></div>
+    <div class="grid"></div>
+  </section>
+
+  <!-- S3 · Chiffres (0:12 – 0:22) -->
+  <section class="scene" id="s3">
+    <div class="label">Le saviez-vous ?</div>
+    <div class="abs first" data-split>1<sup>er</sup></div>
+    <div class="abs ft ft1" style="top:318px" data-split>cancer</div>
+    <div class="abs ft ft2" style="top:400px" data-split>chez la femme</div>
+    <div class="rule"></div>
+    <div class="abs num"><span class="line"><span id="count">0,0</span></span></div>
+    <div class="abs mil" data-split>millions</div>
+    <div class="abs desc" data-split>de nouveaux cas de cancer du sein en 2022 dans le monde.</div>
+    <div class="box">
+      <i class="bar"></i>
+      <svg class="rib ribbon" viewBox="0 0 200 300"><path class="back" d="M45 285 L120 152 C148 100 142 32 100 32"/><path class="front" d="M100 32 C58 32 52 100 80 152 L155 285"/></svg>
+      <div class="tx"><span class="line"><span class="pk">Détecté tôt,</span></span><span class="line"><span>il se soigne mieux.</span></span></div>
+    </div>
+    <div class="abs src">Source : OMS / CIRC (Centre international de recherche sur le cancer)</div>
+  </section>
+
+  <!-- S4 · Les bons réflexes (0:22 – 0:32) -->
+  <section class="scene dots" id="s4">
+    <div class="label">Les bons réflexes</div>
+    <div class="abs title" data-split>Parlons-<span class="pk">en.</span></div>
+    <div class="cards">
+      <div class="card k1"><i class="bar"></i><div class="num">01</div>
+        <svg class="ico" viewBox="0 0 64 64"><circle cx="32" cy="19" r="10"/><path d="M11 57C11 42 20 34 32 34S53 42 53 57"/></svg>
+        <div><h3>Connais ton corps</h3><p>Sois à l’écoute des changements</p></div></div>
+      <div class="card k2"><i class="bar"></i><div class="num">02</div>
+        <svg class="ico" viewBox="0 0 64 64"><path d="M14 6V24A10 10 0 0 0 34 24V6"/><path d="M24 34V42A12 12 0 0 0 48 42V37"/><circle cx="48" cy="31" r="6"/><path d="M10 6H18M30 6H38"/></svg>
+        <div><h3>Consulte au moindre doute</h3><p>Parles-en à un professionnel de santé</p></div></div>
+      <div class="card k3"><i class="bar"></i><div class="num">03</div>
+        <svg class="ico" viewBox="0 0 64 64"><rect x="8" y="12" width="48" height="44" rx="6"/><path d="M8 26H56M20 6V16M44 6V16"/><path d="M23 41 30 48 42 35"/></svg>
+        <div><h3>Fais-toi dépister</h3><p>Le dépistage précoce sauve des vies</p></div></div>
+    </div>
+    <div class="abs final" data-split>Un geste simple peut <span class="pk">sauver une vie.</span></div>
+  </section>
+
+  <!-- S5 · Et toi ? (0:32 – 0:40) -->
+  <section class="scene pinkbg" id="s5">
+    <div class="glow"></div>
+    <img class="cut shadow" src="img/cut2.png" alt="">
+    <div class="abs etoi" data-split>Et toi ?</div>
+    <div class="abs q1" data-split>Tu as un projet pour</div>
+    <div class="abs q2" data-split>Octobre Rose ?</div>
+    <div class="chips">
+      <span class="chip c1">Campagne</span>
+      <span class="chip c2">Marche rose</span>
+      <span class="chip c3">Journée de dépistage</span>
+      <span class="chip c4">Conférence</span>
+    </div>
+  </section>
+
+  <!-- S6 · Accompagnement (0:40 – 0:52) -->
+  <section class="scene" id="s6">
+    <div class="label">Mon accompagnement</div>
+    <div class="abs title" data-split>Je t’accompagne</div>
+    <div class="abs for" data-split>pour ton projet Octobre Rose</div>
+    <div class="cards">
+      <div class="card k1"><i class="bar"></i><div class="num">01</div>
+        <svg class="ico" viewBox="0 0 64 64"><circle cx="30" cy="34" r="22"/><circle cx="30" cy="34" r="12"/><circle cx="30" cy="34" r="3"/><path d="M30 34 52 12M46 8V18H56"/></svg>
+        <div><h3>Communication de campagne</h3><p>Messages · Calendrier · Mobilisation</p></div></div>
+      <div class="card k2"><i class="bar"></i><div class="num">02</div>
+        <svg class="ico" viewBox="0 0 64 64"><path d="M40 8 56 24 24 56H8V40Z"/><path d="M33 15 49 31"/></svg>
+        <div><h3>Visuels &amp; contenus</h3><p>Affiches · Posts · Vidéos courtes</p></div></div>
+      <div class="card k3"><i class="bar"></i><div class="num">03</div>
+        <svg class="ico" viewBox="0 0 64 64"><rect x="6" y="16" width="36" height="32" rx="5"/><path d="M42 28 58 19V45L42 36"/></svg>
+        <div><h3>Couverture vidéo</h3><p>Marches · Dépistages · Conférences</p></div></div>
+      <div class="card k4"><i class="bar"></i><div class="num">04</div>
+        <svg class="ico" viewBox="0 0 64 64"><circle cx="16" cy="32" r="7"/><circle cx="46" cy="14" r="7"/><circle cx="46" cy="50" r="7"/><path d="M22.5 28.5 39.5 17.5M22.5 35.5 39.5 46.5"/></svg>
+        <div><h3>Gestion des réseaux sociaux</h3><p>Publication · Animation de communauté</p></div></div>
+    </div>
+    <div class="abs final" data-split>Pour que ton message touche <span class="pk">le plus de monde.</span></div>
+  </section>
+
+  <!-- S7 · Signature (0:52 – 1:00) -->
+  <section class="scene" id="s7">
+    <div class="abs namedisc"></div>
+    <div class="abs hash" data-split>#OctobreRose</div>
+    <div class="abs roles" data-split>Communicant digital · Vidéaste · Community manager</div>
+    <div class="abs big-first" data-chars>AMADOU</div>
+    <img class="cutout2 shadow" src="img/cut2.png" alt="">
+    <svg class="rib ribbon" viewBox="0 0 200 300"><path class="back" d="M45 285 L120 152 C148 100 142 32 100 32"/><path class="front" d="M100 32 C58 32 52 100 80 152 L155 285"/></svg>
+    <div class="band"></div>
+    <div class="abs big-last" data-chars>TRAORÉ</div>
+    <div class="cta">Écris-moi en privé
+      <svg viewBox="0 0 40 40"><path d="M8 20H32M22 10 32 20 22 30"/></svg></div>
+  </section>
+
+  <div class="panel" id="pA"></div>
+  <div class="panel" id="pB"></div>
+  <div id="fade"></div>
+</div>
+</div>
+
+<div id="controls">
+  <button id="playBtn" aria-label="Lecture">▶</button>
+  <input id="scrub" type="range" min="0" max="60" step="0.01" value="0" aria-label="Position">
+  <div class="time" id="time">0:00 / 1:00</div>
+</div>
+
+<script src="gsap.min.js"></script>
+<script>
+/* Musical grid: 120 BPM, 4/4 → 1 beat = 0.5 s, 1 bar = 2 s, 30 bars = 60 s.
+   Scene changes land on bar lines, reveals on the eighth-note grid (0.25 s). */
+const DURATION = 60;
+const RENDER = new URLSearchParams(location.search).has('render');
+if (RENDER) document.documentElement.classList.add('render');
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+/* ---- split text into masked words / chars (no split on non-breaking spaces) ---- */
+function splitWords(el) {
+  const walk = node => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/([ \t\n\r]+)/).forEach(part => {
+          if (!part) return;
+          if (/^[ \t\n\r]+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+          const w = document.createElement('span'); w.className = 'w';
+          const i = document.createElement('i'); i.textContent = part; w.appendChild(i);
+          frag.appendChild(w);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1 && n.tagName !== 'SUP') walk(n);
+    });
+  };
+  walk(el);
+}
+function splitChars(el) {
+  const t = el.textContent; el.textContent = '';
+  const line = document.createElement('span'); line.className = 'line';
+  const inner = document.createElement('span');
+  [...t].forEach(ch => { const c = document.createElement('span'); c.className = 'c'; c.textContent = ch === ' ' ? ' ' : ch; inner.appendChild(c); });
+  line.appendChild(inner); el.appendChild(line);
+}
+$$('[data-split]').forEach(splitWords);
+$$('[data-chars]').forEach(splitChars);
+
+/* ---- grid of small white ribbons (S2) ---- */
+const RIB = '<path class="back" d="M45 285 L120 152 C148 100 142 32 100 32"/><path class="front" d="M100 32 C58 32 52 100 80 152 L155 285"/>';
+(function () {
+  const g = $('#s2 .grid');
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 5; c++) {
+    const x = 105 + c * 190 + (r % 2 ? 40 : -20), y = r * 220;
+    g.insertAdjacentHTML('beforeend', `<svg class="mini ribbon white" viewBox="0 0 200 300" style="left:${x}px;top:${y}px">${RIB}</svg>`);
+  }
+})();
+
+/* ================= TIMELINE ================= */
+const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+const CUES = [];                                   // sound-effect cues read by the audio mixer
+const sfx = (t, type, gain = 1, pan = 0) => CUES.push({ t, type, gain, pan });
+const words = sel => $$(sel + ' .w > i');
+const chars = sel => $$(sel + ' .c');
+const reveal = (targets, at, stagger = 0.06, dur = 0.8) =>
+  tl.fromTo(targets, { yPercent: 150 }, { yPercent: 0, duration: dur, stagger, ease: 'power4.out' }, at);
+const show = (sel, at) => tl.set(sel, { visibility: 'visible' }, at);
+const hide = (sel, at) => tl.set(sel, { visibility: 'hidden' }, at);
+const labelIn = (sel, at) => { tl.fromTo(sel, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .7 }, at); };
+function drawRibbon(sel, at, dur = 1.2) {
+  $$(sel + ' path').forEach((p, i) => {
+    const L = p.getTotalLength();
+    gsap.set(p, { strokeDasharray: L, strokeDashoffset: L });
+    tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: dur * .55, ease: 'power2.inOut', immediateRender: false }, at + i * dur * .45);
+  });
+}
+
+/* Scene change: two panels sweep across, fully cover the frame on the bar line `b`,
+   then sweep out to reveal the next scene. */
+const DIRS = { right: ['xPercent', -100, 100], left: ['xPercent', 100, -100], up: ['yPercent', 100, -100], down: ['yPercent', -100, 100] };
+function cut(from, to, b, dir) {
+  const [p, a, z] = DIRS[dir], q = p === 'xPercent' ? 'yPercent' : 'xPercent';
+  show('#pA', b - .42); show('#pB', b - .42);
+  tl.fromTo('#pA', { [p]: a, [q]: 0 }, { [p]: 0, [q]: 0, duration: .36, ease: 'power3.in', immediateRender: false }, b - .42);
+  tl.fromTo('#pB', { [p]: a, [q]: 0 }, { [p]: 0, [q]: 0, duration: .34, ease: 'power3.in', immediateRender: false }, b - .34);
+  if (from) hide(from, b);
+  show(to, b);
+  tl.fromTo('#pB', { [p]: 0, [q]: 0 }, { [p]: z, [q]: 0, duration: .4, ease: 'power3.out', immediateRender: false }, b + .02);
+  tl.fromTo('#pA', { [p]: 0, [q]: 0 }, { [p]: z, [q]: 0, duration: .4, ease: 'power3.out', immediateRender: false }, b + .08);
+  hide('#pA', b + .5); hide('#pB', b + .5);
+  sfx(b - .45, 'whoosh', 1, dir === 'left' ? 1 : dir === 'right' ? -1 : 0);
+  sfx(b, 'thump', .8);
+}
+
+tl.set({}, {}, DURATION);                          // lock total length to 60 s
+
+/* ---------- S1 · 0 → 4 ---------- */
+show('#s1', 0);
+tl.fromTo('#s1 .blob', { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, duration: 2, stagger: .2, ease: 'expo.out' }, 0);
+drawRibbon('#s1 .rib', 0.25, 1.4);                 sfx(0.25, 'swoosh', .7, -.3); sfx(0.9, 'swoosh', .6, .3);
+tl.fromTo('#s1 .rib', { scale: .9, transformOrigin: '50% 50%' }, { scale: 1, duration: 3, ease: 'power1.out' }, 0.25);
+tl.fromTo(chars('#s1 .oct'), { yPercent: 150 }, { yPercent: 0, duration: .9, stagger: .05, ease: 'power4.out' }, 1.25);
+sfx(1.25, 'impact', .8);
+reveal(words('#s1 .sub'), 2.0, 0.08);              sfx(2.0, 'tick', .7);
+reveal(words('#s1 .tag'), 2.5, 0.08);              sfx(2.5, 'pluck', .6);
+sfx(2.1, 'riser', .5);
+
+/* ---------- S2 · 4 → 12 ---------- */
+cut('#s1', '#s2', 4, 'up');
+reveal(words('#s2 .t1'), 4.25, 0.08);              sfx(4.25, 'tick', .6);
+reveal(words('#s2 .t2'), 4.75, 0.1, 0.9);          sfx(4.75, 'impact', .6);
+reveal(words('#s2 .t3'), 7.0, 0.06);               sfx(7.0, 'tick', .5);
+reveal(words('#s2 .t4'), 8.0, 0.1, 0.9);           sfx(8.0, 'impact', .8);
+tl.fromTo('#s2 .uline', { scaleX: 0 }, { scaleX: 1, duration: .7, ease: 'power3.inOut' }, 8.75);
+sfx(8.75, 'marker', .6);
+$$('#s2 .mini').forEach((m, i) => {
+  const t = 5.5 + i * 0.25;
+  tl.fromTo(m, { scale: 0, opacity: 0, rotation: i % 2 ? 12 : -12, transformOrigin: '50% 60%' }, { scale: 1, opacity: .35 + (i % 3) * .25, rotation: 0, duration: .6, ease: 'back.out(2.4)' }, t);
+  tl.to(m, { y: -24, duration: 6, ease: 'sine.inOut' }, t + .6);
+  if (i % 3 === 0) sfx(t, 'bubble', .6, -.6 + (i % 5) * .3);
+});
+
+/* ---------- S3 · 12 → 22 ---------- */
+cut('#s2', '#s3', 12, 'right');
+labelIn('#s3 .label', 12.25);
+reveal(words('#s3 .first'), 12.5, 0.1, 0.9);       sfx(12.5, 'impact', .7);
+reveal(words('#s3 .ft1'), 12.75, 0.1);
+tl.fromTo('#s3 .first sup', { opacity: 0 }, { opacity: 1, duration: .4 }, 12.9);
+reveal(words('#s3 .ft2'), 13.0, 0.08);             sfx(13.0, 'tick', .5);
+tl.fromTo('#s3 .rule', { scaleX: 0 }, { scaleX: 1, duration: .8, ease: 'power2.inOut' }, 14.0);
+reveal($$('#s3 .num .line > span'), 14.5, 0, .6);
+const counter = { v: 0 };
+tl.fromTo(counter, { v: 0 }, { v: 2.3, duration: 1.25, ease: 'power2.out', immediateRender: false,
+  onUpdate: () => { $('#count').textContent = counter.v.toFixed(1).replace('.', ','); } }, 14.5);
+[14.5, 14.75, 15.0, 15.25].forEach((t, i) => sfx(t, 'tick', .45 + i * .1, .2));
+reveal(words('#s3 .mil'), 15.5, 0.1);              sfx(15.5, 'impact', .8);
+reveal(words('#s3 .desc'), 16.0, 0.04, 0.7);
+tl.fromTo('#s3 .box', { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: .8 }, 17.5);
+sfx(17.5, 'swoosh', .6, .4);
+tl.fromTo('#s3 .box .bar', { scaleY: 0, transformOrigin: '50% 0' }, { scaleY: 1, duration: .6, ease: 'power2.inOut' }, 17.7);
+drawRibbon('#s3 .box .rib', 17.75, 1.1);
+reveal($$('#s3 .box .tx .line > span'), 18.0, 0.25, 0.8);  sfx(18.0, 'shimmer', .7);
+tl.fromTo('#s3 .src', { opacity: 0 }, { opacity: 1, duration: .8 }, 19.0);
+
+/* ---------- S4 · 22 → 32 ---------- */
+cut('#s3', '#s4', 22, 'up');
+labelIn('#s4 .label', 22.25);
+reveal(words('#s4 .title'), 22.5, 0.12, 0.9);      sfx(22.5, 'impact', .6);
+[[24.0, 1], [25.5, 2], [27.0, 3]].forEach(([t, n]) => {
+  const k = `#s4 .k${n}`;
+  tl.fromTo(k, { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: .8 }, t);
+  tl.fromTo(`${k} .bar`, { scaleY: 0 }, { scaleY: 1, duration: .6, ease: 'power2.inOut' }, t + .2);
+  tl.fromTo(`${k} .ico *`, { strokeDasharray: 200, strokeDashoffset: 200 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.out' }, t + .25);
+  tl.fromTo(`${k} .num`, { scale: 1.5, opacity: 0 }, { scale: 1, opacity: 1, duration: .6 }, t + .1);
+  tl.fromTo(k, { backgroundColor: '#F9D3E1' }, { backgroundColor: '#F7F3F4', duration: 1.6, ease: 'power1.out' }, t + .5);
+  sfx(t, 'swoosh', .55, .7); sfx(t + .12, 'pop', .8, .2);
+});
+reveal(words('#s4 .final'), 28.75, 0.07, 0.8);     sfx(28.75, 'shimmer', .8);
+sfx(30.0, 'riser', .9);
+
+/* ---------- S5 · 32 → 40 ---------- */
+cut('#s4', '#s5', 32, 'left');
+reveal(words('#s5 .etoi'), 32.25, 0.12, 0.9);      sfx(32.25, 'impact', 1);
+tl.fromTo('#s5 .glow', { opacity: 0, scale: .5 }, { opacity: 1, scale: 1, duration: 1.6, ease: 'expo.out' }, 32.5);
+tl.fromTo('#s5 .cut', { y: 160, opacity: 0, scale: 1.04 }, { y: 0, opacity: 1, scale: 1, duration: 1.2 }, 32.75);
+sfx(32.75, 'swoosh', .6, -.4);
+tl.to('#s5 .cut', { scale: 1.03, duration: 6, ease: 'none' }, 34);
+reveal(words('#s5 .q1'), 33.25, 0.07);             sfx(33.25, 'tick', .6);
+reveal(words('#s5 .q2'), 33.75, 0.12, 0.9);        sfx(33.75, 'pop', .8);
+[[35.5, 1], [36.25, 2], [37.0, 3], [38.0, 4]].forEach(([t, n]) => {
+  tl.fromTo(`#s5 .c${n}`, { scale: .4, opacity: 0, rotation: n % 2 ? -8 : 8 }, { scale: 1, opacity: 1, rotation: 0, duration: .7, ease: 'back.out(2)' }, t);
+  sfx(t, 'pop', .85, -.45 + (n - 1) * .3);
+});
+
+/* ---------- S6 · 40 → 52 ---------- */
+cut('#s5', '#s6', 40, 'down');
+labelIn('#s6 .label', 40.25);
+reveal(words('#s6 .title'), 40.25, 0.1, 0.9);      sfx(40.25, 'impact', .7);
+reveal(words('#s6 .for'), 41.0, 0.06);             sfx(41.0, 'tick', .5);
+[[42.0, 1], [44.0, 2], [46.0, 3], [48.0, 4]].forEach(([t, n]) => {
+  const k = `#s6 .k${n}`;
+  tl.fromTo(k, { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: .8 }, t);
+  tl.fromTo(`${k} .bar`, { scaleY: 0 }, { scaleY: 1, duration: .6, ease: 'power2.inOut' }, t + .2);
+  tl.fromTo(`${k} .ico *`, { strokeDasharray: 200, strokeDashoffset: 200 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.out' }, t + .25);
+  tl.fromTo(`${k} .num`, { scale: 1.5, opacity: 0 }, { scale: 1, opacity: 1, duration: .6 }, t + .1);
+  tl.fromTo(k, { backgroundColor: '#F9D3E1' }, { backgroundColor: '#F7F3F4', duration: 1.6, ease: 'power1.out' }, t + .5);
+  sfx(t, 'swoosh', .55, .7); sfx(t + .12, 'pop', .8, .2);
+  if (n === 3) sfx(t + .3, 'shutter', .8, .3);
+});
+reveal(words('#s6 .final'), 50.0, 0.06, 0.8);      sfx(50.0, 'pluck', .7);
+sfx(50.1, 'riser', .7);
+
+/* ---------- S7 · 52 → 60 ---------- */
+cut('#s6', '#s7', 52, 'up');
+tl.fromTo('#s7 .namedisc', { scale: .5, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.4, ease: 'expo.out' }, 52.0);
+tl.fromTo('#s7 .cutout2', { y: 140, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1 }, 52.1);
+tl.to('#s7 .cutout2', { scale: 1.03, duration: 6.6, ease: 'none' }, 53.2);
+tl.fromTo(chars('#s7 .big-first'), { yPercent: 150 }, { yPercent: 0, duration: .85, stagger: .05, ease: 'power4.out' }, 52.25);
+sfx(52.25, 'impact', 1);
+tl.fromTo('#s7 .band', { scaleX: 0 }, { scaleX: 1, duration: .6, ease: 'power4.inOut' }, 52.75);
+sfx(52.75, 'swoosh', .7, -.5);
+tl.fromTo(chars('#s7 .big-last'), { yPercent: 150 }, { yPercent: 0, duration: .8, stagger: .05, ease: 'power4.out' }, 53.0);
+reveal(words('#s7 .roles'), 53.5, 0.05, 0.7);      sfx(53.5, 'tick', .5);
+reveal(words('#s7 .hash'), 54.0, 0.05, 0.7);
+drawRibbon('#s7 .rib', 54.0, 1.0);                 sfx(54.0, 'swoosh', .4, .6);
+tl.fromTo('#s7 .cta', { y: 40, opacity: 0, xPercent: -50, x: 0 }, { y: 0, opacity: 1, duration: .8, ease: 'back.out(1.8)' }, 55.0);
+sfx(55.0, 'pop', .9); sfx(55.0, 'shimmer', .8);
+tl.fromTo('#s7 .cta svg', { x: 0 }, { x: 10, duration: .5, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 55.75);
+tl.to('#fade', { opacity: 1, duration: .8, ease: 'power1.in' }, 59.2);
+
+/* ---- seek API used by the renderer (must not return the timeline) ---- */
+window.seek = t => { tl.seek(t, false); };
+window.DURATION = DURATION;
+window.CUES = CUES.sort((a, b) => a.t - b.t);
+window.ready = Promise.all([
+  document.fonts.ready,
+  ...['400', '500', '600', '700', '800', '900'].map(w => document.fonts.load(`${w} 100px Poppins`, 'AÉéàçî')),
+  ...$$('img').map(i => i.complete ? Promise.resolve() : new Promise(r => { i.onload = i.onerror = r; }))
+]).then(() => document.fonts.ready);
+
+/* ---- preview player (plays audio.m4a when it sits next to this file) ---- */
+const stage = $('#stage');
+const audio = RENDER ? { pause() {}, play() { return Promise.resolve(); } } : new Audio('audio.m4a');
+function fit() {
+  if (RENDER) return;
+  const w = $('#wrap'); const s = Math.min(w.clientWidth / 1080, w.clientHeight / 1920);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize', fit); fit();
+const btn = $('#playBtn'), scrub = $('#scrub'), time = $('#time');
+const fmt = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+let playing = false, t0 = 0, start = 0;
+function frame(now) {
+  if (!playing) return;
+  let t = t0 + (now - start) / 1000;
+  if (t >= DURATION) { t = DURATION; playing = false; btn.textContent = '↺'; audio.pause(); }
+  window.seek(t); scrub.value = t; time.textContent = `${fmt(t)} / 1:00`;
+  if (playing) requestAnimationFrame(frame);
+}
+btn.onclick = () => {
+  if (playing) { playing = false; btn.textContent = '▶'; audio.pause(); return; }
+  t0 = +scrub.value >= DURATION ? 0 : +scrub.value; start = performance.now(); playing = true;
+  try { audio.currentTime = t0; audio.play().catch(() => {}); } catch (e) {}
+  btn.textContent = '❚❚'; requestAnimationFrame(frame);
+};
+scrub.oninput = () => { playing = false; btn.textContent = '▶'; audio.pause(); window.seek(+scrub.value); time.textContent = `${fmt(+scrub.value)} / 1:00`; };
+window.seek(0);
+</script>
+</body>
+</html>
