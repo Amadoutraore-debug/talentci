@@ -250,7 +250,9 @@ function ouvrirOffre(id) {
       </div>
       <p class="offre-description">${escHtml(m.description)}</p>
       ${comps.length ? `<div class="offre-comps">${comps.map(c => `<span class="comp-pill">${escHtml(c)}</span>`).join('')}</div>` : ''}
-      <div class="offre-modal-actions">${bouton}</div>
+      <div class="offre-modal-actions">${bouton}
+        <p class="offre-info-attente">${icon('info')} Postuler ne vaut pas embauche : ta candidature reste <strong>en attente</strong> jusqu'à ce que l'entreprise examine ton profil. Si tu es retenu(e), tu recevras une notification avec la date de la prestation.</p>
+      </div>
     </div>`;
   document.getElementById('modal-offre').classList.add('visible');
 }
