@@ -21,7 +21,7 @@ async function chargerProfil(userId) {
   if (!verifierDB()) return null;
   const { data, error } = await db
     .from('profils')
-    .select('id, user_id, nom, type, universite, competences, avatar_url, created_at')
+    .select('*')
     .eq('user_id', userId)
     .maybeSingle();
   if (error) { console.warn('Erreur profil:', error.message); return null; }
@@ -53,12 +53,12 @@ async function creerProfilManquant(user) {
     avatar_url: meta.avatar_url || meta.picture || null
   };
   const { data, error } = await db.from('profils').insert(profil)
-    .select('id, user_id, nom, type, universite, competences, avatar_url, created_at').maybeSingle();
+    .select('*').maybeSingle();
   if (error) {
     console.warn('Création du profil impossible :', error.message);
     // Conflit = le profil existe (créé entre-temps) : on le relit.
     const { data: existant } = await db.from('profils')
-      .select('id, user_id, nom, type, universite, competences, avatar_url, created_at')
+      .select('*')
       .eq('user_id', user.id).maybeSingle();
     return existant || null;
   }

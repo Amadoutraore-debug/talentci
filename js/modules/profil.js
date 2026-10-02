@@ -307,12 +307,23 @@ async function enregistrerProfil() {
 
   setBtnLoading('btn-enregistrer-profil', false, 'Enregistrer mon profil →');
   fichierAvatarSelectionne = null; fichierPiece = null;
-  profilConnecte = await chargerProfil(uid);
+  const etaitObligatoire = cvObligatoireOuvert;
+  // On garde ce qui vient d'être enregistré même si la relecture échoue
+  // (réseau) : la fenêtre ne doit pas se rouvrir sur un CV déjà rempli.
+  profilConnecte = { ...profilConnecte, ...maj, ...(await chargerProfil(uid) || {}) };
   await chargerDonneesPrivees();
+  if (!donneesPrivees.telephone && telephone) donneesPrivees.telephone = telephone;
+  if (!donneesPrivees.piece && pieceType && pieceNumero) donneesPrivees.piece = { type_piece: pieceType, numero: pieceNumero, statut: 'en_attente' };
   fermerEditProfil(true);
   mettreAJourNavbar();
-  await mettreAJourProfil();
-  afficherToast('check', 'Profil enregistré !', 'vert');
+  if (etaitObligatoire) {
+    // Fin de l'inscription : on montre directement le profil terminé.
+    allerVers(profilConnecte?.type === 'entreprise' ? 'entreprise' : 'profil');
+    afficherToast('party', 'Bienvenue ! Ton profil est complet.', 'vert');
+  } else {
+    await mettreAJourProfil();
+    afficherToast('check', 'Profil enregistré !', 'vert');
+  }
 }
 
 /* ══════════════════════════════════════════
