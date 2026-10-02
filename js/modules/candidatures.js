@@ -33,7 +33,7 @@ async function postuler(missionId) {
   if (document.getElementById('modal-offre').classList.contains('visible')) ouvrirOffre(missionId);
   await ajouterNotification({
     user_id: utilisateurConnecte.id, type: 'candidature',
-    icone:'check', icone_bg:'#E1F5EE', icone_color:'#0F6E56',
+    icone:'check', icone_bg:'#FFF1E6', icone_color:'#B54708',
     texte: 'Candidature envoyée pour "<b>' + escHtml(mission?.titre||'cette mission') + '</b>" !',
     montant: mission ? fcfa(montantParPersonne(mission)) : null, lue: false
   });

@@ -357,8 +357,19 @@ async function mettreAJourProfil() {
       : '<span class="comp-pill">Non renseigné</span>';
   }
 
+  // Un compte Entreprise n'a pas de candidatures à suivre ici.
+  const estEnt = p?.type === 'entreprise';
+  const zoneEnt = document.getElementById('profil-zone-entreprise');
+  const zoneEtu = document.getElementById('profil-zone-etudiant');
+  if (zoneEnt) zoneEnt.style.display = estEnt ? '' : 'none';
+  if (zoneEtu) zoneEtu.style.display = estEnt ? 'none' : '';
+
   if (!verifierDB()) return;
   exigerProfilComplet();
+  chargerDonneesPrivees().then(() => {
+    setText('kpi-profil', !cvDisponible ? '—' : p?.verifie ? 'Vérifié' : profilEstComplet() ? 'Complet' : 'À compléter');
+  });
+  if (estEnt) return;
 
   const { data: cands, error } = await db
     .from('candidatures')
@@ -369,25 +380,25 @@ async function mettreAJourProfil() {
     setText('kpi-terminees', cands.filter(c => c.statut === 'acceptee').length);
     setText('kpi-encours',   cands.filter(c => c.statut === 'en_attente').length);
     setText('kpi-total',     cands.length);
-    const listeCands = document.getElementById('liste-candidatures');
-    if (listeCands) {
-      if (cands.length === 0) {
-        listeCands.innerHTML = '<div style="text-align:center;padding:32px;color:var(--texte-3);">Aucune candidature.<br><button class="btn btn-vert" style="margin-top:12px;" onclick="allerVers(\'missions\')">Voir les missions →</button></div>';
-      } else {
-        listeCands.innerHTML = cands.map(c => {
-          const titreM   = c.missions?.titre || 'Mission supprimée';
-          const montantM = c.missions ? fcfa(montantParPersonne(c.missions)) : '—';
-          const icone = c.statut === 'acceptee' ? icon('check') : c.statut === 'refusee' ? icon('error') : icon('clock');
-          const bg    = c.statut === 'acceptee' ? 'var(--vert-clair)' : c.statut === 'refusee' ? '#FCEBEB' : 'var(--amber-clair)';
-          const txt   = c.statut === 'acceptee' ? 'Acceptée' : c.statut === 'refusee' ? 'Refusée' : 'En attente';
-          return `<div class="historique-item">
-            <div class="hist-statut" style="background:${bg};font-size:16px;">${icone}</div>
-            <div class="hist-info"><div class="hist-titre">${escHtml(titreM)}</div><div class="hist-meta">${formatDate(c.created_at)} · ${txt}</div></div>
-            <div class="hist-montant">${montantM}</div>
-          </div>`;
-        }).join('');
-      }
-    }
+    const ligne = c => {
+      const titreM   = c.missions?.titre || 'Offre supprimée';
+      const montantM = c.missions ? fcfa(montantParPersonne(c.missions)) : '—';
+      const icone = c.statut === 'acceptee' ? icon('check') : c.statut === 'refusee' ? icon('error') : icon('clock');
+      const bg    = c.statut === 'acceptee' ? 'var(--vert-clair)' : c.statut === 'refusee' ? '#FCEBEB' : 'var(--amber-clair)';
+      const txt   = c.statut === 'acceptee' ? 'Acceptée — l\'entreprise va te contacter' : c.statut === 'refusee' ? 'Non retenue' : 'En attente de réponse';
+      return `<div class="historique-item">
+        <div class="hist-statut" style="background:${bg};font-size:16px;">${icone}</div>
+        <div class="hist-info"><div class="hist-titre">${escHtml(titreM)}</div><div class="hist-meta">${formatDate(c.created_at)} · ${txt}</div></div>
+        <div class="hist-montant">${montantM}</div>
+      </div>`;
+    };
+    const vide = (t, bouton) => `<div style="text-align:center;padding:32px;color:var(--texte-3);">${t}${bouton ? '<br><button class="btn btn-vert" style="margin-top:12px;" onclick="allerVers(\'missions\')">Voir les offres →</button>' : ''}</div>`;
+    const enCours = cands.filter(c => c.statut === 'en_attente');
+    const terminees = cands.filter(c => c.statut !== 'en_attente');
+    const elCours = document.getElementById('liste-candidatures');
+    const elFin = document.getElementById('liste-historique');
+    if (elCours) elCours.innerHTML = enCours.length ? enCours.map(ligne).join('') : vide('Aucune candidature en cours.', true);
+    if (elFin) elFin.innerHTML = terminees.length ? terminees.map(ligne).join('') : vide('Tes candidatures acceptées ou refusées apparaîtront ici.');
   }
 }
 

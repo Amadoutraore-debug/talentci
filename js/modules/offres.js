@@ -63,8 +63,7 @@ async function publierMission() {
   if (budget < 5000) { afficherToast('warning','Budget total minimum : 5 000 FCFA','rouge'); return; }
   const nomEntreprise = profilConnecte?.nom || utilisateurConnecte.email.split('@')[0];
   const ini = nomEntreprise.split(' ').map(m => m[0]).join('').substring(0,2).toUpperCase();
-  const bgMap  = {Design:'#EEEDFE',Développement:'#E6F1FB',Marketing:'#E1F5EE',Comptabilité:'#FAEEDA',Data:'#FAEEDA',Rédaction:'#E1F5EE',Vidéo:'#FBEAF0'};
-  const txtMap = {Design:'#534AB7',Développement:'#185FA5',Marketing:'#0F6E56',Comptabilité:'#BA7517',Data:'#BA7517',Rédaction:'#0F6E56',Vidéo:'#993556'};
+  const couleurs = couleursCategorie(categorie);
   setBtnLoading('btn-publier', true, 'Publication...');
 
   let imageUrl = null;
@@ -82,7 +81,7 @@ async function publierMission() {
 
   const { error } = await db.from('missions').insert({
     titre, entreprise: nomEntreprise, initiales: ini,
-    couleur_bg: bgMap[categorie]||'#E1F5EE', couleur_txt: txtMap[categorie]||'#0F6E56',
+    couleur_bg: couleurs.bg, couleur_txt: couleurs.txt,
     categorie, description, salaire: budget, duree, niveau,
     nb_places: places, montant_par_personne: montant, image_url: imageUrl,
     actif: true, user_id: utilisateurConnecte.id,
@@ -119,9 +118,11 @@ async function chargerStats() {
     db.from('profils').select('id', { count: 'exact', head: true }).eq('type', 'entreprise'),
     db.from('missions').select('id', { count: 'exact', head: true }).eq('actif', true)
   ]);
-  setText('stat-etudiants',   (r1.count||0) + '+');
-  setText('stat-entreprises', (r2.count||0) + '+');
-  setText('stat-missions',    (r3.count||0) + '+');
+  // "+" seulement à partir de 10 : "0+" ou "3+" ne veut rien dire.
+  const nombre = n => (n || 0) >= 10 ? n + '+' : String(n || 0);
+  setText('stat-etudiants',   nombre(r1.count));
+  setText('stat-entreprises', nombre(r2.count));
+  setText('stat-missions',    nombre(r3.count));
 }
 
 /* ══════════════════════════════════════════
@@ -142,6 +143,19 @@ function couleurCategorie(cat) {
   const map = {Design:'violet',Développement:'bleu',Marketing:'vert',Comptabilité:'amber',Data:'amber',Rédaction:'vert',Vidéo:'bleu'};
   return map[cat] || 'vert';
 }
+
+// Palette des catégories, déclinée de la charte orange / noir.
+const COULEURS_CATEGORIES = {
+  'Développement': { bg: '#EDEDED', txt: '#141414' },
+  'Design':        { bg: '#FFE8D6', txt: '#B54708' },
+  'Marketing':     { bg: '#FFF1E6', txt: '#C2410C' },
+  'Comptabilité':  { bg: '#F3EEE8', txt: '#5C4033' },
+  'Data':          { bg: '#E6E6E6', txt: '#2B2B2B' },
+  'Rédaction':     { bg: '#FFEDD5', txt: '#9A3412' },
+  'Vidéo':         { bg: '#FCE3D0', txt: '#7C2D12' },
+  'Traduction':    { bg: '#F1F1F1', txt: '#3A3A3A' }
+};
+function couleursCategorie(cat) { return COULEURS_CATEGORIES[cat] || { bg: '#FFF1E6', txt: '#B54708' }; }
 
 function iconCategorie(cat) {
   const map = {Design:'palette',Développement:'code',Marketing:'smartphone',Comptabilité:'chart',Data:'trendingUp',Rédaction:'fileText',Vidéo:'video',Traduction:'globe'};
@@ -168,8 +182,9 @@ function badgeDate(iso) {
 // Couverture : photo de l'offre si fournie, sinon dégradé aux couleurs
 // de la catégorie avec son icône.
 function couvertureOffre(m) {
-  const bg  = escAttr(m.couleur_bg || '#E1F5EE');
-  const txt = escAttr(m.couleur_txt || '#0F6E56');
+  // Couleurs recalculées depuis la catégorie (et non lues en base) : les
+  // anciennes offres prennent ainsi automatiquement la charte orange / noir.
+  const { bg, txt } = couleursCategorie(m.categorie);
   if (m.image_url) {
     return `<div class="offre-couverture" style="background-image:url('${cssUrl(m.image_url)}')"></div>`;
   }
@@ -267,7 +282,7 @@ function rendreAccueil() {
   alaune.slice(0, 4).forEach(m => {
     const slide = document.createElement('div');
     slide.className = 'carrousel-slide';
-    if (m.image_url) slide.style.backgroundImage = `linear-gradient(90deg, rgba(15,110,86,.92) 0%, rgba(15,110,86,.55) 55%, rgba(15,110,86,.15) 100%), url('${cssUrl(m.image_url)}')`;
+    if (m.image_url) slide.style.backgroundImage = `linear-gradient(90deg, rgba(20,20,20,.92) 0%, rgba(20,20,20,.6) 55%, rgba(20,20,20,.15) 100%), url('${cssUrl(m.image_url)}')`;
     slide.innerHTML = `<div class="carrousel-contenu">
         <div class="carrousel-label">${escHtml(m.categorie)} · À la une</div>
         <h2>${escHtml(m.titre)}</h2>
