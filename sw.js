@@ -13,7 +13,7 @@
    ⚠️ Changer VERSION à chaque modification de ce fichier ou de la
    liste APP_SHELL pour forcer le renouvellement du cache.
 ══════════════════════════════════════════════════════════════ */
-const VERSION = 'talentci-v9';
+const VERSION = 'talentci-v10';
 const APP_SHELL = [
   './',
   'index.html',

@@ -569,9 +569,9 @@ create trigger synchroniser_badge_verifie
   for each row execute function public.synchroniser_badge_verifie();
 
 -- Profil complet ? (règle unique, utilisée par les policies ci-dessous)
---   tous : nom, spécialité, ville, présentation (40 car. min.),
---          téléphone, pièce d'identité (numéro + photo)
+--   tous : nom, spécialité, ville, présentation (40 car. min.), téléphone
 --   étudiant en plus : parcours et au moins une compétence
+--   entreprise en plus : pièce d'identité / RCCM (numéro + photo)
 create or replace function public.profil_est_complet(uid uuid)
 returns boolean
 language sql
@@ -591,7 +591,11 @@ as $$
             and coalesce(cardinality(p.competences), 0) >= 1))
   )
   and exists (select 1 from coordonnees c where c.user_id = uid)
-  and exists (select 1 from pieces_identite pi where pi.user_id = uid);
+  -- Pièce d'identité exigée uniquement pour les entreprises (qui publient)
+  and (
+    exists (select 1 from profils p where p.user_id = uid and p.type = 'etudiant')
+    or exists (select 1 from pieces_identite pi where pi.user_id = uid)
+  );
 $$;
 
 -- Postuler exige un profil complet.

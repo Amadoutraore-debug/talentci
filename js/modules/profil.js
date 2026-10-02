@@ -51,7 +51,8 @@ function elementsManquantsProfil(p, priv) {
     if (!Array.isArray(p.competences) || p.competences.length < 1) manque.push('au moins une compétence');
   }
   if (chiffres(priv?.telephone).length < 8) manque.push('téléphone');
-  if (!priv?.piece) manque.push("pièce d'identité (type, numéro et photo)");
+  // Pièce d'identité : seulement pour les entreprises (qui publient des offres)
+  if (p.type !== 'etudiant' && !priv?.piece) manque.push("pièce d'identité ou RCCM (type, numéro et photo)");
   return manque;
 }
 
@@ -84,6 +85,10 @@ function majLibellesProfil(type) {
     : 'Qui es-tu, ce que tu sais faire, ce que tu recherches... (40 caractères minimum)';
   const afficher = (id, oui) => { const el = document.getElementById(id); if (el) el.style.display = oui ? '' : 'none'; };
   afficher('edit-univ-wrap', !ent);
+  afficher('bloc-piece-identite', ent);
+  afficher('note-contact-etudiant', !ent);
+  afficher('note-contact-entreprise', ent);
+  setText('lbl-section-contact', ent ? 'Contact et vérification' : 'Contact');
   afficher('requis-parcours', !ent);
   afficher('requis-competences', !ent);
 }
@@ -291,7 +296,7 @@ async function enregistrerProfil() {
   // Pièce d'identité (privée) : fichier dans le bucket privé "pieces"
   const pieceModifiee = fichierPiece || !pieceExistante
     || pieceType !== pieceExistante.type_piece || pieceNumero !== pieceExistante.numero;
-  if (pieceType && pieceNumero && pieceModifiee) {
+  if (nouveauType !== 'etudiant' && pieceType && pieceNumero && pieceModifiee) {
     let chemin = pieceExistante?.chemin || null;
     if (fichierPiece) {
       const ext = (fichierPiece.name.split('.').pop() || 'jpg').toLowerCase();
