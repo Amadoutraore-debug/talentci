@@ -78,7 +78,7 @@ async function chargerRecrutement() {
   // Candidatures reçues sur MES offres (la policy "candidatures_lecture"
   // le garantit aussi côté serveur).
   const { data: cands, error } = await db.from('candidatures')
-    .select('*, missions!inner(id, titre, categorie, competences, niveau, user_id, nb_places, places_prises, montant_par_personne, salaire)')
+    .select('*, missions!inner(id, titre, categorie, competences, niveau, user_id, nb_places, places_prises, montant_par_personne, salaire, date_prestation, heure_prestation, lieu_prestation)')
     .eq('missions.user_id', utilisateurConnecte.id)
     .order('created_at', { ascending: false });
   if (error) { liste.innerHTML = `<div class="rangee-vide">Impossible de charger les candidatures.<br><small>${escHtml(error.message)}</small></div>`; return; }
@@ -223,12 +223,11 @@ function ouvrirFicheCandidat(candidatureId) {
     <div class="candidat-contacts">
       ${tel ? `<a class="btn btn-blanc" href="tel:${escAttr(chiffresTel(tel))}">${icon('smartphone')} ${escHtml(tel)}</a>
       <a class="btn btn-whatsapp" href="https://wa.me/${escAttr(numeroWhatsApp(tel))}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
-      ${p.lien ? `<a class="btn btn-blanc" href="${escAttr(p.lien)}" target="_blank" rel="noopener">${icon('globe')} Portfolio</a>` : ''}
     </div>
 
     <div class="fiche-decision" id="fiche-decision">
       ${c.statut === 'en_attente' ? `
-        <button class="btn btn-vert" onclick="afficherFormRdv(${c.id})">${icon('check')} Valider la candidature</button>
+        <button class="btn btn-vert" onclick="retenirCandidat(${c.id})">${icon('check')} Valider la candidature</button>
         <button class="btn btn-rejeter" onclick="changerStatutCandidature(${c.id}, 'refusee')">${icon('error')} Rejeter</button>`
       : c.statut === 'acceptee' ? `
         <div class="fiche-rdv">
@@ -236,11 +235,10 @@ function ouvrirFicheCandidat(candidatureId) {
           ${texteRdv(c) || "<p>Aucune date n'a été fixée.</p>"}
           ${tel ? `<a class="btn btn-whatsapp" href="https://wa.me/${escAttr(numeroWhatsApp(tel))}?text=${encodeURIComponent(messageRetenu(c, p))}" target="_blank" rel="noopener">Envoyer aussi par WhatsApp</a>` : ''}
         </div>
-        <button class="btn btn-blanc" onclick="afficherFormRdv(${c.id})">Modifier le rendez-vous</button>
         <button class="btn btn-rejeter" onclick="changerStatutCandidature(${c.id}, 'refusee')">Changer d'avis : rejeter</button>`
       : `
         <div class="fiche-note">Tu as <strong>rejeté</strong> cette candidature.</div>
-        <button class="btn btn-blanc" onclick="afficherFormRdv(${c.id})">Changer d'avis : valider</button>`}
+        <button class="btn btn-blanc" onclick="retenirCandidat(${c.id})">Changer d'avis : valider</button>`}
     </div>`;
   document.getElementById('modal-candidat').classList.add('visible');
 }
@@ -253,9 +251,22 @@ function ouvrirFicheCandidat(candidatureId) {
    notifier_statut_candidature les inclut dans la notification envoyée
    à l'étudiant ; il les retrouve aussi dans « Mon profil ».
 ══════════════════════════════════════════ */
-function texteRdv(c) {
-  if (!c?.date_prestation) return '';
-  const date = new Date(c.date_prestation + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+// Rendez-vous d'une candidature retenue : celui enregistré sur la
+// candidature, sinon celui de l'offre.
+function rdvDe(c) {
+  const m = c?.missions || {};
+  return {
+    date_prestation: c?.date_prestation || m.date_prestation || null,
+    heure_prestation: c?.heure_prestation || m.heure_prestation || null,
+    lieu_prestation: c?.lieu_prestation || m.lieu_prestation || null,
+    message_entreprise: c?.message_entreprise || null
+  };
+}
+
+function texteRdv(cand) {
+  const c = rdvDe(cand);
+  if (!c.date_prestation) return '';
+  const date = dateLongue(c.date_prestation);
   return `<div class="rdv-lignes">
     <div>${icon('clock')} <strong>${escHtml(date)}</strong>${c.heure_prestation ? ' à <strong>' + escHtml(c.heure_prestation) + '</strong>' : ''}</div>
     ${c.lieu_prestation ? `<div>${icon('mapPin')} ${escHtml(c.lieu_prestation)}</div>` : ''}
@@ -263,45 +274,30 @@ function texteRdv(c) {
   </div>`;
 }
 
-function messageRetenu(c, p) {
-  const date = c.date_prestation ? new Date(c.date_prestation + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }) : '';
+function messageRetenu(cand, p) {
+  const c = { ...cand, ...rdvDe(cand) };
+  const date = dateLongue(c.date_prestation);
   return `Bonjour ${p?.nom || ''}, bonne nouvelle : ${profilConnecte?.nom || 'notre entreprise'} vous a retenu(e) pour « ${c.missions?.titre || ''} » sur TalentCI.`
     + (date ? ` Rendez-vous le ${date}${c.heure_prestation ? ' à ' + c.heure_prestation : ''}${c.lieu_prestation ? ', ' + c.lieu_prestation : ''}.` : '')
     + (c.message_entreprise ? ` ${c.message_entreprise}` : '');
 }
 
-function afficherFormRdv(candidatureId) {
+// Retenir un candidat : un seul clic. La date, l'heure et le lieu fixés
+// dans l'offre sont copiés sur la candidature et envoyés automatiquement
+// à l'étudiant dans la notification « Félicitations, tu es retenu(e) ».
+async function retenirCandidat(candidatureId) {
   const c = recrut.cands.find(x => x.id === candidatureId);
-  const zone = document.getElementById('fiche-decision');
-  if (!c || !zone) return;
-  const demain = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
-  zone.innerHTML = `<div class="form-rdv">
-    <div class="fiche-bloc-titre">Retenir ce candidat</div>
-    <p class="fiche-note" style="margin-bottom:10px;">Indique quand il doit se présenter : il recevra immédiatement une notification « Félicitations, tu es retenu(e) » avec ces informations.</p>
-    <div class="form-rangee">
-      <div class="form-groupe"><label class="form-label">Date de la prestation <span>*</span></label><input class="form-input" type="date" id="rdv-date" min="${new Date().toISOString().slice(0,10)}" value="${escAttr(c.date_prestation || demain)}"/></div>
-      <div class="form-groupe"><label class="form-label">Heure</label><input class="form-input" type="time" id="rdv-heure" value="${escAttr(c.heure_prestation || '09:00')}"/></div>
-    </div>
-    <div class="form-groupe"><label class="form-label">Lieu</label><input class="form-input" type="text" id="rdv-lieu" maxlength="200" placeholder="ex : Cocody Riviera 2, en face de la pharmacie — ou « À distance »" value="${escAttr(c.lieu_prestation || '')}"/></div>
-    <div class="form-groupe"><label class="form-label">Consignes (optionnel)</label><textarea class="form-textarea" id="rdv-message" maxlength="500" rows="3" placeholder="ex : Apporte ton ordinateur. Demande M. Koffi à l'accueil.">${escHtml(c.message_entreprise || '')}</textarea></div>
-    <div class="fiche-decision-boutons">
-      <button class="btn btn-vert" onclick="confirmerValidation(${c.id})">${icon('check')} Confirmer et prévenir le candidat</button>
-      <button class="btn btn-blanc" onclick="ouvrirFicheCandidat(${c.id})">Annuler</button>
-    </div>
-  </div>`;
-  zone.scrollIntoView({ behavior: 'smooth', block: 'end' });
-}
-
-async function confirmerValidation(candidatureId) {
-  const v = id => (document.getElementById(id)?.value || '').trim();
-  const date = v('rdv-date');
-  if (!date) { afficherToast('warning', 'Indique la date de la prestation', 'rouge'); return; }
-  if (date < new Date().toISOString().slice(0, 10)) { afficherToast('warning', 'La date ne peut pas être passée', 'rouge'); return; }
+  if (!c) return;
+  const m = c.missions || {};
+  const rdv = m.date_prestation
+    ? `\n\nIl recevra automatiquement le rendez-vous de l'offre : ${dateLongue(m.date_prestation)}${m.heure_prestation ? ' à ' + m.heure_prestation : ''}${m.lieu_prestation ? ', ' + m.lieu_prestation : ''}.`
+    : "\n\n⚠️ Cette offre n'a pas de date de prestation : contacte le candidat pour la lui donner.";
+  const p = recrut.profils[c.user_id] || {};
+  if (!confirm(`Retenir ${p.nom || 'ce candidat'} pour « ${m.titre || ''} » ?` + rdv)) return;
   await changerStatutCandidature(candidatureId, 'acceptee', {
-    date_prestation: date,
-    heure_prestation: v('rdv-heure') || null,
-    lieu_prestation: v('rdv-lieu') || null,
-    message_entreprise: v('rdv-message') || null
+    date_prestation: m.date_prestation || null,
+    heure_prestation: m.heure_prestation || null,
+    lieu_prestation: m.lieu_prestation || null
   });
 }
 

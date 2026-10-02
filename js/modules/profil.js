@@ -134,7 +134,7 @@ async function ouvrirEditProfil(options = {}) {
   const val = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
   val('edit-nom', p.nom); val('edit-univ', p.universite); val('edit-ville', p.ville);
   val('edit-specialite', p.specialite); val('edit-bio', p.bio); val('edit-parcours', p.parcours);
-  val('edit-lien', p.lien); val('edit-telephone', donneesPrivees.telephone);
+  val('edit-telephone', donneesPrivees.telephone);
   val('edit-piece-type', donneesPrivees.piece?.type_piece); val('edit-piece-numero', donneesPrivees.piece?.numero);
   majCompteur('edit-bio', 'compteur-bio', 40);
 
@@ -239,7 +239,7 @@ async function enregistrerProfil() {
 
   const brouillon = {
     nom: v('edit-nom'), ville: v('edit-ville'), specialite: v('edit-specialite'),
-    bio: v('edit-bio'), parcours: v('edit-parcours'), lien: v('edit-lien'),
+    bio: v('edit-bio'), parcours: v('edit-parcours'),
     type: nouveauType, competences: competencesEditProfil
   };
   const telephone = v('edit-telephone');
@@ -254,7 +254,6 @@ async function enregistrerProfil() {
     const manque = elementsManquantsProfil(brouillon, { telephone, piece: pieceOk ? {} : null });
     if (manque.length) { afficherToast('warning', 'À compléter : ' + manque.join(', '), 'rouge'); return; }
   }
-  if (brouillon.lien && !/^https?:\/\//i.test(brouillon.lien)) brouillon.lien = 'https://' + brouillon.lien;
 
   setBtnLoading('btn-enregistrer-profil', true, 'Enregistrement...');
   const echec = (msg) => { setBtnLoading('btn-enregistrer-profil', false, 'Enregistrer mon profil →'); afficherToast('error', msg, 'rouge'); };
@@ -275,7 +274,7 @@ async function enregistrerProfil() {
   // CV public
   const maj = {
     nom: brouillon.nom, ville: brouillon.ville, specialite: brouillon.specialite,
-    bio: brouillon.bio, parcours: brouillon.parcours, lien: brouillon.lien,
+    bio: brouillon.bio, parcours: brouillon.parcours,
     competences: competencesEditProfil, avatar_url: avatarUrl,
     universite: nouveauType === 'etudiant' ? v('edit-univ') : ''
   };
@@ -360,7 +359,6 @@ async function mettreAJourProfil() {
     if (p?.specialite) lignes.push(`<div class="cv-ligne"><small>${p.type === 'entreprise' ? "Secteur d'activité" : 'Spécialité'}</small>${escHtml(p.specialite)}${p.ville ? ' · ' + escHtml(p.ville) : ''}</div>`);
     if (p?.bio) lignes.push(`<div class="cv-ligne"><small>Présentation</small><p>${escHtml(p.bio)}</p></div>`);
     if (p?.parcours) lignes.push(`<div class="cv-ligne"><small>Formation et expériences</small><p>${escHtml(p.parcours)}</p></div>`);
-    if (p?.lien) lignes.push(`<div class="cv-ligne"><small>Lien</small><a href="${escAttr(p.lien)}" target="_blank" rel="noopener">${escHtml(p.lien)}</a></div>`);
     cvEl.innerHTML = lignes.length ? lignes.join('')
       : `<p style="font-size:13px;">Ton CV est vide.</p><button class="btn btn-vert" style="margin-top:10px;" onclick="ouvrirEditProfil()">Remplir mon CV →</button>`;
   }
@@ -405,8 +403,8 @@ async function mettreAJourProfil() {
       return `<div class="historique-item">
         <div class="hist-statut" style="background:${bg};font-size:16px;">${icone}</div>
         <div class="hist-info"><div class="hist-titre">${escHtml(titreM)}</div><div class="hist-meta">${formatDate(c.created_at)} · ${txt}</div>
-          ${c.statut === 'acceptee' && c.date_prestation ? `<div class="hist-rdv"><strong>Présente-toi à la date prévue :</strong>${texteRdv(c)}</div>` : ''}
-          ${c.statut === 'acceptee' && !c.date_prestation ? `<div class="hist-rdv">L'entreprise va te contacter pour fixer la date de la prestation.</div>` : ''}
+          ${c.statut === 'acceptee' && rdvDe(c).date_prestation ? `<div class="hist-rdv"><strong>Présente-toi à la date prévue :</strong>${texteRdv(c)}</div>` : ''}
+          ${c.statut === 'acceptee' && !rdvDe(c).date_prestation ? `<div class="hist-rdv">L'entreprise va te contacter pour fixer la date de la prestation.</div>` : ''}
         </div>
         <div class="hist-montant">${montantM}</div>
       </div>`;

@@ -439,8 +439,28 @@
               </div>
             </div>
             <div class="form-groupe">
-              <label class="form-label">Description <span>*</span></label>
-              <textarea class="form-textarea" id="champ-description" placeholder="Décris clairement ce que tu attends : objectifs, livrables, contexte..."></textarea>
+              <label class="form-label">Description de la mission <span>*</span></label>
+              <textarea class="form-textarea" id="champ-description" placeholder="En quoi consiste le travail : tâches, objectifs, contexte de votre activité..."></textarea>
+            </div>
+            <div class="form-groupe">
+              <label class="form-label">Ce que vous attendez des candidats <span>*</span></label>
+              <textarea class="form-textarea" id="champ-profil-recherche" placeholder="Quel type de personne recherchez-vous ? ex : étudiant(e) à l'aise à l'oral, ponctuel(le), bonne présentation, sait utiliser Canva..."></textarea>
+              <div class="form-hint">Les étudiants verront cette note avant de postuler.</div>
+            </div>
+            <div class="form-rangee">
+              <div class="form-groupe">
+                <label class="form-label">Date de la prestation <span>*</span></label>
+                <input class="form-input" type="date" id="champ-date-prestation"/>
+              </div>
+              <div class="form-groupe">
+                <label class="form-label">Heure de début</label>
+                <input class="form-input" type="time" id="champ-heure-prestation" value="08:00"/>
+              </div>
+            </div>
+            <div class="form-groupe">
+              <label class="form-label">Lieu de la prestation <span>*</span></label>
+              <input class="form-input" type="text" id="champ-lieu-prestation" maxlength="200" placeholder="ex : Cocody Riviera 2, boutique Mode & Style — ou « À distance »"/>
+              <div class="form-hint">La date, l'heure et le lieu seront envoyés automatiquement à chaque candidat que vous retenez.</div>
             </div>
             <div class="form-rangee">
               <div class="form-groupe">
@@ -746,7 +766,6 @@
       </div>
       <div class="edit-profil-liste-comp" id="edit-chips-competences"></div>
     </div>
-    <div class="login-champ"><label class="login-label">Lien (portfolio, LinkedIn, site...)</label><input class="login-input" id="edit-lien" type="url" inputmode="url" autocapitalize="none" placeholder="https://..."/></div>
 
     <!-- 3. Contact (+ vérification pour les entreprises) — privé -->
     <div class="cv-section-titre">3. <span id="lbl-section-contact">Contact</span> <span class="cv-prive"><svg class="icon"><use href="#i-lock"/></svg> privé</span></div>
