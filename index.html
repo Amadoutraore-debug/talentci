@@ -181,6 +181,7 @@
       <button class="nav-lien" id="btn-notif-nav" onclick="allerVers('notifications')">Notifications</button>
       <!-- Visible uniquement si profilConnecte.type === 'admin' (voir mettreAJourNavbar). Protection réelle = RLS Supabase. -->
       <button class="nav-lien btn-installer" style="display:none;" onclick="installerApplication()"><svg class="icon"><use href="#i-download"/></svg> Installer l'app</button>
+      <button class="nav-lien" id="nav-lien-recrut" onclick="allerVers('recrutement')" style="display:none;"><svg class="icon"><use href="#i-users"/></svg> Recrutement</button>
       <button class="nav-lien nav-lien-admin" id="nav-lien-admin" onclick="ouvrirAdmin()" style="display:none;"><svg class="icon"><use href="#i-settings"/></svg> Admin</button>
     </div>
     <div class="navbar-actions">
@@ -190,6 +191,7 @@
         <div class="avatar-nav" id="avatar-nav" onclick="toggleAvatarMenu(event)">?</div>
         <div class="avatar-dropdown" id="avatar-dropdown">
           <button class="avatar-dropdown-item" onclick="fermerAvatarMenu();allerVers('profil')"><svg class="icon"><use href="#i-user"/></svg> Mon profil</button>
+          <button class="avatar-dropdown-item" id="dropdown-recrut" style="display:none;" onclick="fermerAvatarMenu();allerVers('recrutement')"><svg class="icon"><use href="#i-users"/></svg> Espace recrutement</button>
           <button class="avatar-dropdown-item" id="dropdown-admin" style="display:none;" onclick="fermerAvatarMenu();ouvrirAdmin()"><svg class="icon"><use href="#i-settings"/></svg> Administration</button>
           <button class="avatar-dropdown-item btn-installer" style="display:none;" onclick="fermerAvatarMenu();installerApplication()"><svg class="icon"><use href="#i-download"/></svg> Installer l'application</button>
           <button class="avatar-dropdown-item danger" onclick="fermerAvatarMenu();seDeconnecter()"><svg class="icon"><use href="#i-logout"/></svg> Se déconnecter</button>
@@ -410,6 +412,7 @@
         </aside>
         <div class="entreprise-main">
           <div class="entreprise-acces" id="entreprise-acces" style="display:none;"></div>
+          <div class="recrut-banniere" id="ent-recrut-banniere" style="display:none;" onclick="allerVers('recrutement')"></div>
           <div class="form-carte" id="form-carte-offre">
             <div class="form-titre"><svg class="icon"><use href="#i-clipboard"/></svg> Publier une nouvelle offre</div>
             <div class="form-sous-titre">Remplis ce formulaire pour trouver l'étudiant idéal.</div>
@@ -495,6 +498,29 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- PAGE ESPACE RECRUTEMENT (entreprises) -->
+    <div id="page-recrutement" class="page">
+      <div class="recrut-entete">
+        <div>
+          <h2>Espace recrutement</h2>
+          <p>Examine chaque candidat, compare son profil à ton offre, puis <strong>valide</strong> ou <strong>rejette</strong> sa candidature. Le candidat est prévenu automatiquement.</p>
+        </div>
+        <button class="btn btn-blanc" onclick="allerVers('entreprise')">← Mes offres</button>
+      </div>
+      <div class="recrut-filtres">
+        <div class="recrut-onglets" id="recrut-onglets">
+          <button class="recrut-onglet actif" data-statut="en_attente" onclick="filtrerRecrutement('statut','en_attente')">À traiter <span class="recrut-compte" id="rc-en_attente"></span></button>
+          <button class="recrut-onglet" data-statut="acceptee" onclick="filtrerRecrutement('statut','acceptee')">Validées <span class="recrut-compte" id="rc-acceptee"></span></button>
+          <button class="recrut-onglet" data-statut="refusee" onclick="filtrerRecrutement('statut','refusee')">Rejetées <span class="recrut-compte" id="rc-refusee"></span></button>
+          <button class="recrut-onglet" data-statut="tous" onclick="filtrerRecrutement('statut','tous')">Toutes</button>
+        </div>
+        <select class="tri-select" id="recrut-offre" onchange="filtrerRecrutement('offre', this.value)">
+          <option value="">Toutes mes offres</option>
+        </select>
+      </div>
+      <div id="recrut-liste"><div class="rangee-vide">Chargement...</div></div>
     </div>
 
     <!-- PAGE NOTIFICATIONS -->
@@ -790,15 +816,10 @@
 </div>
 
 <!-- ════════════════════════════════
-     MODAL CANDIDATURES REÇUES (entreprise)
+     FICHE CANDIDAT (espace recrutement)
 ════════════════════════════════ -->
-<div class="admin-overlay" id="modal-candidatures" style="z-index:600;">
-  <div class="login-modal" style="max-width:560px;">
-    <div class="login-titre" style="margin-bottom:4px;">Candidatures reçues</div>
-    <div class="login-sous-titre" id="candidatures-mission-titre" style="margin-bottom:18px;"></div>
-    <div id="candidatures-recues-liste"></div>
-    <button class="login-annuler" onclick="fermerCandidatures()">Fermer</button>
-  </div>
+<div class="admin-overlay" id="modal-candidat" style="z-index:600;">
+  <div class="login-modal fiche-candidat" id="candidat-detail"></div>
 </div>
 
 <!-- ════════════════════════════════

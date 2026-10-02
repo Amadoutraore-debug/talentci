@@ -48,7 +48,7 @@ async function chargerNotifications() {
     return;
   }
   liste.innerHTML = notifs.map(n => `
-    <div class="notif-item${n.lue ? '' : ' non-lue'}" onclick="marquerLu(${n.id})">
+    <div class="notif-item${n.lue ? '' : ' non-lue'}" onclick="marquerLu(${n.id}, ${n.icone === 'inbox' ? 'true' : 'false'})">
       <div class="notif-point ${n.lue ? 'invisible' : ''}"></div>
       <div class="notif-icone-rond ${classeIconeNotif(n.icone)}">${icon(n.icone) || icon('bell')}</div>
       <div class="notif-corps">
@@ -73,8 +73,12 @@ function classeIconeNotif(nomIcone) {
   return 'notif-ic-neutre';
 }
 
-async function marquerLu(id) {
+// versRecrutement : notification "X a postulé à ton offre" (icône inbox,
+// envoyée par le trigger notifier_nouvelle_candidature) → on ouvre
+// directement l'espace recrutement.
+async function marquerLu(id, versRecrutement) {
   if (!verifierDB()) return;
+  if (versRecrutement && (profilConnecte?.type === 'entreprise' || estAdmin())) allerVers('recrutement');
   await db.from('notifications').update({ lue: true }).eq('id', id);
   await chargerNotifications();
 }

@@ -92,3 +92,63 @@
 .admin-compteur{margin-left:auto;background:#E24B4A;color:#fff;border-radius:20px;font-size:10px;padding:1px 7px;}
 .admin-compteur:empty{display:none;}
 @media(max-width:700px){ .verif-item{flex-direction:column;} .verif-actions{justify-content:flex-start;} }
+
+/* ═══ ESPACE RECRUTEMENT ═══ */
+.recrut-entete{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px;}
+.recrut-entete h2{margin-bottom:6px;}
+.recrut-entete p{font-size:14px;max-width:620px;}
+.recrut-filtres{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.recrut-onglets{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
+.recrut-onglets::-webkit-scrollbar{display:none;}
+.recrut-onglet{flex-shrink:0;padding:8px 14px;border-radius:30px;border:1px solid var(--bordure-2);background:var(--bg);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--texte-2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.recrut-onglet.actif{background:var(--noir);color:#fff;border-color:var(--noir);}
+.recrut-compte{background:var(--vert);color:#fff;border-radius:20px;font-size:11px;padding:1px 7px;}
+.recrut-compte:empty{display:none;}
+.recrut-carte{display:flex;align-items:center;gap:14px;background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:10px;box-shadow:var(--ombre);cursor:pointer;transition:border-color .15s,transform .15s;}
+.recrut-carte:hover{border-color:var(--vert);transform:translateY(-1px);}
+.recrut-carte-info{flex:1;min-width:0;}
+.recrut-carte-offre{font-size:12.5px;color:var(--texte-2);margin-top:4px;}
+.recrut-carte-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center;}
+.recrut-voir{flex-shrink:0;}
+.score-pastille{display:inline-flex;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.score-pastille.fort{background:#DCFCE7;color:#166534;}
+.score-pastille.moyen{background:var(--vert-clair);color:var(--vert-fonce);}
+.score-pastille.faible{background:#FCEBEB;color:#A32D2D;}
+.score-pastille.neutre{background:var(--bg-3);color:var(--texte-2);}
+.candidat-avatar.grand{width:72px;height:72px;font-size:22px;}
+.recrut-banniere{display:flex;align-items:center;gap:14px;background:var(--noir);color:#fff;border-radius:var(--radius-md);padding:16px 18px;margin-bottom:20px;cursor:pointer;}
+.recrut-banniere-icone{width:44px;height:44px;border-radius:50%;background:var(--vert);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.recrut-banniere-icone .icon{width:22px;height:22px;}
+.recrut-banniere-texte{flex:1;font-size:13.5px;color:#D6D6D6;line-height:1.5;}
+.recrut-banniere-texte strong{color:#fff;font-size:15px;}
+.recrut-banniere-alerte{color:#FF9A4D;font-weight:700;}
+
+/* Fiche candidat */
+.login-modal.fiche-candidat{max-width:600px;}
+.fiche-entete{display:flex;gap:16px;align-items:center;margin:4px 40px 16px 0;}
+.fiche-nom{font-size:22px;margin-bottom:4px;}
+.fiche-bloc{border-top:1px solid var(--bordure);padding-top:14px;margin-top:14px;}
+.fiche-bloc p{font-size:14px;white-space:pre-line;}
+.fiche-bloc-titre{font-size:11px;font-weight:700;color:var(--texte-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;}
+.fiche-match{background:var(--bg-2);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:14px 16px;}
+.fiche-offre{font-size:13.5px;font-weight:600;margin-bottom:10px;}
+.score-barre{height:8px;background:var(--bg-3);border-radius:8px;overflow:hidden;}
+.score-barre-remplie{height:100%;border-radius:8px;}
+.score-barre-remplie.fort{background:#16A34A;}.score-barre-remplie.moyen{background:var(--vert);}.score-barre-remplie.faible{background:#DC2626;}
+.fiche-score{margin:8px 0;}
+.fiche-competences{list-style:none;display:flex;flex-direction:column;gap:5px;font-size:13px;margin:6px 0 10px;}
+.fiche-competences li span{display:inline-flex;width:20px;height:20px;border-radius:50%;align-items:center;justify-content:center;font-weight:700;font-size:12px;margin-right:4px;}
+.fiche-competences li.oui span{background:#DCFCE7;color:#166534;}
+.fiche-competences li.cv span{background:var(--vert-clair);color:var(--vert-fonce);}
+.fiche-competences li.non span{background:#FCEBEB;color:#A32D2D;}
+.fiche-note{font-size:13px;color:var(--texte-2);margin-top:6px;}
+.fiche-decision{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px;padding-top:16px;border-top:1px solid var(--bordure);position:sticky;bottom:-1px;background:var(--bg);padding-bottom:4px;}
+.fiche-decision .btn{flex:1;justify-content:center;padding:12px 16px;font-size:15px;min-width:150px;}
+.fiche-decision .fiche-note{flex-basis:100%;margin:0;}
+.btn-rejeter{background:#fff;color:#A32D2D;border:1.5px solid #E7A1A1;}
+@media(max-width:700px){
+  .recrut-entete{flex-direction:column;}
+  .recrut-carte{flex-wrap:wrap;}
+  .recrut-voir{width:100%;justify-content:center;}
+  .fiche-entete{flex-direction:column;align-items:flex-start;}
+}
