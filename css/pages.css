@@ -2,7 +2,7 @@
    Styles des pages : configuration Supabase, accueil (statistiques, témoignages), missions, profil, entreprise, notifications, administration, toast. */
 
 /* ═══ BANDEAU CONFIG DB ═══ */
-.config-banner{background:linear-gradient(135deg,#1D9E75,#0F6E56);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.config-banner{background:linear-gradient(135deg,var(--vert),var(--vert-fonce));padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
 .config-banner-text{color:white;font-size:13px;font-weight:500;}
 .config-banner-text strong{font-weight:700;}
 .config-banner-btn{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:white;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s;}
@@ -14,12 +14,12 @@
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:800;display:none;align-items:center;justify-content:center;padding:16px;}
 .modal-overlay.visible{display:flex;}
 .config-modal{background:#fff;border-radius:20px;width:100%;max-width:560px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.25);}
-.config-modal-header{background:linear-gradient(135deg,#1D9E75,#0F6E56);padding:24px 28px;display:flex;align-items:center;justify-content:space-between;}
-.config-modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:white;}
+.config-modal-header{background:linear-gradient(135deg,var(--vert),var(--vert-fonce));padding:24px 28px;display:flex;align-items:center;justify-content:space-between;}
+.config-modal-title{font-family:var(--police-titre);font-size:18px;font-weight:700;color:white;}
 .config-modal-subtitle{font-size:13px;color:rgba(255,255,255,0.8);margin-top:4px;}
 .config-modal-body{padding:28px;}
 .config-step{display:flex;gap:14px;margin-bottom:20px;padding:16px;background:var(--bg-2);border-radius:var(--radius-md);border:1px solid var(--bordure);}
-.config-step-num{width:28px;height:28px;border-radius:50%;background:var(--vert);color:white;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.config-step-num{width:28px;height:28px;border-radius:50%;background:var(--vert);color:white;font-family:var(--police-titre);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .config-step-content{flex:1;}
 .config-step-title{font-size:13px;font-weight:600;color:var(--texte);margin-bottom:4px;}
 .config-step-desc{font-size:12px;color:var(--texte-3);line-height:1.5;}
@@ -38,7 +38,7 @@
 .config-hint{font-size:11px;color:var(--texte-3);}
 .config-hint code{font-family:'JetBrains Mono',monospace;background:var(--bg-3);padding:1px 6px;border-radius:4px;font-size:10px;}
 .config-actions{display:flex;gap:10px;}
-.config-btn-save{flex:1;padding:12px;background:var(--vert);color:white;border:none;border-radius:var(--radius-sm);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.config-btn-save{flex:1;padding:12px;background:var(--vert);color:white;border:none;border-radius:var(--radius-sm);font-family:var(--police-titre);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;}
 .config-btn-save:hover{opacity:.88;}
 .config-btn-test{padding:12px 20px;background:var(--bg-2);color:var(--texte-2);border:1.5px solid var(--bordure-2);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;}
 .config-btn-test:hover{border-color:var(--vert);color:var(--vert);}
@@ -55,11 +55,11 @@
 .stat-carte{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:24px 20px;text-align:center;box-shadow:var(--ombre);transition:transform .15s;}
 .stat-carte:hover{transform:translateY(-3px);}
 .stat-icone{font-size:28px;margin-bottom:10px;}
-.stat-nombre{font-family:'Syne',sans-serif;font-size:32px;font-weight:700;color:var(--vert);line-height:1;margin-bottom:6px;}
+.stat-nombre{font-family:var(--police-titre);font-size:32px;font-weight:700;color:var(--vert);line-height:1;margin-bottom:6px;}
 .stat-label{font-size:13px;color:var(--texte-2);}
 
 /* ═══ CATÉGORIES ═══ */
-.section-titre{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--texte);margin-bottom:16px;}
+.section-titre{font-family:var(--police-titre);font-size:20px;font-weight:700;color:var(--texte);margin-bottom:16px;}
 
 /* ═══ TÉMOIGNAGES ═══ */
 .temoignages-grille{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:28px;}
@@ -119,15 +119,15 @@
 .profil-layout{display:flex;gap:24px;align-items:flex-start;}
 .profil-sidebar{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:16px;}
 .carte-identite{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-lg);padding:28px 20px;text-align:center;box-shadow:var(--ombre);}
-.profil-avatar-grand{width:80px;height:80px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);font-family:'Syne',sans-serif;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:3px solid var(--vert);}
-.profil-nom{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--texte);margin-bottom:4px;}
+.profil-avatar-grand{width:80px;height:80px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);font-family:var(--police-titre);font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:3px solid var(--vert);}
+.profil-nom{font-family:var(--police-titre);font-size:18px;font-weight:700;color:var(--texte);margin-bottom:4px;}
 .profil-titre{font-size:13px;color:var(--texte-2);margin-bottom:4px;}
 .profil-univ{font-size:12px;color:var(--texte-3);margin-bottom:16px;}
 .dispo-badge{display:inline-flex;align-items:center;gap:6px;background:var(--vert-clair);color:var(--vert-fonce);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:18px;}
 .dispo-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--vert);}
 .profil-divider{border:none;border-top:1px solid var(--bordure);margin:4px 0 16px;}
 .carte-bloc{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:18px;box-shadow:var(--ombre);}
-.bloc-titre{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--texte);margin-bottom:12px;}
+.bloc-titre{font-family:var(--police-titre);font-size:14px;font-weight:700;color:var(--texte);margin-bottom:12px;}
 .competences-liste{display:flex;flex-wrap:wrap;gap:8px;}
 .comp-pill{background:var(--bg-2);border:1px solid var(--bordure-2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:500;color:var(--texte-2);}
 .profil-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px;}
@@ -135,7 +135,7 @@
 .kpi-carte{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:18px 14px;text-align:center;box-shadow:var(--ombre);transition:transform .15s;}
 .kpi-carte:hover{transform:translateY(-2px);}
 .kpi-icone{font-size:22px;margin-bottom:8px;}
-.kpi-valeur{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:var(--vert);line-height:1;margin-bottom:4px;}
+.kpi-valeur{font-family:var(--police-titre);font-size:24px;font-weight:700;color:var(--vert);line-height:1;margin-bottom:4px;}
 .kpi-label{font-size:11px;color:var(--texte-3);}
 .historique-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--bordure);}
 .historique-item:last-child{border-bottom:none;}
@@ -156,22 +156,22 @@
 .entreprise-layout{display:flex;gap:24px;align-items:flex-start;}
 .entreprise-sidebar{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:16px;}
 .carte-entreprise{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-lg);padding:24px 20px;text-align:center;box-shadow:var(--ombre);}
-.entreprise-logo-grand{width:72px;height:72px;border-radius:var(--radius-md);background:var(--bleu-clair);color:var(--bleu);font-family:'Syne',sans-serif;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid var(--bordure-2);}
-.entreprise-nom-grand{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--texte);margin-bottom:4px;}
+.entreprise-logo-grand{width:72px;height:72px;border-radius:var(--radius-md);background:var(--bleu-clair);color:var(--bleu);font-family:var(--police-titre);font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid var(--bordure-2);}
+.entreprise-nom-grand{font-family:var(--police-titre);font-size:16px;font-weight:700;color:var(--texte);margin-bottom:4px;}
 .entreprise-secteur{font-size:12px;color:var(--texte-3);margin-bottom:14px;}
 .entreprise-stats-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
 .ent-mini-stat{background:var(--bg-2);border-radius:var(--radius-sm);padding:10px 8px;text-align:center;}
-.ent-mini-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--vert);}
+.ent-mini-val{font-family:var(--police-titre);font-size:18px;font-weight:700;color:var(--vert);}
 .ent-mini-lbl{font-size:10px;color:var(--texte-3);margin-top:2px;}
 .entreprise-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px;}
 .form-carte{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-lg);padding:28px;box-shadow:var(--ombre);}
-.form-titre{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--texte);margin-bottom:6px;}
+.form-titre{font-family:var(--police-titre);font-size:18px;font-weight:700;color:var(--texte);margin-bottom:6px;}
 .form-sous-titre{font-size:13px;color:var(--texte-3);margin-bottom:24px;}
 .form-groupe{margin-bottom:18px;}
 .form-label{display:block;font-size:13px;font-weight:600;color:var(--texte);margin-bottom:7px;}
 .form-label span{color:var(--vert);margin-left:2px;}
 .form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;border:1px solid var(--bordure-2);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--texte);background:var(--bg);outline:none;transition:border-color .15s,box-shadow .15s;}
-.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--vert);box-shadow:0 0 0 3px rgba(29,158,117,.12);}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--vert);box-shadow:0 0 0 3px rgba(232,98,12,.12);}
 .form-textarea{resize:vertical;min-height:100px;line-height:1.6;}
 .form-rangee{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 .form-hint{font-size:11px;color:var(--texte-3);margin-top:5px;}
@@ -183,31 +183,31 @@
 .succes-message{display:none;background:var(--vert-clair);border:1px solid var(--vert);border-radius:var(--radius-md);padding:20px 24px;text-align:center;}
 .succes-message.visible{display:block;}
 .succes-icone{font-size:40px;margin-bottom:10px;}
-.succes-titre{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--vert-fonce);margin-bottom:6px;}
+.succes-titre{font-family:var(--police-titre);font-size:18px;font-weight:700;color:var(--vert-fonce);margin-bottom:6px;}
 .succes-texte{font-size:13px;color:var(--vert-fonce);}
 .mission-publiee{display:flex;align-items:flex-start;gap:14px;padding:16px;background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);box-shadow:var(--ombre);margin-bottom:12px;transition:border-color .15s;}
 .mission-publiee:hover{border-color:var(--vert);}
 .pub-icone{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
 .pub-info{flex:1;min-width:0;}
-.pub-titre{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--texte);margin-bottom:4px;}
+.pub-titre{font-family:var(--police-titre);font-size:14px;font-weight:700;color:var(--texte);margin-bottom:4px;}
 .pub-meta{font-size:12px;color:var(--texte-3);margin-bottom:8px;}
 .pub-tags{display:flex;gap:8px;flex-wrap:wrap;}
 .pub-statut{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
 .statut-actif{background:var(--vert-clair);color:var(--vert-fonce);}
 .pub-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
-.pub-montant{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--vert);}
+.pub-montant{font-family:var(--police-titre);font-size:15px;font-weight:700;color:var(--vert);}
 .btn-mini{padding:5px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--bordure-2);background:var(--bg-2);color:var(--texte-2);transition:all .15s;}
 .btn-mini:hover{background:var(--vert-clair);color:var(--vert-fonce);border-color:var(--vert);}
 
 /* ═══ NOTIFICATIONS ═══ */
 .notif-layout{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:flex-start;}
 .notif-entete{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-.notif-titre-page{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--texte);}
+.notif-titre-page{font-family:var(--police-titre);font-size:20px;font-weight:700;color:var(--texte);}
 .notif-filtres{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
 .notif-liste{display:flex;flex-direction:column;gap:0;}
 .notif-item{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);margin-bottom:10px;cursor:pointer;transition:border-color .15s,box-shadow .15s;position:relative;}
-.notif-item:hover{border-color:var(--vert);box-shadow:0 4px 16px rgba(29,158,117,.1);}
-.notif-item.non-lue{background:var(--vert-clair);border-color:rgba(29,158,117,.25);}
+.notif-item:hover{border-color:var(--vert);box-shadow:0 4px 16px rgba(232,98,12,.1);}
+.notif-item.non-lue{background:var(--vert-clair);border-color:rgba(232,98,12,.25);}
 .notif-point{width:9px;height:9px;border-radius:50%;background:var(--vert);flex-shrink:0;margin-top:6px;}
 .notif-point.invisible{background:transparent;}
 .notif-icone-rond{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
@@ -215,10 +215,10 @@
 .notif-texte{font-size:14px;color:var(--texte);line-height:1.55;margin-bottom:5px;}
 .notif-texte strong{font-weight:600;color:var(--texte);}
 .notif-temps{font-size:12px;color:var(--texte-3);}
-.notif-badge-montant{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--vert);white-space:nowrap;flex-shrink:0;}
+.notif-badge-montant{font-family:var(--police-titre);font-size:14px;font-weight:700;color:var(--vert);white-space:nowrap;flex-shrink:0;}
 .notif-resume{display:flex;flex-direction:column;gap:16px;}
 .resume-carte{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:20px;box-shadow:var(--ombre);}
-.resume-titre{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--texte);margin-bottom:14px;}
+.resume-titre{font-family:var(--police-titre);font-size:14px;font-weight:700;color:var(--texte);margin-bottom:14px;}
 .notif-badge-nav{position:relative;}
 .notif-badge-nav::after{content:'';position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#E24B4A;border:2px solid white;}
 
@@ -230,15 +230,15 @@
 .login-modal{background:var(--bg);border-radius:var(--radius-lg);padding:40px 36px;width:100%;max-width:400px;box-shadow:0 24px 64px rgba(0,0,0,.22);position:relative;}
 .login-logo-admin{text-align:center;margin-bottom:24px;}
 .login-logo-icone{width:56px;height:56px;border-radius:var(--radius-md);background:#FCEBEB;color:#E24B4A;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
-.login-titre{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--texte);margin-bottom:4px;}
+.login-titre{font-family:var(--police-titre);font-size:20px;font-weight:700;color:var(--texte);margin-bottom:4px;}
 .login-sous-titre{font-size:13px;color:var(--texte-3);}
 .login-erreur{display:none;background:#FCEBEB;border:1px solid #F09595;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:#A32D2D;margin-bottom:16px;text-align:center;}
 .login-erreur.visible{display:block;}
 .login-champ{margin-bottom:16px;}
 .login-label{display:block;font-size:13px;font-weight:600;color:var(--texte);margin-bottom:7px;}
 .login-input{width:100%;padding:11px 14px;border:1px solid var(--bordure-2);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--texte);background:var(--bg);outline:none;transition:border-color .15s,box-shadow .15s;}
-.login-input:focus{border-color:var(--vert);box-shadow:0 0 0 3px rgba(29,158,117,.12);}
-.btn-login-admin{width:100%;padding:12px;background:#E24B4A;color:white;border:none;border-radius:var(--radius-sm);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;transition:opacity .15s;}
+.login-input:focus{border-color:var(--vert);box-shadow:0 0 0 3px rgba(232,98,12,.12);}
+.btn-login-admin{width:100%;padding:12px;background:#E24B4A;color:white;border:none;border-radius:var(--radius-sm);font-family:var(--police-titre);font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;transition:opacity .15s;}
 .btn-login-admin:hover{opacity:.88;}
 .login-annuler{width:100%;padding:10px;background:transparent;border:none;font-size:13px;color:var(--texte-3);cursor:pointer;margin-top:10px;transition:color .15s;}
 .login-annuler:hover{color:var(--texte);}
@@ -254,7 +254,7 @@
 .admin-sidebar{background:var(--texte);border-radius:var(--radius-lg);padding:20px 0;overflow:hidden;position:sticky;top:80px;}
 .admin-sidebar-header{padding:0 20px 20px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:12px;}
 .admin-badge{display:inline-flex;align-items:center;gap:6px;background:#E24B4A;color:white;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:10px;}
-.admin-nom{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:white;}
+.admin-nom{font-family:var(--police-titre);font-size:15px;font-weight:700;color:white;}
 .admin-role{font-size:12px;color:rgba(255,255,255,.5);}
 .admin-menu-item{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:13px;font-weight:500;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;border:none;background:transparent;width:100%;text-align:left;}
 .admin-menu-item:hover{background:rgba(255,255,255,.08);color:white;}
@@ -268,10 +268,10 @@
 .admin-kpi-icone{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;}
 .admin-kpi-evolution{font-size:12px;font-weight:600;padding:3px 8px;border-radius:20px;}
 .evolution-hausse{background:var(--vert-clair);color:var(--vert-fonce);}
-.admin-kpi-valeur{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:var(--texte);line-height:1;margin-bottom:4px;}
+.admin-kpi-valeur{font-family:var(--police-titre);font-size:28px;font-weight:700;color:var(--texte);line-height:1;margin-bottom:4px;}
 .admin-kpi-label{font-size:12px;color:var(--texte-3);}
 .admin-panneau{display:none;}.admin-panneau.actif{display:block;}
-.admin-section-titre{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--texte);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.admin-section-titre{font-family:var(--police-titre);font-size:18px;font-weight:700;color:var(--texte);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
 .admin-table-wrap{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--ombre);margin-bottom:20px;}
 .admin-table{width:100%;border-collapse:collapse;font-size:13px;}
 .admin-table th{background:var(--bg-2);padding:12px 16px;text-align:left;font-weight:600;color:var(--texte-2);border-bottom:1px solid var(--bordure);font-size:12px;text-transform:uppercase;letter-spacing:.5px;}
@@ -310,3 +310,9 @@
 
 /* ═══ ÉDITION PROFIL ═══ */
 .edit-profil-liste-comp{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+
+.statut-pause{background:var(--bg-3);color:var(--texte-2);}
+.statut-complet{background:var(--vert-clair);color:var(--vert-fonce);}
+.notif-ic-succes{background:var(--vert-clair);color:var(--vert-fonce);}
+.notif-ic-info{background:var(--amber-clair);color:var(--amber);}
+.notif-ic-neutre{background:var(--noir);color:var(--vert);}

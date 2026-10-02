@@ -177,7 +177,7 @@ async function sInscrire() {
     afficherToast('party', 'Bienvenue ' + nom + ' !', 'vert');
     await ajouterNotification({
       user_id: authData.user.id,
-      type:'systeme', icone:'party', icone_bg:'#E1F5EE', icone_color:'#0F6E56',
+      type:'systeme', icone:'party', icone_bg:'#FFF1E6', icone_color:'#B54708',
       texte: 'Bienvenue sur TalentCI, <b>' + escHtml(nom) + '</b> !', lue: false
     });
   }

@@ -33,7 +33,11 @@ async function chargerNotifications() {
   const { data, error } = await query;
   if (error) { liste.innerHTML = '<div style="text-align:center;padding:32px;color:var(--texte-3);">Impossible de charger les notifications.</div>'; return; }
   const notifs = data || [];
-  const nbNonLues = notifs.filter(n => !n.lue).length;
+  // Compteur "non lues" sur TOUTES les notifications (et non sur la page
+  // filtrée / limitée à 30), sinon le badge était faux avec un filtre actif.
+  const { count } = await db.from('notifications').select('id', { count: 'exact', head: true })
+    .eq('user_id', utilisateurConnecte.id).eq('lue', false);
+  const nbNonLues = count || 0;
   const elBadge = document.getElementById('nb-non-lues');
   if (elBadge) elBadge.textContent = nbNonLues > 0 ? `(${nbNonLues} non lues)` : '(tout lu)';
   const btnNotifNav = document.getElementById('btn-notif-nav');
@@ -46,13 +50,27 @@ async function chargerNotifications() {
   liste.innerHTML = notifs.map(n => `
     <div class="notif-item${n.lue ? '' : ' non-lue'}" onclick="marquerLu(${n.id})">
       <div class="notif-point ${n.lue ? 'invisible' : ''}"></div>
-      <div class="notif-icone-rond" style="background:${escAttr(n.icone_bg)};color:${escAttr(n.icone_color)}">${icon(n.icone) || escHtml(n.icone||'')}</div>
+      <div class="notif-icone-rond ${classeIconeNotif(n.icone)}">${icon(n.icone) || icon('bell')}</div>
       <div class="notif-corps">
-        <div class="notif-texte">${n.texte}</div>
+        <div class="notif-texte">${texteNotifSur(n.texte)}</div>
         <div class="notif-temps">${formatDate(n.created_at)}</div>
       </div>
       ${n.montant ? `<div class="notif-badge-montant">${escHtml(n.montant)}</div>` : ''}
     </div>`).join('');
+}
+
+// Le texte des notifications peut contenir du gras (<b>) ; tout le reste
+// est échappé, pour qu'aucune balise ni script ne puisse s'y glisser.
+function texteNotifSur(texte) {
+  return escHtml(texte || '').replace(/&lt;(\/?)b&gt;/g, '<$1b>');
+}
+
+// Couleurs des icônes selon le type (charte orange / noir), au lieu des
+// couleurs enregistrées en base avec chaque notification.
+function classeIconeNotif(nomIcone) {
+  if (nomIcone === 'party' || nomIcone === 'check') return 'notif-ic-succes';
+  if (nomIcone === 'info' || nomIcone === 'error' || nomIcone === 'warning') return 'notif-ic-info';
+  return 'notif-ic-neutre';
 }
 
 async function marquerLu(id) {

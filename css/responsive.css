@@ -11,7 +11,7 @@
   .navbar.mobile-ouvert .navbar-liens{
     display:flex;flex-direction:column;gap:2px;
     position:fixed;top:64px;left:0;right:0;
-    background:var(--bg);border-bottom:1px solid var(--bordure);box-shadow:var(--ombre);
+    background:var(--noir);border-bottom:1px solid #000;box-shadow:var(--ombre);
     padding:10px;z-index:90;max-height:calc(100vh - 64px);overflow-y:auto;
   }
   .navbar.mobile-ouvert .navbar-liens .nav-lien{width:100%;text-align:left;padding:14px 16px;justify-content:flex-start;}
@@ -69,19 +69,20 @@
   .missions-grille .offre-pied{flex-direction:column;align-items:flex-start;gap:6px;}
   .bottom-nav{
     display:flex;position:fixed;left:0;right:0;bottom:0;z-index:200;
-    background:var(--bg);border-top:1px solid var(--bordure);
+    background:var(--noir);border-top:1px solid #000;
     box-shadow:0 -4px 16px rgba(0,0,0,.06);
     padding-bottom:env(safe-area-inset-bottom);
   }
   .bottom-nav-item{
     flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     padding:8px 2px 7px;background:none;border:none;cursor:pointer;
-    font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--texte-3);
+    font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:#9A9A9A;
     position:relative;-webkit-tap-highlight-color:transparent;
   }
   .bottom-nav-item .icon{width:22px;height:22px;}
   .bottom-nav-item.actif{color:var(--vert);}
-  .bottom-nav-item.a-des-alertes::after{content:'';position:absolute;top:6px;left:calc(50% + 6px);width:9px;height:9px;border-radius:50%;background:#E24B4A;border:2px solid var(--bg);}
+  .bottom-nav-item.actif .icon{filter:drop-shadow(0 0 6px rgba(232,98,12,.45));}
+  .bottom-nav-item.a-des-alertes::after{content:'';position:absolute;top:6px;left:calc(50% + 6px);width:9px;height:9px;border-radius:50%;background:#E24B4A;border:2px solid var(--noir);}
   body{padding-bottom:calc(64px + env(safe-area-inset-bottom));}
   .toast{bottom:calc(76px + env(safe-area-inset-bottom));}
   .banniere-installation{flex-wrap:wrap;}

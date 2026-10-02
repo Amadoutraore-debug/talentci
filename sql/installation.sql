@@ -343,7 +343,7 @@ begin
 
   insert into notifications (user_id, type, icone, icone_bg, icone_color, texte)
   values (
-    m.user_id, 'candidature', 'inbox', '#E6F1FB', '#185FA5',
+    m.user_id, 'candidature', 'inbox', '#141414', '#E8620C',
     '<b>' || echapper_html(coalesce(nom_etudiant, 'Un étudiant')) || '</b> a postulé à « <b>'
       || echapper_html(m.titre) || '</b> ».'
   );
@@ -369,7 +369,7 @@ begin
   if new.statut = 'acceptee' then
     insert into notifications (user_id, type, icone, icone_bg, icone_color, texte, montant)
     values (
-      new.user_id, 'candidature', 'party', '#E1F5EE', '#0F6E56',
+      new.user_id, 'candidature', 'party', '#FFF1E6', '#B54708',
       'Bonne nouvelle ! <b>' || echapper_html(m.entreprise) || '</b> a accepté ta candidature pour « <b>'
         || echapper_html(m.titre) || '</b> ».',
       replace(to_char(coalesce(m.montant_par_personne, m.salaire), 'FM999,999,999'), ',', ' ') || ' FCFA'
@@ -377,7 +377,7 @@ begin
   else
     insert into notifications (user_id, type, icone, icone_bg, icone_color, texte)
     values (
-      new.user_id, 'candidature', 'info', '#FAEEDA', '#BA7517',
+      new.user_id, 'candidature', 'info', '#FEF3C7', '#B45309',
       'Ta candidature pour « <b>' || echapper_html(m.titre)
         || '</b> » n''a pas été retenue. Continue, d''autres missions t''attendent !'
     );

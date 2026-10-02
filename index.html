@@ -7,14 +7,16 @@
   <meta name="description" content="Trouve des missions rémunérées auprès des PME et startups de Côte d'Ivoire."/>
   <!-- Application installable (PWA) -->
   <link rel="manifest" href="manifest.webmanifest"/>
-  <meta name="theme-color" content="#1D9E75"/>
+  <meta name="theme-color" content="#141414"/>
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="apple-mobile-web-app-title" content="TalentCI"/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <!-- Styles : l'ordre compte, responsive.css doit rester en dernier -->
   <link rel="stylesheet" href="css/base.css"/>
   <link rel="stylesheet" href="css/pages.css"/>
@@ -345,7 +347,6 @@
               <div class="profil-titre" id="profil-type-affiche">—</div>
               <div class="profil-univ" id="profil-univ-affiche"></div>
               <div class="profil-verif" id="profil-verif"></div>
-              <div class="dispo-badge">Disponible</div>
               <hr class="profil-divider"/>
               <button class="btn-editer" onclick="ouvrirEditProfil()"><svg class="icon"><use href="#i-pencil"/></svg> Modifier mon CV</button>
               <button class="btn-editer" style="margin-top:8px;color:#A32D2D;" onclick="seDeconnecter()"><svg class="icon"><use href="#i-logout"/></svg> Se déconnecter</button>
@@ -362,23 +363,31 @@
             </div>
           </aside>
           <div class="profil-main">
+            <!-- Compte Entreprise : raccourci vers ses offres (pas de candidatures à suivre) -->
+            <div class="carte-bloc" id="profil-zone-entreprise" style="display:none;">
+              <div class="bloc-titre">Mes offres</div>
+              <p style="font-size:14px;margin:6px 0 14px;">Publie une offre, suis les candidatures et contacte les étudiants depuis la page Entreprises.</p>
+              <button class="btn btn-vert" onclick="allerVers('entreprise')">Gérer mes offres →</button>
+            </div>
+            <div id="profil-zone-etudiant">
             <div class="kpi-grille">
               <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-check"/></svg></div><div class="kpi-valeur" id="kpi-terminees">0</div><div class="kpi-label">Acceptées</div></div>
               <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-clock"/></svg></div><div class="kpi-valeur" id="kpi-encours">0</div><div class="kpi-label">En attente</div></div>
               <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-inbox"/></svg></div><div class="kpi-valeur" id="kpi-total">0</div><div class="kpi-label">Total candidatures</div></div>
-              <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-star"/></svg></div><div class="kpi-valeur">—</div><div class="kpi-label">Note moyenne</div></div>
+              <div class="kpi-carte"><div class="kpi-icone"><svg class="icon"><use href="#i-user"/></svg></div><div class="kpi-valeur" id="kpi-profil">—</div><div class="kpi-label">Profil</div></div>
             </div>
             <div class="carte-bloc" style="padding-top:20px;">
               <div class="onglets-profil">
-                <button class="onglet-profil actif" onclick="changerOnglet('candidatures',this)">Mes candidatures</button>
-                <button class="onglet-profil" onclick="changerOnglet('historique',this)">Historique</button>
+                <button class="onglet-profil actif" onclick="changerOnglet('candidatures',this)">En cours</button>
+                <button class="onglet-profil" onclick="changerOnglet('historique',this)">Terminées</button>
               </div>
               <div class="panneau-profil actif" id="panneau-candidatures">
                 <div id="liste-candidatures"><div style="text-align:center;padding:32px;color:var(--texte-3);">Chargement...</div></div>
               </div>
               <div class="panneau-profil" id="panneau-historique">
-                <div style="text-align:center;padding:32px;color:var(--texte-3);">Ton historique apparaîtra ici.</div>
+                <div id="liste-historique"><div style="text-align:center;padding:32px;color:var(--texte-3);">Tes candidatures acceptées ou refusées apparaîtront ici.</div></div>
               </div>
+            </div>
             </div>
           </div>
         </div>
@@ -392,9 +401,9 @@
           <div class="carte-entreprise">
             <div class="entreprise-logo-grand" id="ent-logo">?</div>
             <div class="entreprise-nom-grand" id="ent-nom">Mon Entreprise</div>
-            <div class="entreprise-secteur">Votre secteur — Abidjan</div>
+            <div class="entreprise-secteur" id="ent-secteur"></div>
             <div class="entreprise-stats-mini">
-              <div class="ent-mini-stat"><div class="ent-mini-val" id="ent-publiees">0</div><div class="ent-mini-lbl">Missions publiées</div></div>
+              <div class="ent-mini-stat"><div class="ent-mini-val" id="ent-publiees">0</div><div class="ent-mini-lbl">Offres publiées</div></div>
               <div class="ent-mini-stat"><div class="ent-mini-val" id="ent-candidatures">0</div><div class="ent-mini-lbl">Candidatures reçues</div></div>
             </div>
           </div>
@@ -499,8 +508,6 @@
           <div class="notif-filtres">
             <button class="filtre-btn actif" data-filtre="tous" onclick="filtrerNotifs(this)">Toutes</button>
             <button class="filtre-btn" data-filtre="candidature" onclick="filtrerNotifs(this)">Candidatures</button>
-            <button class="filtre-btn" data-filtre="paiement" onclick="filtrerNotifs(this)">Paiements</button>
-            <button class="filtre-btn" data-filtre="mission" onclick="filtrerNotifs(this)">Missions</button>
             <button class="filtre-btn" data-filtre="systeme" onclick="filtrerNotifs(this)">Système</button>
           </div>
           <div class="notif-liste" id="notif-liste"></div>
@@ -542,7 +549,7 @@
               <div class="admin-kpi"><div class="admin-kpi-haut"><div class="admin-kpi-icone" style="background:#FCEBEB"><svg class="icon"><use href="#i-inbox"/></svg></div><span class="admin-kpi-evolution evolution-hausse">Live</span></div><div class="admin-kpi-valeur" id="adm-candidatures">—</div><div class="admin-kpi-label">Candidatures</div></div>
             </div>
             <div class="admin-table-wrap">
-              <div style="padding:16px 20px;border-bottom:1px solid var(--bordure);"><span style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;">Utilisateurs récents</span></div>
+              <div style="padding:16px 20px;border-bottom:1px solid var(--bordure);"><span style="font-family:var(--police-titre);font-size:15px;font-weight:700;">Utilisateurs récents</span></div>
               <table class="admin-table">
                 <thead><tr><th>Utilisateur</th><th>Type</th><th>Inscription</th><th>Statut</th></tr></thead>
                 <tbody id="admin-users-recents"></tbody>
@@ -578,7 +585,7 @@
   </main>
 
   <footer>
-    <div>© 2025 <strong>TalentCI</strong> — Tous droits réservés</div>
+    <div>© 2026 <strong>TalentCI</strong> — Tous droits réservés</div>
     <div>Fait avec passion à Abidjan</div>
     <div>Contact : contact@talentci.ci</div>
   </footer>
@@ -590,8 +597,8 @@
 <div class="admin-overlay" id="modal-auth" style="z-index:600;">
   <div class="login-modal" style="max-width:440px;">
     <div style="display:flex;border-bottom:1px solid var(--bordure);margin-bottom:24px;">
-      <button id="tab-connexion" onclick="basculerAuth('connexion')" style="flex:1;padding:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;border:none;background:transparent;cursor:pointer;color:var(--vert);border-bottom:2px solid var(--vert);">Connexion</button>
-      <button id="tab-inscription" onclick="basculerAuth('inscription')" style="flex:1;padding:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;border:none;background:transparent;cursor:pointer;color:var(--texte-3);border-bottom:2px solid transparent;">Inscription</button>
+      <button id="tab-connexion" onclick="basculerAuth('connexion')" style="flex:1;padding:12px;font-family:var(--police-titre);font-size:14px;font-weight:700;border:none;background:transparent;cursor:pointer;color:var(--vert);border-bottom:2px solid var(--vert);">Connexion</button>
+      <button id="tab-inscription" onclick="basculerAuth('inscription')" style="flex:1;padding:12px;font-family:var(--police-titre);font-size:14px;font-weight:700;border:none;background:transparent;cursor:pointer;color:var(--texte-3);border-bottom:2px solid transparent;">Inscription</button>
     </div>
     <div id="auth-oauth">
     <button class="btn-google" id="btn-oauth-google" onclick="connecterAvecGoogle()">
@@ -642,6 +649,7 @@
         <label class="login-label">Université / École</label>
         <input class="login-input" id="ins-univ" type="text" placeholder="INPHB, UFHB, PIGIER..."/>
       </div>
+      <div class="cv-note-privee" style="margin-top:4px;">Étape suivante : tu compléteras ton <strong>mini-CV</strong> (spécialité, parcours, compétences, téléphone, pièce d'identité). Il est obligatoire pour postuler ou publier une offre.</div>
       <button class="btn-login-admin" id="btn-sinscrire" style="background:var(--vert);" onclick="sInscrire()">Créer mon compte →</button>
       <button class="login-annuler" onclick="fermerAuth()">Annuler</button>
     </div>
@@ -674,7 +682,7 @@
     <div class="cv-section-titre">1. Identité</div>
     <div class="login-champ" style="text-align:center;">
       <img id="edit-avatar-preview" src="" alt="" style="display:none;width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 10px;border:3px solid var(--vert);"/>
-      <div id="edit-avatar-placeholder" style="width:88px;height:88px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-family:'Syne',sans-serif;font-size:24px;font-weight:700;">?</div>
+      <div id="edit-avatar-placeholder" style="width:88px;height:88px;border-radius:50%;background:var(--vert-clair);color:var(--vert-fonce);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-family:var(--police-titre);font-size:24px;font-weight:700;">?</div>
       <label class="btn btn-blanc" style="cursor:pointer;">
         <svg class="icon"><use href="#i-camera"/></svg> Photo de profil
         <input type="file" id="edit-avatar-input" accept="image/*" style="display:none;" onchange="previewAvatarProfil(event)"/>
