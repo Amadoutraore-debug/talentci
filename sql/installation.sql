@@ -242,6 +242,11 @@ create table if not exists candidatures (
   created_at  timestamptz not null default now(),
   unique (mission_id, user_id)
 );
+-- Rendez-vous fixé par l'entreprise quand elle retient le candidat
+alter table candidatures add column if not exists date_prestation    date;
+alter table candidatures add column if not exists heure_prestation   text;
+alter table candidatures add column if not exists lieu_prestation    text;
+alter table candidatures add column if not exists message_entreprise text;
 create index if not exists idx_candidatures_user on candidatures (user_id);
 create index if not exists idx_candidatures_mission on candidatures (mission_id);
 
@@ -370,8 +375,15 @@ begin
     insert into notifications (user_id, type, icone, icone_bg, icone_color, texte, montant)
     values (
       new.user_id, 'candidature', 'party', '#FFF1E6', '#B54708',
-      'Bonne nouvelle ! <b>' || echapper_html(m.entreprise) || '</b> a accepté ta candidature pour « <b>'
-        || echapper_html(m.titre) || '</b> ».',
+      'Félicitations, tu es retenu(e) ! <b>' || echapper_html(m.entreprise) || '</b> t''a choisi(e) pour « <b>'
+        || echapper_html(m.titre) || '</b> ».'
+        || case when new.date_prestation is not null then
+             ' Rendez-vous le <b>' || to_char(new.date_prestation, 'DD/MM/YYYY') || '</b>'
+             || coalesce(' à <b>' || echapper_html(nullif(trim(new.heure_prestation), '')) || '</b>', '')
+             || coalesce(', lieu : <b>' || echapper_html(nullif(trim(new.lieu_prestation), '')) || '</b>', '')
+             || '. Présente-toi à la date prévue pour la prestation.'
+           else '' end
+        || coalesce(' Consignes : ' || echapper_html(nullif(trim(new.message_entreprise), '')), ''),
       replace(to_char(coalesce(m.montant_par_personne, m.salaire), 'FM999,999,999'), ',', ' ') || ' FCFA'
     );
   else
@@ -601,7 +613,14 @@ $$;
 -- Postuler exige un profil complet.
 drop policy if exists "candidatures_creation_soi_meme" on candidatures;
 create policy "candidatures_creation_soi_meme" on candidatures
-  for insert with check (auth.uid() = user_id and profil_est_complet(auth.uid()));
+  for insert with check (
+    auth.uid() = user_id
+    and profil_est_complet(auth.uid())
+    -- Une candidature est toujours créée EN ATTENTE : c'est l'entreprise
+    -- qui décide (sinon un étudiant pourrait s'auto-accepter via l'API).
+    and statut = 'en_attente'
+    and date_prestation is null and lieu_prestation is null and message_entreprise is null
+  );
 
 -- Publier une offre exige un compte Entreprise au profil complet (ou admin).
 drop policy if exists "missions_creation_proprietaire" on missions;

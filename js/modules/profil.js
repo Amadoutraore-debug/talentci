@@ -389,7 +389,7 @@ async function mettreAJourProfil() {
 
   const { data: cands, error } = await db
     .from('candidatures')
-    .select('id, mission_id, user_id, statut, created_at, missions(*)')
+    .select('*, missions(*)')
     .eq('user_id', utilisateurConnecte.id)
     .order('created_at', { ascending: false });
   if (!error && cands) {
@@ -401,10 +401,13 @@ async function mettreAJourProfil() {
       const montantM = c.missions ? fcfa(montantParPersonne(c.missions)) : '—';
       const icone = c.statut === 'acceptee' ? icon('check') : c.statut === 'refusee' ? icon('error') : icon('clock');
       const bg    = c.statut === 'acceptee' ? 'var(--vert-clair)' : c.statut === 'refusee' ? '#FCEBEB' : 'var(--amber-clair)';
-      const txt   = c.statut === 'acceptee' ? 'Acceptée — l\'entreprise va te contacter' : c.statut === 'refusee' ? 'Non retenue' : 'En attente de réponse';
+      const txt   = c.statut === 'acceptee' ? '🎉 Tu es retenu(e) !' : c.statut === 'refusee' ? 'Non retenue' : 'En attente de la décision de l\'entreprise';
       return `<div class="historique-item">
         <div class="hist-statut" style="background:${bg};font-size:16px;">${icone}</div>
-        <div class="hist-info"><div class="hist-titre">${escHtml(titreM)}</div><div class="hist-meta">${formatDate(c.created_at)} · ${txt}</div></div>
+        <div class="hist-info"><div class="hist-titre">${escHtml(titreM)}</div><div class="hist-meta">${formatDate(c.created_at)} · ${txt}</div>
+          ${c.statut === 'acceptee' && c.date_prestation ? `<div class="hist-rdv"><strong>Présente-toi à la date prévue :</strong>${texteRdv(c)}</div>` : ''}
+          ${c.statut === 'acceptee' && !c.date_prestation ? `<div class="hist-rdv">L'entreprise va te contacter pour fixer la date de la prestation.</div>` : ''}
+        </div>
         <div class="hist-montant">${montantM}</div>
       </div>`;
     };

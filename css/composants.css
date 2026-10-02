@@ -152,3 +152,16 @@
   .recrut-voir{width:100%;justify-content:center;}
   .fiche-entete{flex-direction:column;align-items:flex-start;}
 }
+
+/* Rendez-vous de prestation */
+.form-rdv{flex-basis:100%;}
+.form-rdv .form-groupe{margin-bottom:12px;}
+.fiche-decision-boutons{display:flex;flex-wrap:wrap;gap:10px;}
+.fiche-decision-boutons .btn{flex:1;justify-content:center;min-width:160px;}
+.fiche-rdv{flex-basis:100%;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius-md);padding:12px 14px;}
+.fiche-rdv .btn-whatsapp{margin-top:10px;}
+.rdv-lignes{display:flex;flex-direction:column;gap:5px;font-size:13.5px;margin-top:6px;}
+.rdv-lignes .icon{width:14px;height:14px;color:var(--vert-fonce);vertical-align:-2px;margin-right:4px;}
+.hist-rdv{margin-top:8px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius-sm);padding:8px 10px;font-size:13px;}
+.offre-info-attente{font-size:12.5px;color:var(--texte-2);margin-top:10px;line-height:1.5;}
+.offre-info-attente .icon{width:14px;height:14px;color:var(--vert-fonce);vertical-align:-2px;}
