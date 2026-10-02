@@ -649,7 +649,7 @@
         <label class="login-label">Université / École</label>
         <input class="login-input" id="ins-univ" type="text" placeholder="INPHB, UFHB, PIGIER..."/>
       </div>
-      <div class="cv-note-privee" style="margin-top:4px;">Étape suivante : tu compléteras ton <strong>mini-CV</strong> (spécialité, parcours, compétences, téléphone, pièce d'identité). Il est obligatoire pour postuler ou publier une offre.</div>
+      <div class="cv-note-privee" style="margin-top:4px;">Étape suivante : tu compléteras ton <strong>mini-CV</strong> (spécialité, parcours, compétences, téléphone). Les entreprises ajoutent aussi une pièce d'identité ou le RCCM. Il est obligatoire pour postuler ou publier une offre.</div>
       <button class="btn-login-admin" id="btn-sinscrire" style="background:var(--vert);" onclick="sInscrire()">Créer mon compte →</button>
       <button class="login-annuler" onclick="fermerAuth()">Annuler</button>
     </div>
@@ -722,10 +722,12 @@
     </div>
     <div class="login-champ"><label class="login-label">Lien (portfolio, LinkedIn, site...)</label><input class="login-input" id="edit-lien" type="url" inputmode="url" autocapitalize="none" placeholder="https://..."/></div>
 
-    <!-- 3. Contact et vérification (privé) -->
-    <div class="cv-section-titre">3. Contact et vérification <span class="cv-prive"><svg class="icon"><use href="#i-lock"/></svg> privé</span></div>
-    <div class="cv-note-privee">Ton numéro n'est visible que par les entreprises auprès desquelles tu postules. Ta pièce n'est visible que par l'équipe TalentCI, pour vérifier ton identité et t'attribuer le badge <strong>Vérifié</strong>.</div>
+    <!-- 3. Contact (+ vérification pour les entreprises) — privé -->
+    <div class="cv-section-titre">3. <span id="lbl-section-contact">Contact</span> <span class="cv-prive"><svg class="icon"><use href="#i-lock"/></svg> privé</span></div>
+    <div class="cv-note-privee" id="note-contact-etudiant">Ton numéro n'est visible que par les entreprises auprès desquelles tu postules, pour qu'elles puissent te contacter.</div>
+    <div class="cv-note-privee" id="note-contact-entreprise" style="display:none;">Votre numéro est visible par les étudiants que vous recrutez. La pièce d'identité du responsable (ou le RCCM) n'est visible que par l'équipe TalentCI : elle sert à vérifier que votre entreprise est réelle et vous donne le badge <strong>Vérifié</strong>, qui rassure les étudiants.</div>
     <div class="login-champ"><label class="login-label">Téléphone (WhatsApp de préférence) <span class="requis">*</span></label><input class="login-input" id="edit-telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="07 00 00 00 00"/></div>
+    <div id="bloc-piece-identite">
     <div class="login-champ">
       <label class="login-label">Type de pièce <span class="requis">*</span></label>
       <select class="login-input" id="edit-piece-type">
@@ -735,7 +737,6 @@
         <option>Attestation d'identité</option>
         <option>Carte consulaire</option>
         <option>Permis de conduire</option>
-        <option>Carte d'étudiant</option>
         <option>Registre du commerce (RCCM)</option>
       </select>
     </div>
@@ -748,6 +749,7 @@
         <input type="file" id="edit-piece-fichier" accept="image/*" style="display:none;" onchange="choisirPhotoPiece(event)"/>
       </label>
       <div class="form-hint" id="edit-piece-statut"></div>
+    </div>
     </div>
 
     <button class="btn-login-admin" id="btn-enregistrer-profil" style="background:var(--vert);" onclick="enregistrerProfil()">Enregistrer mon profil →</button>

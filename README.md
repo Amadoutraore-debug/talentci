@@ -161,9 +161,9 @@ Une fois installée : icône dédiée, plein écran, barre d'onglets en bas, bou
 ## 🧭 Fonctionnalités
 
 **Mini-CV obligatoire (tous les comptes)**
-- À la première connexion, une fenêtre impossible à fermer demande : ville, spécialité (ou secteur d'activité), présentation, formation et expériences + compétences (étudiants), téléphone, pièce d'identité (type, numéro, photo).
+- À la première connexion, une fenêtre impossible à fermer demande : ville, spécialité (ou secteur d'activité), présentation, téléphone ; en plus, formation et expériences + compétences pour les **étudiants**, et pièce d'identité ou RCCM (type, numéro, photo) pour les **entreprises** uniquement.
 - La même règle est appliquée par la base de données (`profil_est_complet`) : un profil incomplet ne peut ni postuler ni publier d'offre.
-- Confidentialité : le CV est visible par les entreprises ; le **téléphone** seulement par les entreprises auprès desquelles la personne a postulé ; la **pièce d'identité** seulement par les administrateurs (bucket de stockage **privé**, affichage par lien temporaire de 5 minutes).
+- Confidentialité : le CV est visible par les entreprises ; le **téléphone** d'un étudiant seulement par les entreprises auprès desquelles il a postulé ; la **pièce d'identité** seulement par les administrateurs (bucket de stockage **privé**, affichage par lien temporaire de 5 minutes).
 - L'admin vérifie les pièces (**Administration → Vérifications**) ; un profil validé affiche le badge **Vérifié ✓**. Si l'utilisateur change sa pièce, elle repasse en vérification.
 
 **Étudiants**
