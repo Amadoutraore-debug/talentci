@@ -174,7 +174,7 @@ Une fois installée : icône dédiée, plein écran, barre d'onglets en bas, bou
 
 **Entreprises**
 - Publication d'offres : nombre de personnes, montant par personne (budget total calculé), photo de couverture
-- Liste des candidats (nom, école, compétences) avec **Accepter / Refuser** ; impossible d'accepter plus de personnes que de places
+- **Espace recrutement** : toutes les candidatures reçues (À traiter / Validées / Rejetées, filtre par offre), fiche complète du candidat avec **score de correspondance** entre ses compétences et celles demandées par l'offre, boutons **Valider / Rejeter** (le candidat est notifié) ; impossible de valider plus de personnes que de places
 - Notification à chaque nouvelle candidature
 
 **Administration**

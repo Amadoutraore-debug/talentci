@@ -62,6 +62,14 @@ async function chargerMissionsEntreprise() {
   const compter = (id, statut) => cands.filter(c => c.mission_id === id && (!statut || c.statut === statut)).length;
   setText('ent-publiees', missions.length);
   setText('ent-candidatures', cands.length);
+  const aTraiter = cands.filter(c => c.statut === 'en_attente').length;
+  const banniere = document.getElementById('ent-recrut-banniere');
+  if (banniere) {
+    banniere.style.display = cands.length ? 'flex' : 'none';
+    banniere.innerHTML = `<div class="recrut-banniere-icone">${icon('users')}</div>
+      <div class="recrut-banniere-texte"><strong>Espace recrutement</strong><br>${aTraiter ? `<span class="recrut-banniere-alerte">${aTraiter} candidature(s) à traiter</span>` : 'Toutes les candidatures ont reçu une réponse'} · ${cands.length} au total</div>
+      <span class="btn btn-vert">Ouvrir →</span>`;
+  }
   conteneur.innerHTML = missions.map(m => {
     const nb = compter(m.id);
     const enAttente = compter(m.id, 'en_attente');

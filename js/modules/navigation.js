@@ -4,7 +4,7 @@
 /* ══════════════════════════════════════════
    NAVIGATION
 ══════════════════════════════════════════ */
-const PAGES = ['accueil','missions','profil','entreprise','notifications','admin'];
+const PAGES = ['accueil','missions','profil','entreprise','recrutement','notifications','admin'];
 
 // Chaque page a son adresse (#/missions, #/profil...) : le bouton
 // "Retour" du téléphone revient à la page précédente au lieu de
@@ -49,6 +49,7 @@ function allerVers(nomPage, options = {}) {
   if (nomPage === 'notifications') chargerNotifications();
   if (nomPage === 'profil')        mettreAJourProfil();
   if (nomPage === 'entreprise')    chargerMissionsEntreprise();
+  if (nomPage === 'recrutement')   chargerRecrutement();
 }
 
 /* ══════════════════════════════════════════
@@ -94,6 +95,9 @@ function mettreAJourNavbar() {
   // Rappel : ceci est un confort d'UI, pas une protection — la
   // vraie barrière est la policy RLS côté Supabase.
   if (btnAdmin) btnAdmin.style.display = estAdmin() ? 'inline-flex' : 'none';
+  // Espace recrutement : comptes Entreprise (et admins)
+  const recruteur = !!utilisateurConnecte && (profilConnecte?.type === 'entreprise' || estAdmin());
+  ['dropdown-recrut', 'nav-lien-recrut'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = recruteur ? '' : 'none'; });
   const dropAdmin = document.getElementById('dropdown-admin');
   if (dropAdmin) dropAdmin.style.display = estAdmin() ? '' : 'none';
   majAccesEntreprise();
@@ -109,7 +113,7 @@ function fermerAvatarMenu() {
 document.addEventListener('click', fermerAvatarMenu);
 
 // Fermer les fenêtres en touchant le fond sombre.
-['modal-candidatures', 'modal-installation', 'modal-offre', 'modal-piece'].forEach(id => {
+['modal-candidat', 'modal-installation', 'modal-offre', 'modal-piece'].forEach(id => {
   document.getElementById(id)?.addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible'); });
 });
 
