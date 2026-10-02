@@ -50,6 +50,10 @@ async function publierMission() {
   const titre      = document.getElementById('champ-titre').value.trim();
   const categorie   = document.getElementById('champ-categorie').value;
   const description = document.getElementById('champ-description').value.trim();
+  const profilRecherche = document.getElementById('champ-profil-recherche').value.trim();
+  const datePrestation  = document.getElementById('champ-date-prestation').value;
+  const heurePrestation = document.getElementById('champ-heure-prestation').value;
+  const lieuPrestation  = document.getElementById('champ-lieu-prestation').value.trim();
   const places      = parseInt(document.getElementById('champ-places').value, 10);
   const montant     = parseInt(document.getElementById('champ-montant').value, 10);
   const duree       = document.getElementById('champ-duree').value;
@@ -57,6 +61,10 @@ async function publierMission() {
   if (!titre)                   { afficherToast('warning','Titre obligatoire','rouge'); return; }
   if (!categorie)               { afficherToast('warning','Choisis une catégorie','rouge'); return; }
   if (description.length < 30) { afficherToast('warning','Description trop courte (min 30 car.)','rouge'); return; }
+  if (profilRecherche.length < 20) { afficherToast('warning','Décris ce que tu attends des candidats (20 caractères min.)','rouge'); return; }
+  if (!datePrestation) { afficherToast('warning','Indique la date de la prestation','rouge'); return; }
+  if (datePrestation < new Date().toISOString().slice(0, 10)) { afficherToast('warning','La date de la prestation ne peut pas être passée','rouge'); return; }
+  if (lieuPrestation.length < 3) { afficherToast('warning','Indique le lieu de la prestation','rouge'); return; }
   if (!places || places < 1 || places > 500) { afficherToast('warning','Nombre de personnes : entre 1 et 500','rouge'); return; }
   if (!montant || montant < 1000) { afficherToast('warning','Montant minimum : 1 000 FCFA par personne','rouge'); return; }
   const budget = places * montant;
@@ -84,6 +92,8 @@ async function publierMission() {
     couleur_bg: couleurs.bg, couleur_txt: couleurs.txt,
     categorie, description, salaire: budget, duree, niveau,
     nb_places: places, montant_par_personne: montant, image_url: imageUrl,
+    profil_recherche: profilRecherche, date_prestation: datePrestation,
+    heure_prestation: heurePrestation || null, lieu_prestation: lieuPrestation,
     actif: true, user_id: utilisateurConnecte.id,
     competences: competencesSaisies, created_at: new Date().toISOString()
   });
@@ -173,8 +183,16 @@ function placesRestantes(m) { return Math.max(0, nbPlaces(m) - (parseInt(m.place
 function fcfa(n) { return (Number(n) || 0).toLocaleString('fr-FR') + ' FCFA'; }
 
 const MOIS_COURTS = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
+// "2026-10-20" → "mardi 20 octobre 2026" (date seule : midi, pour éviter
+// un décalage de jour selon le fuseau horaire).
+function dateLongue(jour) {
+  if (!jour) return '';
+  const d = new Date(String(jour).length === 10 ? jour + 'T12:00:00' : jour);
+  return isNaN(d) ? '' : d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 function badgeDate(iso) {
-  const d = iso ? new Date(iso) : null;
+  const d = iso ? new Date(String(iso).length === 10 ? iso + 'T12:00:00' : iso) : null;
   if (!d || isNaN(d)) return '';
   return `<div class="offre-date"><span>${d.getDate()}</span><small>${MOIS_COURTS[d.getMonth()]}</small></div>`;
 }
@@ -202,7 +220,7 @@ function rendreCarte(m) {
   return `<article class="offre-carte${complet ? ' est-complet' : ''}" onclick="ouvrirOffre(${m.id})">
     <div class="offre-media">
       ${couvertureOffre(m)}
-      ${badgeDate(m.created_at)}
+      ${badgeDate(m.date_prestation || m.created_at)}
       <button class="offre-fav" onclick="event.stopPropagation();toggleFav(${m.id})" aria-label="${m.fav ? 'Retirer des favoris' : 'Ajouter aux favoris'}" style="color:${m.fav ? '#F5A623' : 'var(--texte-2)'};">${icon(m.fav ? 'starFilled' : 'starOutline')}</button>
       ${mesCandidaturesIds.has(m.id) ? `<span class="offre-postule">${icon('check')} Postulé</span>` : ''}
     </div>
@@ -210,6 +228,7 @@ function rendreCarte(m) {
       <div class="offre-cat">${iconCategorie(m.categorie)}<span>${escHtml(m.categorie)}</span></div>
       <h3 class="offre-titre">${escHtml(m.titre)}</h3>
       <div class="offre-entreprise">${icon('building')}<span>${escHtml(m.entreprise)}</span></div>
+      ${m.lieu_prestation ? `<div class="offre-entreprise">${icon('mapPin')}<span>${escHtml(m.lieu_prestation)}</span></div>` : ''}
       <div class="offre-pied">
         <div class="offre-prix"><small>Par personne</small><strong>${fcfa(montantParPersonne(m))}</strong></div>
         ${pastillePlaces(m)}
@@ -234,7 +253,7 @@ function ouvrirOffre(id) {
     : `<button class="btn-postuler-large" onclick="postuler(${m.id})">Postuler →</button>`;
   document.getElementById('offre-detail').innerHTML = `
     <button class="offre-modal-fermer" onclick="fermerOffre()" aria-label="Fermer">×</button>
-    <div class="offre-modal-media">${couvertureOffre(m)}${badgeDate(m.created_at)}</div>
+    <div class="offre-modal-media">${couvertureOffre(m)}${badgeDate(m.date_prestation || m.created_at)}</div>
     <div class="offre-modal-corps">
       <div class="offre-cat">${iconCategorie(m.categorie)}<span>${escHtml(m.categorie)}</span></div>
       <h2 class="offre-modal-titre">${escHtml(m.titre)}</h2>
@@ -248,7 +267,15 @@ function ouvrirOffre(id) {
         <span>${icon('clock')} ${escHtml(m.duree || '—')}</span>
         <span>${icon('bars')} ${escHtml(m.niveau || '—')}</span>
       </div>
+      ${m.date_prestation ? `<div class="offre-rdv">
+        <div class="fiche-bloc-titre">Quand et où</div>
+        <div>${icon('clock')} <strong>${escHtml(dateLongue(m.date_prestation))}</strong>${m.heure_prestation ? ' à <strong>' + escHtml(m.heure_prestation) + '</strong>' : ''}</div>
+        ${m.lieu_prestation ? `<div>${icon('mapPin')} ${escHtml(m.lieu_prestation)}</div>` : ''}
+      </div>` : ''}
+      <div class="fiche-bloc-titre" style="margin-top:6px;">La mission</div>
       <p class="offre-description">${escHtml(m.description)}</p>
+      ${m.profil_recherche ? `<div class="fiche-bloc-titre" style="margin-top:6px;">Ce que l'entreprise attend des candidats</div>
+      <p class="offre-description">${escHtml(m.profil_recherche)}</p>` : ''}
       ${comps.length ? `<div class="offre-comps">${comps.map(c => `<span class="comp-pill">${escHtml(c)}</span>`).join('')}</div>` : ''}
       <div class="offre-modal-actions">${bouton}
         <p class="offre-info-attente">${icon('info')} Postuler ne vaut pas embauche : ta candidature reste <strong>en attente</strong> jusqu'à ce que l'entreprise examine ton profil. Si tu es retenu(e), tu recevras une notification avec la date de la prestation.</p>
@@ -459,7 +486,7 @@ function afficherChips() {
   ).join('');
 }
 function reinitialiserFormulaire() {
-  ['champ-titre','champ-description','champ-montant'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  ['champ-titre','champ-description','champ-montant','champ-profil-recherche','champ-date-prestation','champ-lieu-prestation'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
   const placesEl = document.getElementById('champ-places'); if (placesEl) placesEl.value = '1';
   majTotalOffre();
   fichierCouverture = null;

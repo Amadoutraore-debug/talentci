@@ -201,6 +201,11 @@ alter table missions add column if not exists nb_places integer not null default
 alter table missions add column if not exists montant_par_personne integer;
 alter table missions add column if not exists places_prises integer not null default 0;
 alter table missions add column if not exists image_url text;
+-- Ce que l'entreprise attend des candidats + quand et où se fait la prestation
+alter table missions add column if not exists profil_recherche  text;
+alter table missions add column if not exists date_prestation    date;
+alter table missions add column if not exists heure_prestation   text;
+alter table missions add column if not exists lieu_prestation    text;
 update missions set montant_par_personne = salaire where montant_par_personne is null;
 
 alter table missions drop constraint if exists missions_nb_places_check;
@@ -369,7 +374,16 @@ begin
   if new.statut is not distinct from old.statut or new.statut = 'en_attente' then
     return new;
   end if;
-  select titre, entreprise, salaire, montant_par_personne into m from missions where id = new.mission_id;
+  select titre, entreprise, salaire, montant_par_personne,
+         date_prestation, heure_prestation, lieu_prestation
+    into m from missions where id = new.mission_id;
+
+  -- Rendez-vous annoncé dans le message : celui de la candidature s'il a
+  -- été précisé, sinon celui fixé dans l'offre lors de la publication.
+  -- (Trigger AFTER : ces affectations ne servent qu'au texte du message.)
+  new.date_prestation  := coalesce(new.date_prestation, m.date_prestation);
+  new.heure_prestation := coalesce(nullif(trim(new.heure_prestation), ''), m.heure_prestation);
+  new.lieu_prestation  := coalesce(nullif(trim(new.lieu_prestation), ''), m.lieu_prestation);
 
   if new.statut = 'acceptee' then
     insert into notifications (user_id, type, icone, icone_bg, icone_color, texte, montant)
@@ -379,11 +393,11 @@ begin
         || echapper_html(m.titre) || '</b> ».'
         || case when new.date_prestation is not null then
              ' Rendez-vous le <b>' || to_char(new.date_prestation, 'DD/MM/YYYY') || '</b>'
-             || coalesce(' à <b>' || echapper_html(nullif(trim(new.heure_prestation), '')) || '</b>', '')
-             || coalesce(', lieu : <b>' || echapper_html(nullif(trim(new.lieu_prestation), '')) || '</b>', '')
+             || coalesce(' à <b>' || nullif(echapper_html(trim(new.heure_prestation)), '') || '</b>', '')
+             || coalesce(', lieu : <b>' || nullif(echapper_html(trim(new.lieu_prestation)), '') || '</b>', '')
              || '. Présente-toi à la date prévue pour la prestation.'
            else '' end
-        || coalesce(' Consignes : ' || echapper_html(nullif(trim(new.message_entreprise), '')), ''),
+        || coalesce(' Consignes : ' || nullif(echapper_html(trim(new.message_entreprise)), ''), ''),
       replace(to_char(coalesce(m.montant_par_personne, m.salaire), 'FM999,999,999'), ',', ' ') || ' FCFA'
     );
   else
