@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Octobre Rose — DEO-CI</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --pink:#E0457B; --pink-d:#B8285C; --pink-l:#F9D3E1; --pink-xl:#FDEFF4;
+  --ink:#121110; --ink-2:#4A4541; --muted:#9E949A; --soft:#F7F3F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#1b1719;height:100%;overflow:hidden}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;color:var(--ink)}
+#wrap{position:relative;flex:1;width:100%;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;overflow:hidden;background:#fff}
+.render #stage{left:0;top:0;transform:none!important}
+.render #controls{display:none}
+.scene{position:absolute;inset:0;overflow:hidden;visibility:hidden}
+.white{background:#fff}
+.pinkbg{background:var(--pink)}
+.abs{position:absolute}
+.fill{position:absolute;inset:0}
+img{display:block;user-select:none;-webkit-user-drag:none}
+.c,.w{display:inline-block;will-change:transform}
+.pk{color:var(--pink)}
+.label{position:absolute;left:120px;top:96px;font:600 22px/1 'Poppins';letter-spacing:.3em;text-transform:uppercase;color:var(--pink);display:flex;align-items:center;gap:16px}
+.label::before{content:"";width:48px;height:3px;border-radius:2px;background:currentColor}
+.blob{position:absolute;border-radius:50%;background:var(--pink-xl)}
+
+/* ribbon strokes */
+.rib{overflow:visible}
+.rib path{fill:none;stroke-width:30;stroke-linecap:butt;stroke-linejoin:round}
+.rib .back{stroke:var(--pink-d)} .rib .front{stroke:var(--pink)}
+.rib.wh .back{stroke:#F7C5D7} .rib.wh .front{stroke:#fff}
+
+/* ---------- A · Octobre ---------- */
+#camA{position:absolute;inset:0}
+#ribA{position:absolute;left:780px;top:270px;width:360px;height:540px}
+#ribLine{fill:none;stroke:var(--pink);stroke-width:30}
+#ribDot{fill:var(--pink)}
+#A .octo{left:700px;top:318px;font:900 210px/1 'Poppins';letter-spacing:-.02em;color:var(--pink);white-space:nowrap}
+#A .mois{left:712px;top:590px;font:600 72px/1 'Poppins';color:var(--ink);white-space:nowrap}
+#A .tagA{left:716px;top:712px;font:600 28px/1 'Poppins';letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- B · Mobilisation ---------- */
+#B .orb{position:absolute;left:0;top:0;width:76px;height:114px;margin:-57px 0 0 -38px}
+#B .t1{left:0;right:0;top:410px;text-align:center;font:600 46px/1 'Poppins';color:rgba(255,255,255,.92)}
+#B .t2{left:0;right:0;top:484px;text-align:center;font:900 124px/1 'Poppins';letter-spacing:-.03em;color:#fff;white-space:nowrap}
+#B .t3{left:0;right:0;top:420px;text-align:center;font:500 52px/1 'Poppins';color:rgba(255,255,255,.92)}
+#B .t4{left:0;right:0;top:496px;text-align:center;font:900 150px/1 'Poppins';letter-spacing:-.03em;color:#fff;white-space:nowrap}
+#B .uline{position:absolute;left:660px;top:690px;width:600px;height:12px;border-radius:6px;background:#fff;transform-origin:50% 50%}
+#irisB{position:absolute;left:910px;top:490px;width:100px;height:100px;border-radius:50%;background:#fff;z-index:5}
+
+/* ---------- C · Chiffres ---------- */
+#Cin{position:absolute;inset:0}
+#C .first{position:absolute;left:430px;top:330px;display:flex;align-items:center;gap:44px;transform-origin:0 0}
+#C .first .one{font:900 290px/1 'Poppins';letter-spacing:-.05em;color:var(--pink)}
+#C .first .one sup{font-size:.4em;vertical-align:1.05em;letter-spacing:0}
+#C .first .ft{font:800 88px/1.05 'Poppins';letter-spacing:-.02em;color:var(--ink)}
+#C .count{position:absolute;left:160px;top:300px;transform-origin:0 50%}
+#C .odo{display:flex;align-items:flex-start;font:900 300px/1 'Poppins';letter-spacing:-.04em;color:var(--pink);height:300px}
+#C .digit{position:relative;height:300px;overflow:hidden}
+#C .strip{display:flex;flex-direction:column}
+#C .strip span{height:300px;display:block}
+#C .comma{height:300px;margin:0 -.04em 0 -.1em}
+#C .mil{position:absolute;left:530px;top:126px;font:800 124px/1 'Poppins';letter-spacing:-.03em;color:var(--ink);white-space:nowrap}
+#C .desc{position:absolute;left:8px;top:340px;width:1300px;font:500 42px/1.35 'Poppins';color:var(--ink-2)}
+#C .panel{position:absolute;left:1150px;top:0;width:770px;height:1080px;background:var(--pink);border-radius:80px 0 0 80px}
+#C .panel .rib{position:absolute;left:96px;top:250px;width:140px;height:210px}
+#C .panel .tx{position:absolute;left:96px;top:520px;font:800 60px/1.15 'Poppins';white-space:nowrap;letter-spacing:-.02em;color:#fff}
+#C .src{left:160px;top:986px;font:500 22px/1.3 'Poppins';color:var(--muted)}
+
+/* ---------- D · Réflexes ---------- */
+#Din{position:absolute;inset:0}
+#D .title{left:114px;top:140px;font:800 120px/1 'Poppins';letter-spacing:-.04em;color:var(--ink);white-space:nowrap}
+#D .track{position:absolute;left:0;top:0;width:2400px;height:1080px}
+#D svg.line{position:absolute;left:0;top:0;width:2400px;height:1080px;overflow:visible}
+#D svg.line path{fill:none;stroke:var(--pink-l);stroke-width:6;stroke-linecap:round}
+#D .node{position:absolute;width:190px;height:190px;margin:-95px 0 0 -95px;top:560px}
+#D .node .disc{position:absolute;inset:0;border-radius:50%;background:var(--pink-xl);border:6px solid var(--pink)}
+#D .node svg{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px}
+#D .node svg *{fill:none;stroke:var(--pink-d);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+#D .node .num{position:absolute;left:-14px;top:-14px;width:56px;height:56px;border-radius:50%;background:var(--pink);color:#fff;font:800 24px/56px 'Poppins';text-align:center}
+#D .lbl{position:absolute;width:460px;margin-left:-230px;top:690px;text-align:center}
+#D .lbl h3{font:700 40px/1.1 'Poppins';color:var(--ink)}
+#D .lbl p{font:500 25px/1.3 'Poppins';color:var(--muted);margin-top:10px}
+#D .final{left:120px;top:900px;font:800 64px/1 'Poppins';letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+
+/* ---------- E · Et vous ? ---------- */
+#E .circ{position:absolute;left:990px;top:170px;width:860px;height:860px;border-radius:50%;background:#fff}
+#E .ring{position:absolute;left:930px;top:110px;width:980px;height:980px;border-radius:50%;border:3px dashed rgba(255,255,255,.55)}
+#E .cut{position:absolute;left:970px;top:-100px;width:948px;height:1264px;filter:drop-shadow(0 30px 40px rgba(90,20,50,.25))}
+#E .q0{left:120px;top:250px;font:600 56px/1 'Poppins';color:rgba(255,255,255,.92)}
+#E .q1{left:114px;top:326px;font:800 100px/1 'Poppins';letter-spacing:-.03em;color:#fff;white-space:nowrap}
+#E .q2{left:114px;top:440px;font:900 100px/1 'Poppins';letter-spacing:-.03em;color:#fff;white-space:nowrap}
+#E .chips{position:absolute;left:120px;top:640px;width:820px;display:flex;flex-wrap:wrap;gap:18px 16px}
+#E .chip{font:600 36px/1 'Poppins';color:var(--pink-d);background:#fff;border-radius:60px;padding:20px 32px 19px;box-shadow:0 12px 30px rgba(90,20,50,.18)}
+#Eflood{position:absolute;left:990px;top:170px;width:860px;height:860px;border-radius:50%;background:#fff;z-index:6;visibility:hidden}
+
+/* ---------- F · DEO-CI vous accompagne ---------- */
+#F .acc{left:114px;top:210px;font:800 84px/1 'Poppins';letter-spacing:-.03em;color:var(--ink);white-space:nowrap}
+#F .for{left:120px;top:316px;font:600 40px/1 'Poppins';color:var(--pink)}
+#F .card{position:absolute;top:410px;width:400px;height:430px;border-radius:32px;background:var(--soft);padding:40px 36px;overflow:hidden}
+#F .card .bar{position:absolute;left:0;right:0;top:0;height:10px;background:var(--pink);transform-origin:0 50%}
+#F .card .num{font:800 60px/1 'Poppins';color:var(--pink);letter-spacing:-.02em}
+#F .card svg{display:block;width:84px;height:84px;margin:34px 0 26px}
+#F .card svg *{fill:none;stroke:var(--pink-d);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+#F .card h3{font:700 36px/1.15 'Poppins';color:var(--ink)}
+#F .card p{font:500 24px/1.35 'Poppins';color:var(--muted);margin-top:12px}
+#F .final{left:120px;top:920px;font:700 52px/1 'Poppins';letter-spacing:-.01em;color:var(--ink);white-space:nowrap}
+#F .ripple{position:absolute;left:1640px;top:850px;width:160px;height:160px;border-radius:50%;border:4px solid var(--pink)}
+
+/* ---------- G · Signature ---------- */
+#G .halo{position:absolute;left:560px;top:70px;width:800px;height:800px;border-radius:50%;background:var(--pink-xl)}
+#G .tagline{left:0;right:0;top:648px;text-align:center;font:600 30px/1 'Poppins';letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+#G .contact{position:absolute;left:960px;top:740px;display:flex;align-items:center;gap:20px;font:600 42px/1 'Poppins';color:var(--ink);background:#fff;border-radius:80px;padding:22px 46px 22px 26px;box-shadow:0 18px 50px rgba(90,20,50,.18);white-space:nowrap}
+#G .contact .fb{width:64px;height:64px;border-radius:50%;background:#1877F2;display:flex;align-items:center;justify-content:center}
+#G .contact .fb svg{width:34px;height:34px}
+#G .hash{left:0;right:0;top:900px;text-align:center;font:700 36px/1 'Poppins';color:var(--pink)}
+
+/* ---------- brand (shared by F and G) ---------- */
+#brand{position:absolute;left:960px;top:470px;display:flex;align-items:center;gap:34px;font:900 230px/1 'Poppins';letter-spacing:-.03em;color:var(--ink);white-space:nowrap;visibility:hidden;z-index:8}
+#brand .rib{width:134px;height:200px;flex:none}
+#brand .ci{color:var(--pink)}
+
+/* ---------- watermark ---------- */
+#wm{position:absolute;right:64px;top:54px;display:flex;align-items:center;gap:10px;font:900 34px/1 'Poppins';letter-spacing:-.02em;z-index:30;visibility:hidden}
+#wm .rib{width:22px;height:33px}
+#wm .ci{color:var(--pink)}
+#wm.light{color:#fff} #wm.light .ci{color:#fff}
+#wm.light .rib .back{stroke:#F7C5D7} #wm.light .rib .front{stroke:#fff}
+#wm .rib path{stroke-width:34}
+
+#fade{position:absolute;inset:0;background:#fff;opacity:0;z-index:60;pointer-events:none}
+
+/* ---------- preview controls ---------- */
+#controls{flex:none;width:100%;max-width:760px;display:flex;align-items:center;gap:14px;padding:14px 16px 18px}
+#controls button{flex:none;width:48px;height:48px;border-radius:50%;border:0;background:var(--pink);color:#fff;font:700 18px 'Poppins';cursor:pointer}
+#controls input{flex:1;accent-color:var(--pink)}
+#controls .time{flex:none;font:600 15px 'Poppins';color:#fff;font-variant-numeric:tabular-nums;min-width:92px;text-align:right}
+</style>
+</head>
+<body>
+<div id="wrap">
+<div id="stage">
+
+  <!-- A · Octobre (0 – 4) -->
+  <section class="scene white" id="A">
+    <div id="camA">
+      <div class="blob" style="left:-220px;top:620px;width:760px;height:760px"></div>
+      <div class="blob" style="left:1500px;top:-260px;width:640px;height:640px"></div>
+      <svg id="ribA" class="rib" viewBox="0 0 200 300">
+        <path id="ribLine" d="M45 285 L120 152 C148 100 142 32 100 32 C58 32 52 100 80 152 L155 285"/>
+        <g id="ribFinal"><path class="back" d="M45 285 L120 152 C148 100 142 32 100 32"/><path class="front" id="ribFront" d="M100 32 C58 32 52 100 80 152 L155 285"/></g>
+        <circle id="ribDot" cx="45" cy="285" r="17"/>
+      </svg>
+      <div class="abs octo" data-chars>OCTOBRE</div>
+      <div class="abs mois" data-words>c’est le mois <span class="pk">rose.</span></div>
+      <div class="abs tagA">#OctobreRose</div>
+    </div>
+  </section>
+
+  <!-- B · Mobilisation (4 – 12) -->
+  <section class="scene pinkbg" id="B">
+    <div id="orbit" class="fill"></div>
+    <div class="abs t1" data-words>Chaque année,</div>
+    <div class="abs t2" data-chars>le monde se mobilise</div>
+    <div class="abs t3" data-words>pour sensibiliser au</div>
+    <div class="abs t4" data-chars>CANCER DU SEIN</div>
+    <div class="uline"></div>
+    <div id="irisB"></div>
+  </section>
+
+  <!-- C · Chiffres (12 – 22) -->
+  <section class="scene white" id="C">
+    <div id="Cin">
+      <div class="label">Le saviez-vous ?</div>
+      <div class="first">
+        <div class="one" data-chars>1</div>
+        <div><div class="ft" data-words>cancer</div><div class="ft" data-words>chez la femme</div></div>
+      </div>
+      <div class="count">
+        <div class="odo">
+          <div class="digit d1"><div class="strip"></div></div>
+          <div class="comma">,</div>
+          <div class="digit d2"><div class="strip"></div></div>
+        </div>
+        <div class="mil" data-chars>millions</div>
+        <div class="desc" data-words>de nouveaux cas de cancer du sein en 2022 dans le monde.</div>
+      </div>
+      <div class="panel">
+        <svg class="rib wh" viewBox="0 0 200 300"><path class="back" d="M45 285 L120 152 C148 100 142 32 100 32"/><path class="front" d="M100 32 C58 32 52 100 80 152 L155 285"/></svg>
+        <div class="tx"><div data-words>Détecté tôt,</div><div data-words>il se soigne mieux.</div></div>
+      </div>
+      <div class="abs src">Source : OMS / CIRC (Centre international de recherche sur le cancer)</div>
+    </div>
+  </section>
+
+  <!-- D · Les bons réflexes (22 – 32) -->
+  <section class="scene white" id="D">
+    <div id="Din">
+      <div class="label">Les bons réflexes</div>
+      <div class="abs title" data-chars>Parlons-en.</div>
+      <div class="track">
+        <svg class="line" viewBox="0 0 2400 1080"><path id="dLine" d="M300 560 H2100"/></svg>
+        <div class="node n1" style="left:480px"><div class="disc"></div><div class="num">1</div>
+          <svg viewBox="0 0 64 64"><circle cx="32" cy="19" r="10"/><path d="M11 57C11 42 20 34 32 34S53 42 53 57"/></svg></div>
+        <div class="node n2" style="left:1160px"><div class="disc"></div><div class="num">2</div>
+          <svg viewBox="0 0 64 64"><path d="M14 6V24A10 10 0 0 0 34 24V6"/><path d="M24 34V42A12 12 0 0 0 48 42V37"/><circle cx="48" cy="31" r="6"/><path d="M10 6H18M30 6H38"/></svg></div>
+        <div class="node n3" style="left:1840px"><div class="disc"></div><div class="num">3</div>
+          <svg viewBox="0 0 64 64"><rect x="8" y="12" width="48" height="44" rx="6"/><path d="M8 26H56M20 6V16M44 6V16"/><path d="M23 41 30 48 42 35"/></svg></div>
+        <div class="lbl l1" style="left:480px"><h3>Connaître son corps</h3><p>Être à l’écoute des changements</p></div>
+        <div class="lbl l2" style="left:1160px"><h3>Consulter au moindre doute</h3><p>En parler à un professionnel de santé</p></div>
+        <div class="lbl l3" style="left:1840px"><h3>Se faire dépister</h3><p>Le dépistage précoce sauve des vies</p></div>
+      </div>
+      <div class="abs final" data-words>Un geste simple peut <span class="pk">sauver une vie.</span></div>
+    </div>
+  </section>
+
+  <!-- E · Et vous ? (32 – 40) -->
+  <section class="scene pinkbg" id="E">
+    <div class="ring"></div>
+    <div class="circ"></div>
+    <img class="cut" src="img/cut3.png" alt="">
+    <div class="abs q0" data-words>Vous avez</div>
+    <div class="abs q1" data-words>un projet pour</div>
+    <div class="abs q2" data-chars>Octobre Rose ?</div>
+    <div class="chips">
+      <span class="chip c1">Campagne</span>
+      <span class="chip c2">Marche rose</span>
+      <span class="chip c3">Journée de dépistage</span>
+      <span class="chip c4">Conférence</span>
+    </div>
+    <div id="Eflood"></div>
+  </section>
+
+  <!-- F · DEO-CI vous accompagne (40 – 52) -->
+  <section class="scene white" id="F">
+    <div class="abs acc" data-words>vous accompagne</div>
+    <div class="abs for" data-words>pour votre projet Octobre Rose</div>
+    <div class="card k1" style="left:120px"><i class="bar"></i><div class="num">01</div>
+      <svg viewBox="0 0 64 64"><circle cx="30" cy="34" r="22"/><circle cx="30" cy="34" r="12"/><circle cx="30" cy="34" r="3"/><path d="M30 34 52 12M46 8V18H56"/></svg>
+      <h3>Communication de campagne</h3><p>Messages · Calendrier · Mobilisation</p></div>
+    <div class="card k2" style="left:546px"><i class="bar"></i><div class="num">02</div>
+      <svg viewBox="0 0 64 64"><path d="M40 8 56 24 24 56H8V40Z"/><path d="M33 15 49 31"/></svg>
+      <h3>Visuels &amp; contenus</h3><p>Affiches · Posts · Vidéos courtes</p></div>
+    <div class="card k3" style="left:973px"><i class="bar"></i><div class="num">03</div>
+      <svg viewBox="0 0 64 64"><rect x="6" y="16" width="36" height="32" rx="5"/><path d="M42 28 58 19V45L42 36"/></svg>
+      <h3>Couverture vidéo</h3><p>Marches · Dépistages · Conférences</p></div>
+    <div class="card k4" style="left:1400px"><i class="bar"></i><div class="num">04</div>
+      <svg viewBox="0 0 64 64"><circle cx="16" cy="32" r="7"/><circle cx="46" cy="14" r="7"/><circle cx="46" cy="50" r="7"/><path d="M22.5 28.5 39.5 17.5M22.5 35.5 39.5 46.5"/></svg>
+      <h3>Gestion des réseaux sociaux</h3><p>Publication · Animation de communauté</p></div>
+    <div class="ripple r1"></div><div class="ripple r2"></div><div class="ripple r3"></div>
+    <div class="abs final" data-words>Pour que votre message touche <span class="pk">le plus de monde.</span></div>
+  </section>
+
+  <!-- G · Signature (52 – 60) -->
+  <section class="scene white" id="G">
+    <div class="halo"></div>
+    <div class="abs tagline">Communication digitale · Production vidéo · Réseaux sociaux</div>
+    <div class="contact"><span class="fb"><svg viewBox="0 0 24 24"><path fill="#fff" d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V22h3.4Z"/></svg></span>Facebook : DEO-CI</div>
+    <div class="abs hash">#OctobreRose</div>
+  </section>
+
+  <div id="brand"><svg class="rib" viewBox="0 0 200 300"><path class="back" d="M45 285 L120 152 C148 100 142 32 100 32"/><path class="front" d="M100 32 C58 32 52 100 80 152 L155 285"/></svg><span class="txt"><span class="c">D</span><span class="c">E</span><span class="c">O</span><span class="c ci">-</span><span class="c ci">C</span><span class="c ci">I</span></span></div>
+  <div id="wm" class="light"><svg class="rib" viewBox="0 0 200 300"><path class="back" d="M45 285 L120 152 C148 100 142 32 100 32"/><path class="front" d="M100 32 C58 32 52 100 80 152 L155 285"/></svg><span>DEO<span class="ci">-CI</span></span></div>
+  <div id="fade"></div>
+</div>
+</div>
+
+<div id="controls">
+  <button id="playBtn" aria-label="Lecture">▶</button>
+  <input id="scrub" type="range" min="0" max="60" step="0.01" value="0" aria-label="Position">
+  <div class="time" id="time">0:00 / 1:00</div>
+</div>
+
+<script src="gsap.min.js"></script>
+<script>
+/* 1920×1080 · 60 s · musical grid 120 BPM (1 bar = 2 s). Scene changes on bar lines. */
+const DURATION = 60;
+const RENDER = new URLSearchParams(location.search).has('render');
+if (RENDER) document.documentElement.classList.add('render');
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+/* ---- text splitting: words (keep nbsp) / chars ---- */
+function splitWords(el) {
+  const walk = node => [...node.childNodes].forEach(n => {
+    if (n.nodeType === 3) {
+      const frag = document.createDocumentFragment();
+      n.textContent.split(/([ \t\n\r]+)/).forEach(part => {
+        if (!part) return;
+        if (/^[ \t\n\r]+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+        const w = document.createElement('span'); w.className = 'w'; w.textContent = part; frag.appendChild(w);
+      });
+      n.replaceWith(frag);
+    } else if (n.nodeType === 1) walk(n);
+  });
+  walk(el);
+}
+function splitChars(el) {
+  const t = el.textContent; el.textContent = '';
+  [...t].forEach(ch => { const c = document.createElement('span'); c.className = 'c'; c.textContent = ch === ' ' ? ' ' : ch; el.appendChild(c); });
+}
+$$('[data-words]').forEach(splitWords);
+$$('[data-chars]').forEach(splitChars);
+$('#C .first .one').insertAdjacentHTML('beforeend', '<sup class="c">er</sup>');
+
+/* ---- odometer strips ---- */
+function strip(el, loops) { el.innerHTML = Array.from({ length: loops * 10 + 10 }, (_, i) => `<span>${i % 10}</span>`).join(''); }
+strip($('#C .d1 .strip'), 1); strip($('#C .d2 .strip'), 2);
+
+/* ---- orbit ribbons (B) ---- */
+const RIB = '<path class="back" d="M45 285 L120 152 C148 100 142 32 100 32"/><path class="front" d="M100 32 C58 32 52 100 80 152 L155 285"/>';
+const NORB = 16;
+for (let i = 0; i < NORB; i++) $('#orbit').insertAdjacentHTML('beforeend', `<svg class="orb rib wh" viewBox="0 0 200 300">${RIB}</svg>`);
+const orbs = $$('#orbit .orb');
+
+/* ================= TIMELINE ================= */
+const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
+const CUES = [];
+const sfx = (t, type, gain = 1, pan = 0) => CUES.push({ t, type, gain, pan });
+const show = (sel, at) => tl.set(sel, { visibility: 'visible' }, at);
+const hide = (sel, at) => tl.set(sel, { visibility: 'hidden' }, at);
+const W = sel => $$(sel + ' .w');
+const C = sel => $$(sel + ' .c');
+/* motion-design text entrances */
+const riseWords = (sel, at, st = .07, d = .9) => tl.fromTo(W(sel), { y: 70, opacity: 0, rotation: 4 }, { y: 0, opacity: 1, rotation: 0, duration: d, stagger: st, ease: 'expo.out' }, at);
+const popChars = (sel, at, st = .04, d = .8) => tl.fromTo(C(sel), { y: 120, opacity: 0, scale: .6, rotation: -10 }, { y: 0, opacity: 1, scale: 1, rotation: 0, duration: d, stagger: st, ease: 'back.out(1.7)' }, at);
+const outUp = (targets, at, d = .5) => tl.to(targets, { y: -80, opacity: 0, duration: d, stagger: .03, ease: 'power3.in' }, at);
+const label = (sel, at) => tl.fromTo(sel, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .8 }, at);
+
+tl.set({}, {}, DURATION);
+
+/* ===== A · 0 → 4 : the ribbon is drawn by a moving dot, then we fly into it ===== */
+show('#A', 0);
+tl.fromTo('#A .blob', { scale: 0 }, { scale: 1, duration: 2.2, stagger: .25 }, 0);
+(function () {
+  const line = $('#ribLine'), dot = $('#ribDot'), L = line.getTotalLength();
+  gsap.set(line, { strokeDasharray: L, strokeDashoffset: L });
+  gsap.set('#ribFinal', { opacity: 0 });
+  const st = { p: 0 };
+  tl.fromTo(dot, { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: .5, ease: 'back.out(3)' }, .1);
+  tl.fromTo(st, { p: 0 }, { p: 1, duration: 1.25, ease: 'power2.inOut', immediateRender: false, onUpdate: () => {
+    line.style.strokeDashoffset = L * (1 - st.p);
+    const pt = line.getPointAtLength(L * st.p); dot.setAttribute('cx', pt.x); dot.setAttribute('cy', pt.y);
+  } }, .45);
+  tl.to(dot, { scale: 0, duration: .3, ease: 'power2.in' }, 1.6);
+  tl.to('#ribFinal', { opacity: 1, duration: .25, ease: 'none' }, 1.62);
+  tl.to(line, { opacity: 0, duration: .25, ease: 'none' }, 1.7);
+})();
+sfx(.1, 'pop', .9); sfx(.45, 'swoosh', .7, -.4); sfx(1.05, 'swoosh', .6, .4);
+tl.fromTo('#ribA', { x: 0, rotation: -6 }, { x: -480, rotation: 0, duration: 1.1, ease: 'power4.inOut' }, 1.45);
+popChars('#A .octo', 1.9, .05, 1);                   sfx(1.9, 'impact', .8);
+riseWords('#A .mois', 2.5, .09);                     sfx(2.5, 'tick', .7);
+tl.fromTo('#A .tagA', { opacity: 0, letterSpacing: '.7em' }, { opacity: 1, letterSpacing: '.2em', duration: 1.2 }, 2.85);
+sfx(2.85, 'pluck', .6);
+/* fly into the ribbon: scale the whole scene around a point inside the pink stroke */
+(function () {
+  const f = $('#ribFront'), pt = f.getPointAtLength(f.getTotalLength() * .16), k = 360 / 200;
+  const ox = 780 - 480 + pt.x * k, oy = 270 + pt.y * k;
+  tl.fromTo('#camA', { scale: 1, transformOrigin: `${ox}px ${oy}px` }, { scale: 80, duration: .62, ease: 'power4.in', immediateRender: false }, 3.38);
+})();
+sfx(3.3, 'whoosh', 1, 0);
+
+/* ===== B · 4 → 12 : ribbons orbit the message ===== */
+show('#B', 3.93); hide('#A', 3.95);
+show('#wm', 4.3); tl.fromTo('#wm', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: .8 }, 4.3);
+(function () {
+  const o = { t: 4 };
+  const cx = 960, cy = 560, rx = 840, ry = 360;
+  const easeIn = gsap.parseEase('back.out(1.4)'), spin = gsap.parseEase('power3.inOut');
+  const render = () => {
+    const t = o.t;
+    orbs.forEach((el, i) => {
+      const arrive = Math.min(Math.max((t - (4.4 + i * .07)) / 1.1, 0), 1);
+      const boom = Math.min(Math.max((t - 11.35) / .65, 0), 1);
+      const f = 2.6 - 1.6 * easeIn(arrive) + 2.4 * boom * boom;
+      const a = i / NORB * Math.PI * 2 + (t - 4) * .32 + 1.4 * spin(Math.min(Math.max((t - 7.9) / 1.6, 0), 1));
+      const z = Math.sin(a);                           // -1 back … +1 front
+      const s = .62 + .5 * (z + 1) / 2;
+      el.style.transform = `translate(${cx + Math.cos(a) * rx * f}px, ${cy + Math.sin(a) * ry * f}px) rotate(${Math.cos(a) * 14}deg) scale(${s})`;
+      el.style.opacity = arrive <= 0 ? 0 : (.35 + .65 * (z + 1) / 2) * Math.min(arrive * 3, 1);
+      el.style.zIndex = z > 0 ? 2 : 0;
+    });
+  };
+  tl.fromTo(o, { t: 4 }, { t: 12, duration: 8, ease: 'none', immediateRender: false, onUpdate: render }, 4);
+})();
+riseWords('#B .t1', 4.25, .08);                      sfx(4.25, 'tick', .6);
+popChars('#B .t2', 4.75, .03, .9);                    sfx(4.75, 'impact', .6);
+for (let i = 0; i < NORB; i += 4) sfx(4.4 + i * .07, 'bubble', .5, -.6 + i / NORB * 1.2);
+outUp([...W('#B .t1'), ...C('#B .t2')], 6.75, .45);   sfx(6.75, 'swoosh', .5);
+riseWords('#B .t3', 7.0, .07);                        sfx(7.0, 'tick', .5);
+popChars('#B .t4', 8.0, .035, .9);                    sfx(8.0, 'impact', .9);
+tl.fromTo('#B .uline', { scaleX: 0 }, { scaleX: 1, duration: .8, ease: 'expo.inOut' }, 8.7);
+sfx(8.7, 'marker', .6);
+gsap.set('#irisB', { scale: 0 });
+tl.fromTo('#irisB', { scale: 0 }, { scale: 24, duration: .65, ease: 'power3.in', immediateRender: false }, 11.35);
+sfx(11.3, 'whoosh', 1, 0);
+tl.set('#wm', { className: 'light' }, 4.0);
+
+/* ===== C · 12 → 22 : the figures ===== */
+show('#C', 12.0); hide('#B', 12.05);
+tl.set('#wm', { className: '' }, 12.0);
+label('#C .label', 12.25);
+popChars('#C .first .one', 12.4, .08, 1);            sfx(12.4, 'impact', .8);
+riseWords('#C .first .ft', 12.75, .1);                sfx(12.75, 'tick', .5);
+/* "1er" shrinks into a corner tag, the counter takes over */
+tl.to('#C .first', { x: -310, y: -250, scale: .3, duration: 1, ease: 'power4.inOut' }, 14.15);
+tl.to('#C .first', { opacity: 0, duration: .4, ease: 'none' }, 14.75);
+sfx(14.1, 'swoosh', .6, -.5);
+tl.fromTo('#C .odo', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: .6 }, 14.45);
+tl.fromTo('#C .d1 .strip', { y: 0 }, { y: -(10 + 2) * 300, duration: 1.3, ease: 'expo.out', immediateRender: false }, 14.5);
+tl.fromTo('#C .d2 .strip', { y: 0 }, { y: -(20 + 3) * 300, duration: 1.6, ease: 'expo.out', immediateRender: false }, 14.5);
+[14.5, 14.75, 15.0, 15.25].forEach((t, i) => sfx(t, 'tick', .45 + i * .12, .2));
+popChars('#C .mil', 15.5, .035, .8);                  sfx(15.5, 'impact', .8);
+riseWords('#C .desc', 16.0, .035, .8);
+tl.to('#C .count', { x: -10, scale: .72, duration: 1.1, ease: 'power4.inOut' }, 17.3);
+tl.fromTo('#C .panel', { x: 800 }, { x: 0, duration: 1.1, ease: 'power4.inOut' }, 17.3);
+sfx(17.3, 'whoosh', .6, .8);
+(function () {
+  $$('#C .panel .rib path').forEach((p, i) => {
+    const L = p.getTotalLength(); gsap.set(p, { strokeDasharray: L, strokeDashoffset: L });
+    tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: .7, ease: 'power2.inOut', immediateRender: false }, 17.9 + i * .45);
+  });
+})();
+tl.set('#wm', { className: 'light' }, 17.75);
+riseWords('#C .panel .tx', 18.1, .08, 1);             sfx(18.1, 'shimmer', .7);
+tl.fromTo('#C .src', { opacity: 0 }, { opacity: 1, duration: 1 }, 19.0);
+tl.fromTo('#Cin', { scale: 1 }, { scale: 1.025, duration: 9.5, ease: 'none' }, 12.0);
+/* push to D */
+show('#D', 21.6);
+tl.to('#Cin', { x: -1920, duration: .8, ease: 'power4.inOut' }, 21.6);
+tl.fromTo('#D', { x: 1920 }, { x: 0, duration: .8, ease: 'power4.inOut', immediateRender: false }, 21.6);
+hide('#C', 22.45);
+sfx(21.55, 'whoosh', 1, 1); sfx(22.0, 'thump', .7);
+
+/* ===== D · 22 → 32 : three good habits on a moving line ===== */
+label('#D .label', 21.75);
+popChars('#D .title', 21.85, .04, .9);               sfx(22.0, 'impact', .6);
+(function () {
+  const p = $('#dLine'), L = p.getTotalLength(); gsap.set(p, { strokeDasharray: L, strokeDashoffset: L });
+  tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 5, ease: 'power1.inOut', immediateRender: false }, 23.6);
+})();
+tl.fromTo('#D .track', { x: 120 }, { x: -200, duration: 6, ease: 'sine.inOut' }, 23.2);
+[[24.0, 1], [25.5, 2], [27.0, 3]].forEach(([t, n]) => {
+  tl.fromTo(`#D .n${n}`, { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 1, ease: 'elastic.out(1, .6)' }, t);
+  tl.fromTo(`#D .n${n} svg *`, { strokeDasharray: 200, strokeDashoffset: 200 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.out' }, t + .3);
+  tl.fromTo(`#D .n${n} .num`, { scale: 0 }, { scale: 1, duration: .6, ease: 'back.out(3)' }, t + .35);
+  tl.fromTo(`#D .l${n}`, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: .9 }, t + .2);
+  sfx(t, 'pop', .9, -.5 + (n - 1) * .5); sfx(t + .3, 'swoosh', .35, .3);
+});
+riseWords('#D .final', 28.75, .07);                   sfx(28.75, 'shimmer', .8);
+/* node 3 turns pink and swallows the frame */
+tl.to('#D .n3 .disc', { backgroundColor: '#E0457B', borderColor: '#E0457B', duration: .35, ease: 'none' }, 31.0);
+tl.to('#D .n3 svg, #D .n3 .num', { opacity: 0, duration: .25 }, 31.0);
+tl.set('#D .n3', { zIndex: 9 }, 31.0);
+tl.to('#D .n3', { scale: 24, duration: .75, ease: 'power4.in' }, 31.25);
+sfx(30.0, 'riser', .9); sfx(31.3, 'whoosh', .9);
+
+/* ===== E · 32 → 40 : "Vous avez un projet ?" ===== */
+show('#E', 32.0); hide('#D', 32.05);
+tl.set('#wm', { className: '' }, 21.9);
+tl.set('#wm', { className: 'light' }, 32.0);
+tl.fromTo('#E .circ', { scale: 0 }, { scale: 1, duration: 1.3, ease: 'expo.out' }, 32.1);
+tl.fromTo('#E .ring', { scale: .6, opacity: 0, rotation: -40 }, { scale: 1, opacity: 1, rotation: 0, duration: 1.6 }, 32.3);
+tl.to('#E .ring', { rotation: 50, duration: 6, ease: 'none' }, 33.9);
+tl.fromTo('#E .cut', { x: 360, opacity: 0 }, { x: 0, opacity: 1, duration: 1.2, ease: 'power4.out' }, 32.4);
+tl.to('#E .cut', { x: -20, y: -10, scale: 1.02, duration: 6, ease: 'none' }, 33.6);
+riseWords('#E .q0', 32.25, .08);                     sfx(32.25, 'impact', 1);
+riseWords('#E .q1', 32.75, .08);                     sfx(32.4, 'swoosh', .6, .6);
+popChars('#E .q2', 33.5, .03, .9);
+[[35.5, 1], [36.25, 2], [37.0, 3], [38.0, 4]].forEach(([t, n]) => {
+  tl.fromTo(`#E .c${n}`, { scale: 0, rotation: n % 2 ? -14 : 14, y: 30 }, { scale: 1, rotation: 0, y: 0, duration: .8, ease: 'back.out(2.2)' }, t);
+  tl.to(`#E .c${n}`, { y: -10, duration: 1.2, yoyo: true, repeat: 2, ease: 'sine.inOut' }, t + .8);
+  sfx(t, 'pop', .9, -.6 + (n - 1) * .25);
+});
+tl.to('#E .cut', { x: 320, opacity: 0, duration: .45, ease: 'power3.in' }, 38.95);
+tl.to([...W('#E .q0'), ...W('#E .q1'), ...C('#E .q2'), ...$$('#E .chip')], { x: -140, opacity: 0, duration: .45, stagger: .012, ease: 'power3.in' }, 38.95);
+sfx(38.95, 'swoosh', .6, .5);
+show('#Eflood', 39.35);
+tl.fromTo('#Eflood', { scale: 1 }, { scale: 4.6, duration: .65, ease: 'power4.in', immediateRender: false }, 39.35);
+sfx(39.3, 'whoosh', .9, 0);
+
+/* ===== F · 40 → 52 : DEO-CI vous accompagne ===== */
+show('#F', 40.0); hide('#E', 40.05); hide('#Eflood', 40.05);
+hide('#wm', 40.0);
+show('#brand', 40.0);
+gsap.set('#brand', { xPercent: -50, yPercent: -50 });
+tl.set('#brand', { x: -663, y: -334, scale: .36 }, 40.0);
+tl.fromTo('#brand .c', { y: 140, opacity: 0, rotation: 12 }, { y: 0, opacity: 1, rotation: 0, duration: .9, stagger: .05, ease: 'back.out(1.8)' }, 40.25);
+tl.fromTo('#brand .rib', { scale: 0, rotation: -30 }, { scale: 1, rotation: 0, duration: 1, ease: 'back.out(2)' }, 40.2);
+sfx(40.25, 'impact', .9);
+riseWords('#F .acc', 40.6, .08);
+riseWords('#F .for', 41.1, .05);                     sfx(41.1, 'tick', .5);
+[[42.0, 1], [44.0, 2], [46.0, 3], [48.0, 4]].forEach(([t, n]) => {
+  const k = `#F .k${n}`;
+  tl.fromTo(k, { y: 160, opacity: 0, rotation: 5, scale: .92 }, { y: 0, opacity: 1, rotation: 0, scale: 1, duration: 1, ease: 'expo.out' }, t);
+  tl.fromTo(`${k} .bar`, { scaleX: 0 }, { scaleX: 1, duration: .7, ease: 'expo.inOut' }, t + .2);
+  tl.fromTo(`${k} svg *`, { strokeDasharray: 200, strokeDashoffset: 200 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.out' }, t + .3);
+  tl.fromTo(k, { backgroundColor: '#F9D3E1' }, { backgroundColor: '#F7F3F4', duration: 1.4, ease: 'power1.out' }, t + .5);
+  tl.to(k, { y: -8, duration: 1.4, yoyo: true, repeat: 1, ease: 'sine.inOut' }, t + 1);
+  sfx(t, 'swoosh', .55, -.6 + (n - 1) * .4); sfx(t + .1, 'pop', .8, -.6 + (n - 1) * .4);
+  if (n === 3) sfx(t + .35, 'shutter', .8, .3);
+});
+riseWords('#F .final', 50.0, .06);                    sfx(50.0, 'pluck', .7);
+gsap.set('#F .ripple', { opacity: 0 });
+$$('#F .ripple').forEach((r, i) => tl.fromTo(r, { scale: .2, opacity: 1 }, { scale: 2.6, opacity: 0, duration: 1.4, ease: 'power2.out', immediateRender: false }, 50.2 + i * .45));
+/* everything clears, the logo travels to the centre */
+tl.to('#F .card', { y: -220, opacity: 0, duration: .6, stagger: .06, ease: 'power3.in' }, 51.2);
+tl.to('#F .acc, #F .for, #F .final', { y: -60, opacity: 0, duration: .5, ease: 'power3.in' }, 51.3);
+tl.to('#brand', { x: 0, y: 0, scale: 1, duration: 1.1, ease: 'power4.inOut' }, 51.55);
+sfx(50.1, 'riser', .7); sfx(51.55, 'whoosh', .8);
+
+/* ===== G · 52 → 60 : signature ===== */
+show('#G', 52.0); hide('#F', 52.1);
+tl.fromTo('#G .halo', { scale: 0 }, { scale: 1, duration: 1.6, ease: 'expo.out' }, 52.0);
+sfx(52.0, 'impact', 1);
+tl.fromTo('#G .tagline', { opacity: 0, letterSpacing: '.6em' }, { opacity: 1, letterSpacing: '.22em', duration: 1.4 }, 53.0);
+sfx(53.0, 'tick', .5);
+tl.fromTo('#G .contact', { xPercent: -50, y: 40, opacity: 0, scale: .8 }, { y: 0, opacity: 1, scale: 1, duration: .9, ease: 'back.out(1.8)' }, 54.5);
+sfx(54.5, 'pop', .9); sfx(54.5, 'shimmer', .8);
+tl.fromTo('#G .hash', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .8 }, 55.5);
+tl.to('#brand', { scale: 1.035, duration: 6.4, ease: 'none' }, 52.65);
+tl.to('#fade', { opacity: 1, duration: .8, ease: 'power1.in' }, 59.2);
+
+/* ---- seek API (must not return the timeline) ---- */
+window.seek = t => { tl.seek(t, false); };
+window.DURATION = DURATION;
+window.CUES = CUES.sort((a, b) => a.t - b.t);
+window.ready = Promise.all([
+  document.fonts.ready,
+  ...['400', '500', '600', '700', '800', '900'].map(w => document.fonts.load(`${w} 100px Poppins`, 'AÉéàçî')),
+  ...$$('img').map(i => i.complete ? Promise.resolve() : new Promise(r => { i.onload = i.onerror = r; }))
+]).then(() => document.fonts.ready);
+
+/* ---- preview player ---- */
+const stage = $('#stage');
+const audio = RENDER ? { pause() {}, play() { return Promise.resolve(); } } : new Audio('audio.m4a');
+function fit() {
+  if (RENDER) return;
+  const w = $('#wrap'); const s = Math.min(w.clientWidth / 1920, w.clientHeight / 1080);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize', fit); fit();
+const btn = $('#playBtn'), scrub = $('#scrub'), time = $('#time');
+const fmt = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+let playing = false, t0 = 0, start = 0;
+function frame(now) {
+  if (!playing) return;
+  let t = t0 + (now - start) / 1000;
+  if (t >= DURATION) { t = DURATION; playing = false; btn.textContent = '↺'; audio.pause(); }
+  window.seek(t); scrub.value = t; time.textContent = `${fmt(t)} / 1:00`;
+  if (playing) requestAnimationFrame(frame);
+}
+btn.onclick = () => {
+  if (playing) { playing = false; btn.textContent = '▶'; audio.pause(); return; }
+  t0 = +scrub.value >= DURATION ? 0 : +scrub.value; start = performance.now(); playing = true;
+  try { audio.currentTime = t0; audio.play().catch(() => {}); } catch (e) {}
+  btn.textContent = '❚❚'; requestAnimationFrame(frame);
+};
+scrub.oninput = () => { playing = false; btn.textContent = '▶'; audio.pause(); window.seek(+scrub.value); time.textContent = `${fmt(+scrub.value)} / 1:00`; };
+window.seek(0);
+</script>
+</body>
+</html>
