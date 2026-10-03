@@ -8,6 +8,12 @@
 .carrousel-slide{flex:0 0 100%;scroll-snap-align:start;min-height:300px;position:relative;display:flex;align-items:center;padding:44px 48px 56px;color:#fff;
   background:radial-gradient(circle at 85% 20%, rgba(232,98,12,.35) 0 120px, transparent 121px),linear-gradient(120deg, #141414 0%, #2B1608 60%, #8A3A07 100%);
   background-size:cover;background-position:center;overflow:hidden;}
+.carrousel-slide-intro{
+  /* Photo d'accueil (images/hero.jpg) sous un voile sombre pour la lisibilité du texte.
+     Si la photo est absente, le dégradé orange et noir de dernière couche reste visible. */
+  background:linear-gradient(90deg, rgba(20,20,20,.92) 0%, rgba(20,20,20,.7) 50%, rgba(20,20,20,.25) 100%),
+    url('../images/hero.jpg') center/cover no-repeat,
+    linear-gradient(120deg, #141414 0%, #2B1608 60%, #8A3A07 100%);}
 .carrousel-contenu{position:relative;z-index:1;max-width:560px;}
 .carrousel-label{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;margin-bottom:16px;}
 .carrousel-slide h1,.carrousel-slide h2{color:#fff;font-size:38px;line-height:1.15;margin-bottom:12px;}

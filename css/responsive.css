@@ -56,6 +56,9 @@
    Le menu hamburger reste disponible pour les liens secondaires (Admin...). */
 @media(max-width:700px){
   .carrousel-slide{min-height:260px;padding:28px 22px 48px;}
+  .carrousel-slide-intro{background:linear-gradient(180deg, rgba(20,20,20,.5) 0%, rgba(20,20,20,.85) 100%),
+    url('../images/hero.jpg') 70% center/cover no-repeat,
+    linear-gradient(120deg, #141414 0%, #2B1608 60%, #8A3A07 100%);}
   .carrousel-slide h1{font-size:28px;}.carrousel-slide h2{font-size:23px;}
   .carrousel-deco{display:none;}
   .rangee-cartes{grid-auto-columns:72%;}
