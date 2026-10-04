@@ -30,7 +30,7 @@
 
   .stats-grille{grid-template-columns:1fr;}
 
-  .temoignages-grille{grid-template-columns:1fr;}
+  .etapes-grille{grid-template-columns:1fr;}
   .cta-banniere{flex-direction:column;text-align:center;padding:32px 24px;}
   .missions-top{flex-direction:column;align-items:stretch;}
   .missions-grille{grid-template-columns:1fr;}
@@ -83,7 +83,7 @@
     position:relative;-webkit-tap-highlight-color:transparent;
   }
   .bottom-nav-item .icon{width:22px;height:22px;}
-  .bottom-nav-item.actif{color:var(--vert);}
+  .bottom-nav-item.actif{color:var(--orange-vif);}
   .bottom-nav-item.actif .icon{filter:drop-shadow(0 0 6px rgba(232,98,12,.45));}
   .bottom-nav-item.a-des-alertes::after{content:'';position:absolute;top:6px;left:calc(50% + 6px);width:9px;height:9px;border-radius:50%;background:#E24B4A;border:2px solid var(--noir);}
   body{padding-bottom:calc(64px + env(safe-area-inset-bottom));}

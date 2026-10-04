@@ -1,0 +1,38 @@
+name: Garder Supabase actif
+
+# Un projet Supabase GRATUIT est mis en pause après environ 7 jours sans
+# activité : le site devient alors injoignable (connexion impossible).
+# Ce petit appel public, toutes les 3 jours, l'en empêche. Il n'utilise
+# que la clé publique "anon" déjà présente dans js/config.js : aucun
+# secret à configurer.
+#
+# Si Supabase ne répond pas normalement, le travail échoue et GitHub
+# envoie un e-mail au propriétaire du dépôt : c'est aussi une alerte.
+on:
+  schedule:
+    - cron: '17 6 */3 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+      - name: Interroger Supabase
+        run: |
+          URL=$(grep -oE 'https://[a-z0-9]+\.supabase\.co' js/config.js | head -1)
+          KEY=$(grep -oE 'eyJ[A-Za-z0-9_.-]+' js/config.js | head -1)
+          if [ -z "$URL" ] || [ -z "$KEY" ]; then
+            echo "Configuration Supabase introuvable dans js/config.js"; exit 1
+          fi
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 \
+            "$URL/rest/v1/missions?select=id&limit=1" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY")
+          echo "Réponse de Supabase : $CODE"
+          if [ "$CODE" != "200" ]; then
+            echo "Supabase ne répond pas normalement (projet en pause ?)"; exit 1
+          fi

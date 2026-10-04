@@ -23,7 +23,7 @@
 .config-step-content{flex:1;}
 .config-step-title{font-size:13px;font-weight:600;color:var(--texte);margin-bottom:4px;}
 .config-step-desc{font-size:12px;color:var(--texte-3);line-height:1.5;}
-.config-step-link{display:inline-block;margin-top:6px;font-size:12px;color:var(--vert);font-weight:600;text-decoration:underline;cursor:pointer;}
+.config-step-link{display:inline-block;margin-top:6px;font-size:12px;color:var(--vert-fonce);font-weight:600;text-decoration:underline;cursor:pointer;}
 .config-champs{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;}
 .config-champ{display:flex;flex-direction:column;gap:6px;}
 .config-label{font-size:13px;font-weight:600;color:var(--texte);display:flex;align-items:center;gap:8px;}
@@ -61,20 +61,17 @@
 /* ═══ CATÉGORIES ═══ */
 .section-titre{font-family:var(--police-titre);font-size:20px;font-weight:700;color:var(--texte);margin-bottom:16px;}
 
-/* ═══ TÉMOIGNAGES ═══ */
-.temoignages-grille{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:28px;}
-.temoignage-carte{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:24px;box-shadow:var(--ombre);}
-.temo-etoiles{color:#F5A623;font-size:14px;margin-bottom:12px;letter-spacing:2px;}
-.temo-texte{font-size:14px;color:var(--texte-2);line-height:1.65;margin-bottom:16px;font-style:italic;}
-.temo-auteur{display:flex;align-items:center;gap:10px;}
-.temo-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
-.temo-info-nom{font-size:13px;font-weight:600;color:var(--texte);}
-.temo-info-role{font-size:12px;color:var(--texte-3);}
+/* ═══ COMMENT ÇA MARCHE ═══ */
+.etapes-grille{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+.etape-carte{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:24px;box-shadow:var(--ombre);}
+.etape-num{width:34px;height:34px;border-radius:50%;background:var(--vert);color:#fff;font-family:var(--police-titre);font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.etape-carte h3{font-size:16px;margin-bottom:8px;}
+.etape-carte p{font-size:13.5px;}
 
 /* ═══ CTA ═══ */
 .cta-banniere{background:var(--vert);border-radius:var(--radius-lg);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
 .cta-banniere h2{color:#fff;font-size:24px;margin-bottom:8px;}
-.cta-banniere p{color:rgba(255,255,255,.8);font-size:14px;}
+.cta-banniere p{color:rgba(255,255,255,.95);font-size:14px;}
 .btn-cta-blanc{background:#fff;color:var(--vert-fonce);border:none;border-radius:var(--radius-sm);padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .15s,transform .12s;flex-shrink:0;}
 .btn-cta-blanc:hover{opacity:.9;}.btn-cta-blanc:active{transform:scale(.97);}
 
@@ -90,7 +87,7 @@
 .recherche-input{flex:1;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--texte);background:transparent;padding:11px 0;}
 .recherche-input::placeholder{color:var(--texte-3);}
 .missions-compteur{font-size:14px;color:var(--texte-2);white-space:nowrap;}
-.missions-compteur strong{color:var(--vert);font-weight:600;}
+.missions-compteur strong{color:var(--vert-fonce);font-weight:600;}
 .filtres-ligne{display:flex;gap:8px;flex-wrap:wrap;}
 .filtre-btn{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--bordure-2);background:var(--bg);color:var(--texte-2);cursor:pointer;transition:all .15s;}
 .filtre-btn:hover{border-color:var(--vert);color:var(--vert);}
@@ -143,11 +140,11 @@
 .hist-info{flex:1;min-width:0;}
 .hist-titre{font-size:13px;font-weight:600;color:var(--texte);}
 .hist-meta{font-size:12px;color:var(--texte-3);margin-top:2px;}
-.hist-montant{font-size:14px;font-weight:600;color:var(--vert);white-space:nowrap;}
+.hist-montant{font-size:14px;font-weight:600;color:var(--vert-fonce);white-space:nowrap;}
 .onglets-profil{display:flex;gap:0;border-bottom:1px solid var(--bordure);margin-bottom:16px;}
 .onglet-profil{padding:10px 20px;font-size:13px;font-weight:500;color:var(--texte-2);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;background:none;border-top:none;border-left:none;border-right:none;}
 .onglet-profil:hover{color:var(--texte);}
-.onglet-profil.actif{color:var(--vert);border-bottom-color:var(--vert);}
+.onglet-profil.actif{color:var(--vert-fonce);border-bottom-color:var(--vert);}
 .panneau-profil{display:none;}.panneau-profil.actif{display:block;}
 .btn-editer{width:100%;padding:10px;background:var(--bg-2);border:1px solid var(--bordure-2);border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--texte-2);cursor:pointer;transition:background .15s,color .15s;}
 .btn-editer:hover{background:var(--vert-clair);color:var(--vert-fonce);}
@@ -161,7 +158,7 @@
 .entreprise-secteur{font-size:12px;color:var(--texte-3);margin-bottom:14px;}
 .entreprise-stats-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
 .ent-mini-stat{background:var(--bg-2);border-radius:var(--radius-sm);padding:10px 8px;text-align:center;}
-.ent-mini-val{font-family:var(--police-titre);font-size:18px;font-weight:700;color:var(--vert);}
+.ent-mini-val{font-family:var(--police-titre);font-size:18px;font-weight:700;color:var(--vert-fonce);}
 .ent-mini-lbl{font-size:10px;color:var(--texte-3);margin-top:2px;}
 .entreprise-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px;}
 .form-carte{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-lg);padding:28px;box-shadow:var(--ombre);}
@@ -169,7 +166,7 @@
 .form-sous-titre{font-size:13px;color:var(--texte-3);margin-bottom:24px;}
 .form-groupe{margin-bottom:18px;}
 .form-label{display:block;font-size:13px;font-weight:600;color:var(--texte);margin-bottom:7px;}
-.form-label span{color:var(--vert);margin-left:2px;}
+.form-label span{color:var(--vert-fonce);margin-left:2px;}
 .form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;border:1px solid var(--bordure-2);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--texte);background:var(--bg);outline:none;transition:border-color .15s,box-shadow .15s;}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--vert);box-shadow:0 0 0 3px rgba(232,98,12,.12);}
 .form-textarea{resize:vertical;min-height:100px;line-height:1.6;}
@@ -195,7 +192,7 @@
 .pub-statut{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
 .statut-actif{background:var(--vert-clair);color:var(--vert-fonce);}
 .pub-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
-.pub-montant{font-family:var(--police-titre);font-size:15px;font-weight:700;color:var(--vert);}
+.pub-montant{font-family:var(--police-titre);font-size:15px;font-weight:700;color:var(--vert-fonce);}
 .btn-mini{padding:5px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--bordure-2);background:var(--bg-2);color:var(--texte-2);transition:all .15s;}
 .btn-mini:hover{background:var(--vert-clair);color:var(--vert-fonce);border-color:var(--vert);}
 
@@ -215,7 +212,7 @@
 .notif-texte{font-size:14px;color:var(--texte);line-height:1.55;margin-bottom:5px;}
 .notif-texte strong{font-weight:600;color:var(--texte);}
 .notif-temps{font-size:12px;color:var(--texte-3);}
-.notif-badge-montant{font-family:var(--police-titre);font-size:14px;font-weight:700;color:var(--vert);white-space:nowrap;flex-shrink:0;}
+.notif-badge-montant{font-family:var(--police-titre);font-size:14px;font-weight:700;color:var(--vert-fonce);white-space:nowrap;flex-shrink:0;}
 .notif-resume{display:flex;flex-direction:column;gap:16px;}
 .resume-carte{background:var(--bg);border:1px solid var(--bordure);border-radius:var(--radius-md);padding:20px;box-shadow:var(--ombre);}
 .resume-titre{font-family:var(--police-titre);font-size:14px;font-weight:700;color:var(--texte);margin-bottom:14px;}
@@ -315,4 +312,4 @@
 .statut-complet{background:var(--vert-clair);color:var(--vert-fonce);}
 .notif-ic-succes{background:var(--vert-clair);color:var(--vert-fonce);}
 .notif-ic-info{background:var(--amber-clair);color:var(--amber);}
-.notif-ic-neutre{background:var(--noir);color:var(--vert);}
+.notif-ic-neutre{background:var(--noir);color:var(--orange-vif);}
