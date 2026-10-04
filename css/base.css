@@ -64,8 +64,10 @@ a{text-decoration:none;color:inherit;}
 .avatar-dropdown-item.danger:hover{background:#FCEBEB;}
 .main-content{flex:1;max-width:1100px;width:100%;margin:0 auto;padding:36px 24px;}
 .page{display:none;}.page.active{display:block;}
-footer{background:var(--noir);border-top:1px solid #000;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#A8A8A8;}
-footer strong{color:var(--vert-fonce);font-weight:600;}
+footer{background:var(--noir);border-top:1px solid #000;padding:20px 32px;display:flex;flex-wrap:wrap;gap:6px 24px;justify-content:space-between;align-items:center;font-size:13px;color:#A8A8A8;}
+footer strong{color:var(--orange-vif);font-weight:600;}
+footer a{color:var(--noir-texte);text-decoration:underline;text-underline-offset:2px;}
+footer a:hover{color:var(--orange-vif);}
 
 /* Boutons sur la barre noire */
 .navbar .btn-blanc{background:transparent;color:#fff;border-color:rgba(255,255,255,.35);}

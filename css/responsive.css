@@ -87,6 +87,10 @@
   .bottom-nav-item.actif .icon{filter:drop-shadow(0 0 6px rgba(232,98,12,.45));}
   .bottom-nav-item.a-des-alertes::after{content:'';position:absolute;top:6px;left:calc(50% + 6px);width:9px;height:9px;border-radius:50%;background:#E24B4A;border:2px solid var(--noir);}
   body{padding-bottom:calc(64px + env(safe-area-inset-bottom));}
+  /* Sans cette ligne le conteneur (100vh) + l'espace de la barre du bas
+     dépassent l'écran : le pied de page (avec le contact) restait caché
+     derrière la barre tant qu'on ne défilait pas. */
+  .app-wrapper{min-height:calc(100vh - 64px - env(safe-area-inset-bottom));}
   .toast{bottom:calc(76px + env(safe-area-inset-bottom));}
   .banniere-installation{flex-wrap:wrap;}
   .banniere-installation-texte{flex-basis:calc(100% - 90px);}
