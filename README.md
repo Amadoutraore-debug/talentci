@@ -143,7 +143,11 @@ Le site est publié **automatiquement** sur GitHub Pages à chaque modification 
 
 Réglage à faire une seule fois : GitHub → **Settings → Pages → Source : GitHub Actions**.
 
-Autres hébergeurs possibles (Netlify, Vercel...) : aucune commande de build, dossier publié = la racine du projet.
+Avant la publication, [`scripts/construire.mjs`](scripts/construire.mjs) regroupe les 5 feuilles CSS en une seule et les 16 scripts en un seul, compressés, dans le dossier `_site/` (non versionné). Le téléphone télécharge ainsi 2 fichiers au lieu de 21, et le script ne bloque plus l'affichage. Les fichiers sources ne changent pas : on continue à travailler dans `css/` et `js/`, et l'ordre de chargement reste celui de `index.html`.
+
+Pour tester la version publiée en local : `npm ci && npm run construire`, puis servir le dossier `_site/`.
+
+Autres hébergeurs possibles (Netlify, Vercel...) : commande de build `npm ci && npm run construire`, dossier publié = `_site`.
 
 ---
 

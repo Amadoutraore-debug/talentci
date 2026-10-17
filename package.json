@@ -1,0 +1,11 @@
+{
+  "name": "talentci",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "construire": "node scripts/construire.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10"
+  }
+}
