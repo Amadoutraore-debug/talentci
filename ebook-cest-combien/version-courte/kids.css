@@ -1,0 +1,129 @@
+@import url("fonts/kids-local.css");
+/* Version express : livre illustré en noir et blanc, style album jeunesse */
+@page{ size:148mm 210mm; margin:11mm 12mm 13mm 12mm;
+  @bottom-center{ content:"— " counter(page) " —"; font-family:"Fredoka"; font-size:8pt; color:#111; } }
+@page bleed{ margin:0; @bottom-center{ content:none; } }
+*{ box-sizing:border-box; }
+html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+body{ margin:0; font-family:"Comic Neue","Comic Sans MS",sans-serif; font-size:9.6pt; line-height:1.38; color:#111; background:#fff; }
+b, strong{ font-weight:700; }
+p{ margin:0 0 .5em; }
+section.pg{ height:186mm; overflow:hidden; break-after:page; position:relative; }
+section.pg:last-child{ break-after:auto; }
+
+/* Titres */
+.pg-head{ margin:0 0 2mm; }
+.pg-head span{ display:inline-block; font-family:"Fredoka"; font-weight:600; font-size:7.5pt; letter-spacing:.12em; text-transform:uppercase; border:1.8px solid #111; border-radius:20px; padding:.6mm 3mm; }
+h2{ font-family:"Fredoka"; font-weight:700; font-size:17pt; line-height:1.1; margin:0 0 3mm; }
+h3{ font-family:"Fredoka"; font-weight:600; font-size:11pt; margin:2.5mm 0 1.5mm; }
+ul, ol{ margin:1mm 0 2mm; padding-left:5mm; }
+li{ margin:.6mm 0; }
+.small{ font-size:7.8pt; }
+.cap{ text-align:center; font-size:7.8pt; font-style:italic; margin:1mm 0 2mm; }
+
+/* Tableaux : traits simples, aucun aplat */
+table{ width:100%; border-collapse:separate; border-spacing:0; margin:1.5mm 0 2.5mm; font-size:8.4pt; border:1.8px solid #111; border-radius:3mm; overflow:hidden; }
+th{ font-family:"Fredoka"; font-weight:600; text-align:left; padding:1.4mm 2mm; border-bottom:1.8px solid #111; background:#fff; }
+td{ padding:1.2mm 2mm; border-bottom:1px solid #111; vertical-align:top; }
+tr:last-child td{ border-bottom:none; }
+td + td, th + th{ border-left:1px solid #111; }
+.quiz td:first-child{ width:7mm; text-align:center; font-family:"Fredoka"; font-weight:700; }
+.quiz td:last-child{ width:12mm; }
+.quiz td{ height:9mm; }
+
+/* Encadrés : contours arrondis, sans couleur */
+.box{ border:2px solid #111; border-radius:5mm; padding:2.4mm 3.5mm 1mm; margin:2.5mm 0; break-inside:avoid; }
+.box > p:first-child strong:first-child{ display:block; font-family:"Fredoka"; font-weight:600; font-size:10pt; margin-bottom:.4mm; }
+.box.avis{ border-style:dashed; }
+.box.warn{ border-width:3px; }
+.script{ border:1.6px solid #111; border-radius:3.5mm; padding:1.6mm 3mm .4mm; margin:1.6mm 0 2.2mm; font-size:8.6pt; break-inside:avoid; }
+.script .sh{ display:block; font-family:"Fredoka"; font-weight:600; font-size:8pt; margin-bottom:.3mm; text-decoration:underline; text-underline-offset:2px; }
+.prompt{ border:2px solid #111; border-radius:4mm; margin:2mm 0; overflow:hidden; font-size:8.4pt; }
+.prompt .ph{ font-family:"Fredoka"; font-weight:600; padding:1.6mm 3mm; border-bottom:2px solid #111; }
+.prompt .pb{ padding:2mm 3mm .5mm; }
+.obj{ border:1.6px solid #111; border-radius:3.5mm; padding:1.6mm 3mm; margin:0 0 1.8mm; font-size:8.6pt; }
+.obj b{ display:block; font-family:"Fredoka"; font-weight:600; }
+
+/* Bande dessinée */
+.bd{ display:flex; flex-direction:column; gap:1.6mm; margin:1mm 0 3mm; padding:2.6mm; border:2.4px solid #111; border-radius:5mm; background:#fff; break-inside:avoid; }
+.bd-row{ display:flex; align-items:flex-end; gap:2.4mm; }
+.bd-row.right{ flex-direction:row-reverse; }
+.who{ margin:0; flex:none; width:16mm; text-align:center; }
+.who img{ width:16mm; height:16mm; border-radius:50%; border:1.8px solid #111; background:#fff; object-fit:cover; display:block; }
+.who figcaption{ font-family:"Fredoka"; font-size:6.2pt; font-weight:600; margin-top:.5mm; }
+.bubble{ position:relative; background:#fff; border:1.8px solid #111; border-radius:5mm; padding:1.6mm 3mm; font-size:9pt; line-height:1.32; max-width:80%; margin-bottom:4.5mm; }
+.bd-row.left .bubble::before{ content:""; position:absolute; left:-3mm; bottom:2mm; width:3mm; height:3mm; background:#fff; border-left:1.8px solid #111; border-bottom:1.8px solid #111; transform:skewY(-30deg); }
+.bd-row.right .bubble::before{ content:""; position:absolute; right:-3mm; bottom:2mm; width:3mm; height:3mm; background:#fff; border-right:1.8px solid #111; border-bottom:1.8px solid #111; transform:skewY(30deg); }
+.bd-note{ align-self:center; border:1.6px solid #111; border-radius:2mm; font-size:8pt; font-style:italic; padding:1mm 3mm; background:#fff; }
+
+/* Schémas en traits */
+.steps5{ display:flex; gap:1.6mm; margin:2mm 0 1mm; }
+.steps5 .st{ flex:1; border:1.8px solid #111; border-radius:4mm; text-align:center; padding:1.6mm .8mm; font-size:7pt; line-height:1.2; }
+.steps5 .st i{ display:block; width:6mm; height:6mm; margin:0 auto 1mm; border:1.6px solid #111; border-radius:50%; font-style:normal; font-family:"Fredoka"; font-weight:700; font-size:8pt; line-height:5mm; }
+.steps5 .st b{ display:block; font-family:"Fredoka"; font-weight:600; font-size:7.6pt; }
+.drops{ display:flex; gap:1.6mm; }
+.drops span{ flex:1; text-align:center; font-size:7pt; font-style:italic; }
+.drops span::before{ content:""; display:block; width:3mm; height:3mm; margin:0 auto .5mm; border:1.4px solid #111; border-radius:0 50% 50% 50%; transform:rotate(45deg); }
+.phones{ display:flex; gap:5mm; justify-content:center; margin:2mm 0; }
+.phone{ width:38mm; border:2.2px solid #111; border-radius:5mm; overflow:hidden; font-size:6.8pt; line-height:1.25; }
+.phone .lbl{ text-align:center; font-family:"Fredoka"; font-weight:700; border-bottom:1.6px solid #111; padding:.8mm; font-size:7pt; letter-spacing:.1em; }
+.phone .scr{ padding:2mm; min-height:40mm; }
+.phone .av{ width:9mm; height:9mm; border:1.6px solid #111; border-radius:50%; margin:0 auto 1mm; text-align:center; line-height:8.4mm; font-family:"Fredoka"; font-weight:700; }
+.phone .nm{ text-align:center; font-weight:700; margin-bottom:1mm; }
+.phone .ln{ border-top:1px dashed #111; padding:.8mm 0; }
+.phone .ln i{ display:block; font-style:normal; font-size:5.8pt; text-transform:uppercase; letter-spacing:.05em; }
+.stat{ height:50mm; display:flex; flex-direction:column; justify-content:flex-end; position:relative; }
+.stat .photo{ position:absolute; inset:0; background:repeating-linear-gradient(45deg,#fff 0 3px,#111 3px 3.6px); opacity:.25; }
+.stat .photo.dark{ opacity:.6; }
+.stat .band{ position:relative; background:#fff; border:1.4px solid #111; border-radius:2mm; margin:2mm; padding:1.2mm 1.6mm; }
+.stat .txt-bad{ position:relative; margin:2mm; font-weight:700; background:#fff; border:1.4px dashed #111; padding:1mm; }
+.duo{ display:grid; grid-template-columns:1fr 1fr; gap:3mm; margin:2mm 0; }
+.duo .card, .tiles .t, .trio div, .legend3 div{ border:1.8px solid #111; border-radius:4mm; padding:1.8mm 2.4mm; font-size:8pt; line-height:1.3; }
+.duo .card b, .tiles .t b, .trio b, .legend3 b{ display:block; font-family:"Fredoka"; font-weight:600; font-size:9pt; }
+.duo .dashed, .tiles .dashed{ border-style:dashed; }
+.tiles .dotted{ border-style:dotted; border-width:2.4px; }
+.tiles{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.8mm; margin:2mm 0; }
+.tiles .t{ text-align:center; font-size:7.4pt; }
+.timeline{ display:flex; border:2px solid #111; border-radius:4mm; overflow:hidden; margin:2mm 0; font-size:7.6pt; }
+.timeline div{ padding:1.6mm 1.6mm; text-align:center; }
+.timeline div + div{ border-left:2px solid #111; }
+.timeline b{ display:block; font-family:"Fredoka"; font-weight:700; }
+.formula{ border:2px solid #111; border-radius:4mm; margin:2mm 0; }
+.formula .row{ display:flex; align-items:center; gap:2mm; padding:1.4mm 2.4mm; font-size:8.6pt; }
+.formula .row + .row{ border-top:1.4px dashed #111; }
+.formula .row i{ flex:none; width:6mm; height:6mm; border:1.6px solid #111; border-radius:50%; text-align:center; line-height:5.4mm; font-style:normal; font-family:"Fredoka"; font-weight:700; }
+.formula .row b{ flex:none; width:22mm; font-family:"Fredoka"; font-weight:600; }
+.stairs{ display:flex; align-items:flex-end; gap:1.6mm; margin:2mm 0; }
+.stairs div{ flex:1; border:2px solid #111; border-radius:3mm 3mm 0 0; border-bottom-width:3px; text-align:center; font-size:7.6pt; padding:1mm; }
+.stairs div b{ display:block; font-family:"Fredoka"; font-weight:700; font-size:11pt; }
+.stairs .s1{ height:11mm; } .stairs .s2{ height:14mm; } .stairs .s3{ height:17mm; } .stairs .s4{ height:20mm; border-width:3px; }
+.days{ display:flex; gap:1mm; margin:2mm 0 1.5mm; }
+.days div{ flex:1; text-align:center; border:1.2px dashed #111; border-radius:2mm; font-size:7pt; padding:1mm 0; }
+.days .on{ border:2.2px solid #111; font-weight:700; }
+.days .stop{ border:2.2px solid #111; font-family:"Fredoka"; font-weight:700; }
+.legend3, .trio{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:2mm; margin:1mm 0 2.5mm; }
+.plan4{ display:grid; grid-template-columns:1fr 1fr; gap:3mm; margin:2mm 0 3mm; }
+.plan4 div{ border:2px solid #111; border-radius:5mm; padding:2.4mm 3mm; font-size:8.6pt; line-height:1.5; }
+.plan4 b{ display:block; font-family:"Fredoka"; font-weight:600; font-size:10pt; margin-bottom:.6mm; }
+.cast-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:3mm; margin:2mm 0; text-align:center; }
+.cast-grid div{ border:2px solid #111; border-radius:5mm; padding:2.4mm 2mm; }
+.cast-grid img, .cv-cast img{ width:22mm; height:22mm; border-radius:50%; border:2px solid #111; background:#fff; object-fit:cover; }
+.cast-grid b{ display:block; font-family:"Fredoka"; font-weight:600; font-size:11pt; margin-top:1mm; }
+.cast-grid span{ display:block; font-size:7.8pt; line-height:1.3; }
+
+/* Couverture et page finale : blanches, traits noirs */
+section.pg.cover-pg, section.pg.end-pg{ page:bleed; height:210mm; padding:16mm 13mm; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+section.pg.cover-pg > *, section.pg.end-pg > *{ flex-shrink:0; }
+section.pg.cover-pg::after, section.pg.end-pg::after{ content:""; position:absolute; inset:6mm; border:2.4px solid #111; border-radius:7mm; pointer-events:none; }
+.cv-brand{ font-family:"Fredoka"; font-weight:700; letter-spacing:.3em; font-size:9.5pt; margin:0 0 2mm; }
+.cv-kicker{ font-family:"Fredoka"; font-weight:500; letter-spacing:.1em; font-size:8pt; margin:0 0 8mm; }
+.cv-bubble{ position:relative; font-family:"Fredoka"; font-weight:700; font-size:28pt; line-height:1; padding:8mm 7mm; border:3px solid #111; border-radius:9mm; background:#fff; white-space:nowrap; }
+.cv-bubble::after{ content:""; position:absolute; left:12mm; bottom:-5.2mm; width:7mm; height:7mm; background:#fff; border-right:3px solid #111; border-bottom:3px solid #111; transform:skewX(35deg) rotate(20deg); }
+.cv-bubble span{ position:absolute; right:5mm; bottom:2.5mm; font-family:"Comic Neue"; font-size:8pt; }
+section.pg.cover-pg .cv-sub{ font-family:"Comic Neue"; font-weight:700; font-size:12pt; line-height:1.35; margin:12mm 0 7mm; }
+.cv-cast{ display:flex; gap:4mm; justify-content:center; margin-bottom:8mm; }
+.cv-author{ font-family:"Fredoka"; font-weight:600; font-size:13pt; border:2px solid #111; border-radius:20px; padding:1.5mm 6mm; }
+.end-pg .bd{ width:100%; text-align:left; margin-bottom:8mm; }
+.end-title{ font-family:"Fredoka"; font-size:26pt; margin:0 0 3mm; }
+.end-txt{ font-size:9.6pt; }
+section.pg.end-pg .end-small{ font-size:7pt; margin-top:6mm; }

@@ -55,7 +55,7 @@ def preprocess(src):
     src = "\n".join(out)
     src = re.sub(r"\{\{row:(\w+):(\w+):(.+?)\}\}", lambda m: row(m.group(1), m.group(2), m.group(3)), src)
     src = re.sub(r"\{\{char:(\w+)\}\}", lambda m: f'<img class="cast" src="{char_src(m.group(1))}" alt="{NAMES[m.group(1)]}">', src)
-    src = re.sub(r"\{\{inc:([\w-]+)\}\}", lambda m: (BUILD / "snippets" / f"{m.group(1)}.html").read_text(encoding="utf-8"), src)
+    src = re.sub(r"\{\{inc:([\w-]+)\}\}", lambda m: (HERE / "snippets" / f"{m.group(1)}.html").read_text(encoding="utf-8").replace("\n", ""), src)
     return src
 
 
@@ -63,7 +63,7 @@ def main():
     src = preprocess((HERE / "court.md").read_text(encoding="utf-8"))
     n_sections = src.count('<section class="pg')
     body = markdown.markdown(src, extensions=["tables", "md_in_html", "sane_lists", "nl2br"])
-    css = (BUILD / "style.css").read_text(encoding="utf-8") + (HERE / "court.css").read_text(encoding="utf-8")
+    css = (HERE / "kids.css").read_text(encoding="utf-8")
     html = BUILD / "_court.html"
     html.write_text(f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>« C\'est combien ? » — version express</title>'
                     f"<style>{css}</style></head><body>{body}</body></html>", encoding="utf-8")

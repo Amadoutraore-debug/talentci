@@ -112,7 +112,7 @@ Commencez par la fuite la plus proche de l'argent (DEMANDER ou PAYER), sauf si v
 
 ## Votre profil, c'est votre enseigne
 
-@cliente: Hmm… « Awa 💕 », une photo de mariage, aucune info. C'est sérieux, ça ?
+@cliente: Hmm… « Awa », une photo de mariage, aucune info. C'est sérieux, ça ?
 @coach: Ta cliente te juge sur ton profil **avant** de lire ton premier message.
 
 {{inc:profil-avant-apres}}
@@ -134,18 +134,18 @@ Commencez par la fuite la plus proche de l'argent (DEMANDER ou PAYER), sauf si v
 - **Message d'accueil :** envoyé automatiquement à un nouveau client (ou après 14 jours sans échange).
 - **Message d'absence :** il répond à votre place en dehors de vos horaires.
 - **Réponses rapides :** vos messages enregistrés, appelés avec un raccourci (/prix, /livraison).
-- **Étiquettes :** 🔵 Nouveau · 🟡 A demandé le prix · 🟠 Commande en cours · 🟢 Payé · ⭐ Fidèle.
+- **Étiquettes :** Nouveau · A demandé le prix · Commande en cours · Payé · Fidèle.
 
 <div class="script" markdown="1">
 <span class="sh">Message d'accueil à copier</span>
 
-Bonjour et bienvenue chez [Nom] 👋 Nos articles et leurs prix sont dans le catalogue. Dites-nous ce qui vous intéresse, avec votre taille et votre commune de livraison 😊
+Bonjour et bienvenue chez [Nom] Nos articles et leurs prix sont dans le catalogue. Dites-nous ce qui vous intéresse, avec votre taille et votre commune de livraison
 </div>
 
 <div class="script" markdown="1">
 <span class="sh">Message d'absence à copier</span>
 
-Merci pour votre message 🙏 Nous sommes fermés pour le moment. Nous vous répondons dès [8 h] demain. En attendant, regardez notre catalogue.
+Merci pour votre message Nous sommes fermés pour le moment. Nous vous répondons dès [8 h] demain. En attendant, regardez notre catalogue.
 </div>
 
 <div class="box retenir" markdown="1">
@@ -191,7 +191,7 @@ Envoyez votre contact à 2 personnes qui ne vous connaissent pas. Après 30 seco
 <div class="script" markdown="1">
 <span class="sh">À envoyer après un achat</span>
 
-Merci pour votre confiance 🙏 Enregistrez mon numéro sous « [Nom] » : je publie les nouveautés en statut, vous les verrez en premier.
+Merci pour votre confiance Enregistrez mon numéro sous « [Nom] » : je publie les nouveautés en statut, vous les verrez en premier.
 </div>
 
 **Votre vrai chiffre d'audience :** le nombre de vues de vos statuts. Notez-le chaque lundi.
@@ -227,7 +227,7 @@ Merci pour votre confiance 🙏 Enregistrez mon numéro sous « [Nom] » : je pu
 @awa: Mes photos sont sombres, je n'ai pas un bon téléphone.
 @coach: Ce n'est presque jamais le téléphone. Ce sont 5 réflexes.
 
-| Règle | ✅ À faire | ❌ À éviter |
+| Règle | À faire | À éviter |
 |---|---|---|
 | **Lumière** | Près d'une fenêtre, en journée | Flash, ampoule jaune, contre-jour |
 | **Fond** | Mur clair, tissu uni, espace rangé | Lit défait, désordre |
@@ -274,20 +274,18 @@ Utiliser les photos du fournisseur ou d'autres vendeurs : les clients les reconn
 ## Répondez en 3 temps
 
 @cliente: Bsr, la robe verte en statut c'est combien ?
-@awa: Bonsoir ! **15 000 FCFA** 😊 Elle est en coton doublé, la coupe évasée tombe très bien. Je l'ai en M et en L. **Vous faites quelle taille ?**
+@awa: Bonsoir ! **15 000 FCFA** Elle est en coton doublé, la coupe évasée tombe très bien. Je l'ai en M et en L. **Vous faites quelle taille ?**
 @cliente: M. Vous livrez à Yop ?
 @awa: Oui, 1 500 à Yopougon, donc **16 500 au total**, livrée demain. **Je vous la réserve ?**
-@cliente: Ok réservez 👍
+@cliente: Ok réservez
 
 {{inc:trois-temps}}
 
 <div class="box retenir" markdown="1">
 **La règle de la balle**
 
-Terminez **toujours** par une question facile (taille, couleur, commune, quantité). Si votre message finit par un point, c'est au client de relancer… et il le fera rarement.
+Finissez **toujours** par une question facile (taille, couleur, commune). Répondez par écrit, en un seul message, en moins d'une heure.
 </div>
-
-Répondez **par écrit**, en **un seul message**, **en moins d'une heure** pendant vos horaires.
 </section>
 
 <section class="pg" markdown="1">
@@ -298,19 +296,19 @@ Répondez **par écrit**, en **un seul message**, **en moins d'une heure** penda
 <div class="script" markdown="1">
 <span class="sh">/prix · Cas standard</span>
 
-Bonjour ! [Prix] FCFA 😊 [Détail 1], [détail 2]. Je l'ai en [variantes]. Vous préférez [A] ou [B] ?
+Bonjour ! [Prix] FCFA [Détail 1], [détail 2]. Je l'ai en [variantes]. Vous préférez [A] ou [B] ?
 </div>
 
 <div class="script" markdown="1">
 <span class="sh">/dispo · Le client écrit juste « Dispo ? »</span>
 
-Oui, c'est disponible 😊 C'est [prix] FCFA, [détail]. Il me reste [variantes]. C'est pour vous ou pour offrir ?
+Oui, c'est disponible C'est [prix] FCFA, [détail]. Il me reste [variantes]. C'est pour vous ou pour offrir ?
 </div>
 
 <div class="script" markdown="1">
 <span class="sh">/ville · Le client est dans une autre ville</span>
 
-[Prix] FCFA 😊 [Détail]. On expédie à [ville] par [transporteur] : [frais], réception en [délai]. Vous êtes dans quel quartier ?
+[Prix] FCFA [Détail]. On expédie à [ville] par [transporteur] : [frais], réception en [délai]. Vous êtes dans quel quartier ?
 </div>
 
 <div class="script" markdown="1">
@@ -322,13 +320,13 @@ C'est entre [min] et [max] FCFA selon [critère]. Je vous confirme le prix exact
 <div class="script" markdown="1">
 <span class="sh">/epuise · Produit épuisé</span>
 
-Ce modèle est parti 😔 J'ai un modèle très proche à [prix] : [photo]. Il vous plaît ? Sinon, je vous préviens dès le retour.
+Ce modèle est parti J'ai un modèle très proche à [prix] : [photo]. Il vous plaît ? Sinon, je vous préviens dès le retour.
 </div>
 
 <div class="script" markdown="1">
 <span class="sh">/retard · Vous répondez en retard</span>
 
-Bonsoir, désolée pour le retard 🙏 [Puis : prix, détail, question.]
+Bonsoir, désolée pour le retard [Puis : prix, détail, question.]
 </div>
 
 **Personnalisez toujours avant d'envoyer** : prénom, bonne couleur, bonne taille.
@@ -340,7 +338,7 @@ Bonsoir, désolée pour le retard 🙏 [Puis : prix, détail, question.]
 ## « C'est cher ! » : la méthode ACRA
 
 @cliente: C'est cher.
-@awa: Je comprends, c'est un budget 😊 Vous aviez prévu combien, à peu près ?
+@awa: Je comprends, c'est un budget Vous aviez prévu combien, à peu près ?
 @cliente: Autour de 10 000.
 @awa: À ce prix, j'ai ce modèle en coton simple [photo]. Celle à 15 000 est doublée, plus épaisse. Je vous montre les deux portées ?
 @coach: Tu n'as pas baissé ton prix : tu as **compris** ce qui la retenait.
@@ -352,7 +350,7 @@ Bonsoir, désolée pour le retard 🙏 [Puis : prix, détail, question.]
 <div class="box avis" markdown="1">
 **Savoir lâcher**
 
-Un « non » clair se respecte : « Pas de souci, merci 😊 Vous verrez nos nouveautés dans nos statuts. » Ce client reviendra peut-être. Celui qu'on harcèle, jamais.
+Un « non » clair se respecte : « Pas de souci, merci Vous verrez nos nouveautés dans nos statuts. » Ce client reviendra peut-être. Celui qu'on harcèle, jamais.
 </div>
 </section>
 
@@ -362,22 +360,22 @@ Un « non » clair se respecte : « Pas de souci, merci 😊 Vous verrez nos nou
 ## Les 6 objections qui reviennent toujours
 
 <div class="obj"><b>« Je vais réfléchir. »</b>
-Bien sûr 😊 Quelque chose vous fait hésiter : la taille, la livraison ? Sinon, je peux vous la garder jusqu'à demain [heure].</div>
+Bien sûr Quelque chose vous fait hésiter : la taille, la livraison ? Sinon, je peux vous la garder jusqu'à demain [heure].</div>
 
 <div class="obj"><b>« Je paie à la livraison ? »</b>
-Oui 😊 *(ou, si acompte :)* Je demande un acompte de [montant] pour couvrir le trajet du livreur ; le reste se paie à la réception.</div>
+Oui *(ou, si acompte :)* Je demande un acompte de [montant] pour couvrir le trajet du livreur ; le reste se paie à la réception.</div>
 
 <div class="obj"><b>« C'est original ? » / « C'est naturel ? »</b>
-Très bonne question 😊 [Réponse honnête.] Je vous envoie une vidéo pour que vous voyiez par vous-même. *Ne mentez jamais.*</div>
+Très bonne question [Réponse honnête.] Je vous envoie une vidéo pour que vous voyiez par vous-même. *Ne mentez jamais.*</div>
 
 <div class="obj"><b>« Vous faites un prix ? »</b>
-Même prix pour tout le monde, comme ça personne n'est lésé 😊 Par contre, pour 2 articles la livraison est offerte. Ça vous intéresse ?</div>
+Même prix pour tout le monde, comme ça personne n'est lésé Par contre, pour 2 articles la livraison est offerte. Ça vous intéresse ?</div>
 
 <div class="obj"><b>« Je reviens. »</b>
-Pas de souci 😊 Je peux vous écrire demain pour savoir où vous en êtes ? *(La relance devient autorisée.)*</div>
+Pas de souci Je peux vous écrire demain pour savoir où vous en êtes ? *(La relance devient autorisée.)*</div>
 
 <div class="obj"><b>« Je vais demander à mon mari. »</b>
-Bien sûr 😊 Voici un petit récap à lui transférer : [photo · prix · livraison · total]. Je vous écris demain ?</div>
+Bien sûr Voici un petit récap à lui transférer : [photo · prix · livraison · total]. Je vous écris demain ?</div>
 
 **Si la même objection revient souvent**, c'est votre offre qu'il faut améliorer (profil, preuves, grille de livraison).
 </section>
@@ -393,13 +391,13 @@ Bien sûr 😊 Voici un petit récap à lui transférer : [photo · prix · livr
 <div class="script" markdown="1">
 <span class="sh">/recap · À envoyer dès le « oui »</span>
 
-**Récapitulatif de votre commande** 🧾
+**Récapitulatif de votre commande**
 • Article : [produit · taille · couleur]
 • Prix : [prix] FCFA · Livraison : [commune] [frais] FCFA
 • **Total : [total] FCFA**
 • Livraison : [jour], entre [heure] et [heure] · Repère : [lieu précis]
 • Paiement : [mode et moment]
-Merci de confirmer en répondant **OK** 🙏
+Merci de confirmer en répondant **OK**
 </div>
 
 | Situation | Règle de paiement conseillée |
@@ -418,7 +416,7 @@ Annoncez la règle **avant** le récapitulatif. Acceptez 2 ou 3 services de paie
 
 @cliente: Voilà la capture du transfert de 12 000. Envoyez vite, je voyage demain !
 @awa: *(ouvre SON application)* … Rien n'est arrivé.
-@awa: Je ne vois pas encore le paiement sur mon compte. Dès qu'il apparaît, j'expédie 😊
+@awa: Je ne vois pas encore le paiement sur mon compte. Dès qu'il apparaît, j'expédie
 @coach: Parfait. **Seul ton compte fait foi.**
 
 <div class="box warn" markdown="1">
@@ -447,19 +445,19 @@ Les arnaques évoluent : suivez les conseils de sécurité publiés par votre op
 <div class="script" markdown="1">
 <span class="sh">/livraison-jour · Le matin</span>
 
-Bonjour [prénom] 😊 Votre commande arrive aujourd'hui entre [heure] et [heure]. Vous serez bien disponible au [repère] ?
+Bonjour [prénom] Votre commande arrive aujourd'hui entre [heure] et [heure]. Vous serez bien disponible au [repère] ?
 </div>
 
 <div class="script" markdown="1">
 <span class="sh">/livreur · Fiche à transférer au livreur</span>
 
-🚚 Client : [prénom] · [tél.] · Adresse : [quartier] · Repère : [précis] · Article : [ ] · **À encaisser : [montant] FCFA** · Créneau : [ ]
+ Client : [prénom] · [tél.] · Adresse : [quartier] · Repère : [précis] · Article : [] · **À encaisser : [montant] FCFA** · Créneau : []
 </div>
 
 <div class="script" markdown="1">
 <span class="sh">/paiement-recu · Après encaissement</span>
 
-Paiement de [montant] FCFA bien reçu, merci 🙏 Votre commande arrive [jour].
+Paiement de [montant] FCFA bien reçu, merci Votre commande arrive [jour].
 </div>
 </section>
 
@@ -476,22 +474,22 @@ Paiement de [montant] FCFA bien reçu, merci 🙏 Votre commande arrive [jour].
 <div class="script" markdown="1">
 <span class="sh">J+1 · Info utile</span>
 
-Bonjour [prénom] 😊 Pour [produit] d'hier : [taille, matière, délai]. Je l'ai encore en [variantes].
+Bonjour [prénom] Pour [produit] d'hier : [taille, matière, délai]. Je l'ai encore en [variantes].
 </div>
 
 <div class="script" markdown="1">
 <span class="sh">J+3 · Preuve ou alternative</span>
 
-Je vous partage une photo portée par une cliente qui fait du M 😊 [photo] Il existe aussi en version [alternative] à [prix].
+Je vous partage une photo portée par une cliente qui fait du M [photo] Il existe aussi en version [alternative] à [prix].
 </div>
 
 <div class="script" markdown="1">
 <span class="sh">J+7 · Porte ouverte, puis STOP</span>
 
-Je ne veux pas vous déranger 😊 Si ce n'est pas le bon moment, aucun souci. Vous verrez nos nouveautés dans nos statuts !
+Je ne veux pas vous déranger Si ce n'est pas le bon moment, aucun souci. Vous verrez nos nouveautés dans nos statuts !
 </div>
 
-**Chaque soir, 5 minutes :** revue des étiquettes 🟡 (qui relancer ?) et 🟠 (qui livrer ?).
+**Chaque soir, 5 minutes :** revue des étiquettes « A demandé le prix » (qui relancer ?) et « Commande en cours » (qui livrer ?).
 </section>
 
 <section class="pg" markdown="1">
@@ -516,7 +514,7 @@ Je ne veux pas vous déranger 😊 Si ce n'est pas le bon moment, aucun souci. V
 <div class="script" markdown="1">
 <span class="sh">Demander l'accord</span>
 
-Bonjour [prénom] 😊 J'envoie de temps en temps nos nouveautés en avant-première, au maximum une fois par semaine. Vous voulez les recevoir ? Répondez **OUI**. Vous pourrez arrêter à tout moment avec **STOP**.
+Bonjour [prénom] J'envoie de temps en temps nos nouveautés en avant-première, au maximum une fois par semaine. Vous voulez les recevoir ? Répondez **OUI**. Vous pourrez arrêter à tout moment avec **STOP**.
 </div>
 </section>
 
@@ -532,13 +530,13 @@ Bonjour [prénom] 😊 J'envoie de temps en temps nos nouveautés en avant-premi
 <div class="script" markdown="1">
 <span class="sh">Après-vente (J+3 à J+7)</span>
 
-Bonjour [prénom] 😊 Ça fait quelques jours que vous avez reçu [produit]. Ça vous plaît ? Petite astuce : [conseil d'entretien].
+Bonjour [prénom] Ça fait quelques jours que vous avez reçu [produit]. Ça vous plaît ? Petite astuce : [conseil d'entretien].
 </div>
 
 <div class="script" markdown="1">
 <span class="sh">Demande d'avis (après un retour positif)</span>
 
-Ça me fait plaisir 😊 Je peux partager votre message dans mes statuts ? Seulement votre prénom, sans photo ni numéro.
+Ça me fait plaisir Je peux partager votre message dans mes statuts ? Seulement votre prénom, sans photo ni numéro.
 </div>
 
 - **Réclamation :** remerciez, demandez une photo, proposez une solution, confirmez.
@@ -577,32 +575,10 @@ Notez chaque commande (cahier ou tableau) : date, client, produit, total, paieme
 ## Votre plan de 30 jours
 
 <div class="plan4">
-<div><b>Semaine 1 · Les bases</b>
-☐ Diagnostic (p. 5)
-☐ WhatsApp Business + profil
-☐ Catalogue de 10 produits
-☐ Accueil, absence, étiquettes
-☐ Prix visibles + grille de livraison
-☐ Test du client inconnu</div>
-<div><b>Semaine 2 · Être vu</b>
-☐ Enregistrer tous mes clients
-☐ Lien wa.me + code QR à 3 endroits
-☐ Ma semaine type de statuts
-☐ Séance photo de 5 produits
-☐ Ma première heure de production avec l'IA</div>
-<div><b>Semaine 3 · Vendre</b>
-☐ Mes 6 réponses au prix enregistrées
-☐ Mes réponses aux objections
-☐ Ma règle de paiement + /recap
-☐ Checklist anti-arnaque affichée
-☐ Jeu de rôle avec un proche</div>
-<div><b>Semaine 4 · Faire revenir</b>
-☐ Étiqueter 30 conversations
-☐ Relances J+1 / J+3 / J+7
-☐ Demande d'accord pour la diffusion
-☐ Après-vente à 10 anciens clients
-☐ Programme de fidélité
-☐ Premier bilan + nouveau diagnostic</div>
+<div><b>Semaine 1 · Les bases</b><br>☐ Diagnostic (p. 5)<br>☐ WhatsApp Business + profil<br>☐ Catalogue de 10 produits<br>☐ Accueil, absence, étiquettes<br>☐ Prix visibles + grille de livraison<br>☐ Test du client inconnu</div>
+<div><b>Semaine 2 · Être vu</b><br>☐ Enregistrer tous mes clients<br>☐ Lien wa.me + code QR à 3 endroits<br>☐ Ma semaine type de statuts<br>☐ Séance photo de 5 produits<br>☐ Ma première heure de production avec l'IA</div>
+<div><b>Semaine 3 · Vendre</b><br>☐ Mes 6 réponses au prix enregistrées<br>☐ Mes réponses aux objections<br>☐ Ma règle de paiement + /recap<br>☐ Checklist anti-arnaque affichée<br>☐ Jeu de rôle avec un proche</div>
+<div><b>Semaine 4 · Faire revenir</b><br>☐ Étiqueter 30 conversations<br>☐ Relances J+1 / J+3 / J+7<br>☐ Demande d'accord pour la diffusion<br>☐ Après-vente à 10 anciens clients<br>☐ Programme de fidélité<br>☐ Premier bilan + nouveau diagnostic</div>
 </div>
 
 <div class="box retenir" markdown="1">
@@ -614,7 +590,7 @@ Gardez la routine quotidienne, l'heure de production du dimanche et le bilan. Re
 
 <section class="pg end-pg">
 <p class="cv-brand">DÉO-CI</p>
-<div class="bd">{{row:coach:left:Le prochain « c'est combien ? » que tu recevras n'est pas une simple question. <b>C'est une occasion de vente.</b>}}{{row:awa:right:Prix, valeur, question. Et la balle dans son camp 😉}}</div>
+<div class="bd">{{row:coach:left:Le prochain « c'est combien ? » que tu recevras n'est pas une simple question. <b>C'est une occasion de vente.</b>}}{{row:awa:right:Prix, valeur, question. Et la balle dans son camp }}</div>
 <h2 class="end-title">Merci.</h2>
 <p class="end-txt">Ce livre express résume la méthode complète de « C'est combien ? » d'Amadou Traoré.<br>Pour aller plus loin : la version intégrale, ses 70 scripts, ses prompts IA et son tableau de suivi.</p>
 <p class="end-txt">Écrivez-nous sur le numéro WhatsApp qui vous a envoyé ce livre.</p>
