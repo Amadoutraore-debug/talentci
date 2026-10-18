@@ -6,6 +6,7 @@ La méthode pour transformer vos discussions WhatsApp en ventes. Par Amadou Trao
 
 | Fichier | Contenu |
 |---|---|
+| `C-est-combien_Version-express-BD_DEO-CI.pdf` | La version express en BD (25 pages) — source : `version-courte/` (`python3 version-courte/build_court.py`) |
 | `C-est-combien_Amadou-Traore_DEO-CI.pdf` | Le livre mis en page, prêt à vendre après personnalisation (115 pages A5) |
 | `bonus/Scripts-a-copier_C-est-combien.txt` | Bonus 1 : tous les scripts, à copier-coller |
 | `bonus/Prompts-IA_C-est-combien.txt` | Bonus 2 : la fiche de contexte et les prompts IA |

@@ -1,0 +1,86 @@
+
+/* ===== Version express BD ===== */
+@page{ size:148mm 210mm; margin:11mm 12mm 13mm 12mm;
+  @bottom-left{ content:"« C'est combien ? » · version express · DÉO-CI"; font-family:"Inter"; font-size:6.5pt; color:#8a9893; }
+  @bottom-right{ content:counter(page) " / 25"; font-family:"Inter"; font-size:7pt; font-weight:700; color:#0E5A47; } }
+@page bleed{ margin:0; @bottom-left{ content:none; } @bottom-right{ content:none; } }
+body{ font-size:9.3pt; line-height:1.45; }
+section.pg{ height:186mm; overflow:hidden; break-after:page; position:relative; }
+section.pg:last-child{ break-after:auto; }
+.pg-head{ display:flex; justify-content:space-between; align-items:center; margin:0 0 2.5mm; }
+.pg-head span{ background:var(--orange); color:#fff; font-weight:800; font-size:7pt; letter-spacing:.14em; text-transform:uppercase; padding:1mm 2.6mm; border-radius:20px; }
+section.pg h2{ font-size:15pt; margin:0 0 3mm; }
+section.pg h3{ font-size:10.5pt; margin:3mm 0 1.5mm; }
+section.pg table{ margin:1.5mm 0 2.5mm; font-size:8.1pt; }
+section.pg td, section.pg th{ padding:3.4px 5px; }
+section.pg .box{ margin:2.5mm 0; padding:2.4mm 3.4mm 1mm; }
+section.pg .script{ margin:1.6mm 0 2.2mm; padding:1.8mm 3mm .4mm; font-size:8.4pt; }
+section.pg ul, section.pg ol{ margin:1mm 0 2mm; }
+section.pg p{ margin:0 0 .5em; }
+section.pg .diagram, section.pg .phones, section.pg .formula, section.pg .stairs{ margin:2mm 0 2.5mm; }
+section.pg .phones .phone .scr{ min-height:46mm; } section.pg .status{ height:52mm; }
+section.pg .phone{ width:40mm; }
+.small{ font-size:7.6pt; }
+
+/* BD */
+.bd{ display:flex; flex-direction:column; gap:1.8mm; margin:1mm 0 3mm; padding:2.5mm; border:2px solid #111; border-radius:4mm; background:#FBF8F2; break-inside:avoid; }
+.bd-row{ display:flex; align-items:flex-end; gap:2.2mm; }
+.bd-row.right{ flex-direction:row-reverse; }
+.who{ margin:0; flex:none; width:15mm; text-align:center; }
+.who img{ width:15mm; height:15mm; border-radius:50%; border:1.6px solid #111; background:#fff; object-fit:cover; display:block; }
+.who figcaption{ font-size:5.8pt; font-weight:700; margin-top:.6mm; color:#111; letter-spacing:.03em; }
+.bubble{ position:relative; background:#fff; border:1.8px solid #111; border-radius:4mm; padding:1.8mm 3mm; font-size:8.7pt; line-height:1.35; max-width:80%; margin-bottom:4mm; }
+.bd-row.left .bubble::before{ content:""; position:absolute; left:-2.4mm; bottom:2mm; border:1.2mm solid transparent; border-right:2.2mm solid #111; }
+.bd-row.right .bubble::before{ content:""; position:absolute; right:-2.4mm; bottom:2mm; border:1.2mm solid transparent; border-left:2.2mm solid #111; }
+.bd-row.right .bubble{ background:#DFF5D2; }
+.bd-row.left .who img[alt="Le coach"] + figcaption{ color:var(--green); }
+.bd-row.left:has(img[alt="Le coach"]) .bubble{ background:#FFF1E2; }
+.bd-note{ align-self:center; background:#111; color:#fff; font-size:7.6pt; font-weight:600; padding:1.2mm 3mm; border-radius:2mm; }
+
+/* Couverture */
+.cover-pg, .end-pg{ page:bleed; height:210mm; background:var(--green); color:#fff; padding:14mm 13mm; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.cv-brand{ font-weight:800; letter-spacing:.32em; color:var(--orange); font-size:9.5pt; margin-bottom:3mm; }
+.cv-kicker{ font-weight:700; letter-spacing:.16em; font-size:7.5pt; color:#cfe5dd; margin-bottom:8mm; }
+.cv-bubble{ position:relative; background:#fff; color:var(--green); font-family:"Fraunces",serif; font-weight:800; font-size:33pt; line-height:1.05; padding:9mm 7mm; border-radius:7mm; border-top-left-radius:1.5mm; border:2.4px solid #111; box-shadow:0 3mm 0 #0a3f32; }
+.cv-bubble span{ position:absolute; right:5mm; bottom:3mm; font-family:"Inter"; font-size:8pt; color:#4F9CD9; }
+.cv-sub{ font-family:"Fraunces",serif; font-weight:600; font-size:12.5pt; line-height:1.35; margin:9mm 0 7mm; color:#fff; }
+.cv-cast{ display:flex; gap:4mm; justify-content:center; margin-bottom:8mm; }
+.cv-cast img, .cast-grid img{ width:24mm; height:24mm; border-radius:50%; background:#fff; border:2px solid #111; object-fit:cover; }
+.cv-author{ font-family:"Fraunces",serif; font-weight:800; font-size:13pt; background:var(--orange); padding:2mm 6mm; border-radius:20px; }
+
+.cast-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:3mm; margin:2mm 0 2mm; text-align:center; }
+.cast-grid div{ border:1.8px solid #111; border-radius:4mm; padding:2.5mm 2mm; background:var(--cream); }
+.cast-grid b{ display:block; font-family:"Fraunces",serif; color:var(--green); font-size:10.5pt; margin-top:1.2mm; }
+.cast-grid span{ display:block; font-size:7.6pt; line-height:1.3; color:var(--ink); }
+
+.obj{ border:1.6px solid #111; border-left:5px solid var(--orange); border-radius:3mm; padding:1.8mm 3mm; margin:0 0 2mm; font-size:8.5pt; line-height:1.35; background:#fff; }
+.obj b{ display:block; color:#a9521a; font-size:8.8pt; }
+
+.plan4{ display:grid; grid-template-columns:1fr 1fr; gap:3mm; margin:2mm 0 3mm; }
+.plan4 div{ border:1.8px solid #111; border-radius:4mm; padding:2.5mm 3mm; font-size:8.4pt; line-height:1.55; background:#fff; }
+.plan4 b{ display:block; font-family:"Fraunces",serif; color:var(--green); font-size:10pt; margin-bottom:1mm; }
+
+.end-pg .bd{ background:#fff; color:var(--ink); text-align:left; width:100%; margin-bottom:8mm; }
+.end-title{ color:#fff !important; font-size:24pt !important; justify-content:center; }
+.end-title::before{ display:none !important; }
+.end-txt{ color:#d5e8e1; font-size:9.5pt; }
+.end-small{ color:#9cc5b8; font-size:6.8pt; margin-top:6mm; }
+.cv-bubble{ font-size:27pt; white-space:nowrap; padding:8mm 6mm; }
+.cv-sub{ margin-top:11mm; }
+section.pg .quiz th:not(:first-child), section.pg .quiz td:not(:first-child){ width:auto; text-align:left; }
+section.pg .quiz td:first-child, section.pg .quiz th:first-child{ width:7mm; font-weight:800; color:var(--green); text-align:center; }
+section.pg .quiz td:last-child, section.pg .quiz th:last-child{ width:11mm; }
+section.pg .quiz tr:last-child td{ background:#F6F9F7 !important; color:var(--ink); }
+section.pg .quiz td{ height:9mm; }
+section.pg .phones .phone{ width:36mm; font-size:6.4pt; }
+section.pg .phones .phone .scr{ min-height:38mm; padding:1.8mm; }
+section.pg .prof-av{ width:9mm; height:9mm; font-size:9pt; margin:.5mm auto 1mm; }
+section.pg .prof-line{ padding:.7mm 0; }
+section.pg .stairs .s1{ height:10mm; } section.pg .stairs .s2{ height:13mm; } section.pg .stairs .s3{ height:16mm; } section.pg .stairs .s4{ height:19mm; }
+section.pg .stairs div{ font-size:6.4pt; padding:1.2mm; } section.pg .stairs div b{ font-size:8pt; }
+.cover-pg > *, .end-pg > *{ flex-shrink:0; } .cv-cast img{ width:21mm; height:21mm; } .cv-kicker{ margin-bottom:6mm; } .cv-sub{ margin:8mm 0 6mm; }
+section.pg.cover-pg, section.pg.end-pg{ height:210mm; }
+section.pg.cover-pg .cv-sub{ margin:10mm 0 7mm; }
+section.pg.cover-pg .cv-kicker{ margin-bottom:7mm; }
+section.pg.cover-pg .cv-brand{ margin-bottom:3mm; }
+section.pg.end-pg .end-small{ margin-top:6mm; }
